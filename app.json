@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/center/center",
+    "pages/my/my",
+    "pages/center/volunteer/volunteer",
+    "pages/center/feedback/feedback",
+    "pages/my/about/about"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1296db",
+    "navigationBarTitleText": "321CQU",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "selectedColor": "#1296db",
+    "list": [
+      {
+        "pagePath": "pages/center/center",
+        "text": "四次元口袋",
+        "iconPath": "./res/icons/yinyong.png",
+        "selectedIconPath": "./res/icons/yinyong-o.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "./res/icons/wode.png",
+        "selectedIconPath": "./res/icons/wode-o.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

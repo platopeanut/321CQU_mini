@@ -1,0 +1,91 @@
+<view wx:if="{{!hasUserInfo && first_login}}">
+
+  <view class='header'>
+    <image mode='widthFix' src='../../res/icons/app.png'></image>
+  </view>
+  <view class='content_index'>
+      <view>申请获取以下权限</view>
+      <text>获得你的公开信息(昵称，头像等)</text>
+  </view>
+  <button class='bottom' lang="zh_CN" type='primary' wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 授权登录 </button>
+  <button  class='bottom' lang="zh_CN" type='primary' wx:else open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 授权登录 </button>
+ 
+</view>
+<view wx:else>
+  <view class="container">
+  <view class="userinfo">
+    <block wx:if="{{canIUseOpenData}}">
+      <view class="userinfo-avatar" bindtap="bindViewTap">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+      <open-data type="userNickName"></open-data>
+    </block>
+    <block wx:elif="{{!hasUserInfo}}">
+      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
+      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
+    </block>
+    <block wx:else>
+      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>
+  </view>
+</view>
+
+  <form catchsubmit="saveInfo">
+  <view class="cu-form-group margin-top">
+  <view class="title">学号</view>
+  <input name="stu_id" placeholder="请输入你的学号" value="{{stu_id}}"></input>
+  </view>
+  <view class="cu-form-group">
+  <view class="title">姓名</view>
+  <input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>
+  </view>
+  <view class="cu-form-group">
+  <view class="title">邮箱</view>
+  <input name="stu_email" placeholder="请输入你的邮箱" value="{{stu_email}}"></input>
+  </view>
+  <view>
+      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
+  </view>
+  </form>
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
+    <view class="cu-item">
+      <view class="content" bindtap="clearCache">
+        <text class="cuIcon-refresh text-red"></text>
+        <text class="text-grey">清除缓存</text>
+      </view>
+    </view>
+    <view class="cu-item arrow">
+      <navigator class="content" url="/pages/my/about/about" hover-class="none">
+        <text class="cuIcon-formfill text-green"></text>
+        <text class="text-grey">关于我们</text>
+      </navigator>
+    </view>
+  </view>
+  <view class="cu-tabbar-height"></view>
+
+  <!-- 首次登陆 -->
+  <view class="cu-modal {{display?'show':''}}">
+  <view class="cu-dialog">
+  <view class="cu-bar bg-white justify-end">
+    <view class="content">用户信息隐私说明</view>
+    <view class="action" bindtap="hideModal">
+      <text class="cuIcon-close text-red"></text>
+    </view>
+  </view>
+  <view class="padding-xl">
+    我们收集的数据仅用于方便本小程序功能的查询，且信息为本地存储，用户可以放心使用
+  </view>
+  <view class="cu-bar bg-white justify-end">
+    <view class="action">
+      <button class="cu-btn line-green text-green" bindtap="hideModal">取消</button>
+      <button class="cu-btn bg-green margin-left" bindtap="hideModal">确定</button>
+    </view>
+  </view>
+  </view>
+  </view>
+
+</view>
+
+

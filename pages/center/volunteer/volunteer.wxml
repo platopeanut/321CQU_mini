@@ -1,0 +1,34 @@
+<form catchsubmit="formSubmit" catchreset="formReset">
+	<view class="cu-form-group margin-top">
+		<view class="title">学号</view>
+		<input name="stu_id" placeholder="请输入你的学号" value="{{stu_id}}"></input>
+	</view>
+	<view class="cu-form-group">
+		<view class="title">姓名</view>
+		<input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>
+	</view>
+    <view>
+        <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">Submit</button>
+        <button style="margin: 30rpx 0;width: 100%;" formType="reset">Reset</button>
+    </view>
+</form>
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class="action">
+    <text class="cuIcon-title text-blue"></text>查询结果
+    <text class="cuIcon-title text-red"></text>志愿总时长：{{time_sum}}h
+  </view>
+</view>
+<view wx:for="{{result}}" class="bg-white padding-lr">
+    <view class="solids-bottom padding-xs flex align-center">
+        <view class="padding" style="color: orange;font-weight: bold;">{{index+1}}</view>
+        <view class="flex-sub text-center">
+            <view class="solid-bottom text-df padding" style="color: gray;font-style: italic;">{{item.time}}</view>
+            <view class="padding">{{item.Aname}}</view>
+            <view class="padding" style="font-size: large;color: green;">{{item.Duration}}h</view>
+        </view>
+  </view>
+</view>
+
+
+
+

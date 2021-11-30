@@ -1,0 +1,24 @@
+{
+    "setting": {},
+    "condition": {
+        "plugin": {
+            "list": []
+        },
+        "game": {
+            "list": []
+        },
+        "gamePlugin": {
+            "list": []
+        },
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "模拟更新编译",
+                    "pathName": "pages/center/center",
+                    "query": "",
+                    "scene": null
+                }
+            ]
+        }
+    }
+}

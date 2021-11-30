@@ -1,0 +1,14 @@
+
+<view class="padding flex flex-direction">
+    <button class="cu-btn lg" bindtap="addFeedback">添加反馈</button>
+</view>
+<view wx:for="{{feedback_data}}">
+    <view class="cu-timeline">
+    <view class="cu-time" style="width: max-content">{{item.time}}</view>
+    <view class="cu-item">
+        <view class="bg-olive content shadow">
+            <text>{{item.message}}</text>
+        </view>
+    </view>
+    </view>
+</view>

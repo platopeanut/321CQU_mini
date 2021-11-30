@@ -1,0 +1,12 @@
+<view class='margin-xl bg-white padding-xl radius shadow-lg'>
+  <view class='text-center margin-bottom text-lg  text-grey'>关于321CQU团队</view>
+  <view class='text-content'>
+    <view>321CQU小程序致力于给重大师生提供便捷的信息查询服务，目前暂时上线了个人志愿时长查询功能，更多功能敬请期待</view>
+    <view>
+      众所周知，将大象放进冰箱需要三步，在未来我们会依据自身课业情况，陆续添加更多的数据、支持更多的功能，我们的愿景是：重大师生不在需要在多个页面间寻找信息，像默数“321”一样迅速便捷的获取想要知道的信息
+    </view>
+    <view>开发人员：</view>
+    <view>朱子骏 陈佳明</view>
+
+  </view>
+</view>
