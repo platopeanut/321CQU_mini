@@ -21,32 +21,22 @@
       </view>
     </view> -->
     <view class="text-gray text-sm text-right padding">
-      <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
-      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}
+      <view wx:if="{{isAgree}}">
+        <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
+        <text class="cuIcon-appreciate margin-lr-xs"></text> {{item.agree?item.agree:0}}
+      </view>
+      <view wx:else>
+        <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
+        <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}
+      </view>
       <!-- <text class="cuIcon-messagefill margin-lr-xs"></text> {{}} -->
     </view>
     </view>
     </view>
 </view>
 
-<movable-area bindtap="addFeedback" class="movable-area">
+<movable-area bindtap="addAgree" class="movable-area">
     <movable-view class="movable-view" direction="all">
-    <image src="../../../res/icons/plus.png"></image>
+    <image src="../../../../res/icons/agree.png"></image>
     </movable-view>
 </movable-area>
-
-
-
-<!-- <view class="padding flex flex-direction">
-    <button class="cu-btn lg" bindtap="addFeedback">添加反馈</button>
-</view>
-<view wx:for="{{feedback_data}}" wx:key="time">
-    <view class="cu-timeline">
-    <view class="cu-time" style="width: max-content">{{item.time}}</view>
-    <view class="cu-item">
-        <view class="bg-olive content shadow">
-            <text user-select>{{item.message}}</text>
-        </view>
-    </view>
-    </view>
-</view> -->

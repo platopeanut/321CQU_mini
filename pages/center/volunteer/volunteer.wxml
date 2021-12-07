@@ -7,10 +7,16 @@
 		<view class="title">姓名</view>
 		<input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>
 	</view>
-    <view>
-        <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">Submit</button>
-        <button style="margin: 30rpx 0;width: 100%;" formType="reset">Reset</button>
+
+    <view class="flex">
+      <view class="flex-sub">
+        <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">查询</button>
+      </view>
+      <view class="flex-sub">
+        <button style="margin: 30rpx 0;width: 100%;" formType="reset">重置</button>
+      </view>
     </view>
+
 </form>
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action">
@@ -22,7 +28,8 @@
     <view class="solids-bottom padding-xs flex align-center">
         <view class="padding" style="color: orange;font-weight: bold;">{{index+1}}</view>
         <view class="flex-sub text-center">
-            <view class="solid-bottom text-df padding" style="color: gray;font-style: italic;">{{item.time}}</view>
+            <view class="solid-bottom text-df padding" style="color: gray;font-style: italic;">
+            <text style="color: brown;">{{item.StartDate}} ~ {{item.EndDate}}</text></view>
             <view class="padding">{{item.Aname}}</view>
             <view class="padding" style="font-size: large;color: green;">{{item.Duration}}h</view>
         </view>

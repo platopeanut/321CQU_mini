@@ -1,6 +1,7 @@
 // app.js
 App({
   onLaunch() {
+    let global = this;
     // 版本更新检查
     if (wx.canIUse('getUpdateManager')) {
       const updateManager = wx.getUpdateManager()
@@ -31,8 +32,22 @@ App({
     wx.cloud.init({
       env: "cqu321cloud-2gdf3sav27999792"
     })
+    // 加载用户本地缓存信息
+    wx.getStorage({
+      key: 'stuInfo',
+      success (res) {
+        global.globalData.stuInfo = res.data
+      }
+    })
+    wx.getStorage({
+      key: 'userInfo',
+      success (res) {
+        global.globalData.userInfo = res.data
+      }
+    })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    stuInfo: null
   }
 })

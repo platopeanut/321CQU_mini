@@ -4,6 +4,8 @@
     "pages/my/my",
     "pages/center/volunteer/volunteer",
     "pages/center/feedback/feedback",
+    "pages/center/feedback/detail/detail",
+    "pages/center/feedback/edit/edit",
     "pages/my/about/about"
   ],
   "window": {

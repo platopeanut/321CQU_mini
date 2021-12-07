@@ -1,5 +1,4 @@
 // pages/center/volunteer/volunteer.js
-const volunteer_db = wx.cloud.database().collection("Volunteer");
 const student_db = wx.cloud.database().collection('Student')
 
 Page({
@@ -14,79 +13,82 @@ Page({
         time_sum: 0
     },
 
+
+    getAllRecords(stu_id) {
+        // volunteer_db.where({
+        //     Sid: stu_id
+        //     }).get({
+        //     success: function(res) {
+        //         global.setData({
+        //             result: res.data
+        //         })
+        //         console.log(global.getTimeSum())
+        //         global.setData({
+        //             time_sum: global.getTimeSum()
+        //         })
+
+        //     }
+        //     })
+        let global = this
+        wx.cloud.callFunction({
+            name: "getVolunteer",
+            data: {
+                where: {
+                    Sid: stu_id
+                }
+            },
+            success: function(res) {
+                let data = res.result.data
+                let total = data.length
+                let batch_size = 20
+                let left = 0
+                let right = batch_size
+                global.data.result = []
+                while (right <= total) {
+                    global.setData({
+                        result: global.data.result.concat(data.slice(left, right))
+                    })
+                    left += batch_size
+                    right += batch_size
+                }
+                global.setData({
+                    result: global.data.result.concat(data.slice(left, total))
+                })
+                global.setData({
+                    time_sum: global.getTimeSum()
+                })
+            },
+            fail(res) {
+                wx.showToast({
+                    title: '网络错误',
+                    icon: 'error'
+                })
+            }
+        })
+    },
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
         let global = this;
         wx.getStorage({
-            key: 'stu_name',
+            key: 'stuInfo',
             success (res) {
-                console.log(res.data)
                 global.setData({
-                    stu_name: res.data
+                    stu_name: res.data.stu_name
                 })
             }
           })
         wx.getStorage({
-            key: 'stu_id',
+            key: 'stuInfo',
             success (res) {
-                console.log(res.data)
                 global.setData({
-                    stu_id: res.data
+                    stu_id: res.data.stu_id
                 })
             }
         })
     },
 
-    /**
-     * 生命周期函数--监听页面初次渲染完成
-     */
-    onReady: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload: function () {
-
-    },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-    onPullDownRefresh: function () {
-
-    },
-
-    /**
-     * 页面上拉触底事件的处理函数
-     */
-    onReachBottom: function () {
-
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage: function () {
-
-    },
     getTimeSum() {
         let sum = 0
         this.data.result.forEach((value)=>{
@@ -110,19 +112,7 @@ Page({
             // 校验身份
             // 研究生不用校验
             if (!(stu_id <= 100000000)) {
-                volunteer_db.where({
-                    Sid: stu_id
-                    }).get({
-                    success: function(res) {
-                        global.setData({
-                            result: res.data
-                        })
-                        console.log(global.getTimeSum())
-                        global.setData({
-                            time_sum: global.getTimeSum()
-                        })
-                    }
-                    })
+                global.getAllRecords(stu_id)
                 return
             }
             student_db.where({
@@ -136,20 +126,7 @@ Page({
                         })
                     }
                     else if (res.data[0].Sname === stu_name){
-                    volunteer_db.where({
-                        Sid: stu_id
-                        }).get({
-                        success: function(res) {
-                            global.setData({
-                                result: res.data
-                            })
-                            console.log(global.getTimeSum())
-                            global.setData({
-                                time_sum: global.getTimeSum()
-                            })
-        
-                        }
-                        })
+                        global.getAllRecords(stu_id)
                     } 
                     else {
                     wx.showToast({

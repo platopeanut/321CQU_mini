@@ -3,16 +3,14 @@
 // 获取应用实例
 const app = getApp()
 const student_db = wx.cloud.database().collection('Student')
-
+const stuInfo_db = wx.cloud.database().collection('StuInfo')
 Page({
   data: {
     // 是否显示新用户界面
     first_login: false,
     display: false,
-    stu_name: "",
-    stu_id: "",
-    stu_email: "",
     userInfo: {},
+    stuInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     canIUseGetUserProfile: true,
@@ -23,13 +21,18 @@ Page({
       display: true
     })
   },
+  reauthorize() {
+    this.setData({
+      first_login: true
+    })
+  },
   hideModal(e) {
     this.setData({
       display: false
     })
   },
   onLoad() {
-    let global = this;
+    let global = this
     wx.getStorage({
       key: 'first_login',
       fail: function(res) {
@@ -42,30 +45,13 @@ Page({
           })
         }
     })
-    wx.getStorage({
-      key: 'stu_name',
-      success (res) {
-          global.setData({
-              stu_name: res.data
-          })
-      }
-      })
-    wx.getStorage({
-        key: 'stu_id',
-        success (res) {
-            global.setData({
-                stu_id: res.data
-            })
-        }
+    this.setData({
+      userInfo: wx.getStorageSync("userInfo")
     })
-    wx.getStorage({
-      key: 'stu_email',
-      success (res) {
-          global.setData({
-              stu_email: res.data
-          })
-      }
-  })
+
+    this.setData({
+      stuInfo: wx.getStorageSync("stuInfo")
+    })
   },
   
   getUserProfile(e) {
@@ -76,8 +62,15 @@ Page({
           userInfo: res.userInfo,
           hasUserInfo: true
         })
+        //缓存用户信息
+        wx.setStorageSync("userInfo",res.userInfo)
+        // wx.setStorage({
+        //   key: 'userInfo',
+        //   data: res.userInfo
+        // })
       }
     })
+    
   },
   getUserInfo(e) {
     this.setData({
@@ -89,9 +82,7 @@ Page({
   clearCache(e) {
     this.setData({
       display: false,
-      stu_name: "",
-      stu_id: "",
-      stu_email: "",
+      stuInfo: {},
     })
     wx.clearStorage({
       success: (res) => {
@@ -130,66 +121,58 @@ Page({
     
   },
   doSaveInfo(e) {
-    let stu_name = e.detail.value.stu_name;
-    let stu_id = e.detail.value.stu_id;
-    // 如果stu_id能转换成数字，那就进行转换
-    if (!isNaN(stu_id)) stu_id = parseInt(stu_id)
-    let stu_email = e.detail.value.stu_email;
-    // 学号姓名校验
-    // 研究生不用校验
-    if (!(stu_id <= 100000000)) {
-      wx.setStorage({
-        key:"stu_name",
-        data: stu_name
-      })
-      wx.setStorage({
-        key:"stu_id",
-        data: stu_id
-      })
-      wx.setStorage({
-        key:"stu_email",
-        data: stu_email
-      })
+    let global = this;
+    let stu_name = e.detail.value.stu_name
+    let stu_id = e.detail.value.stu_id
+    // stu_id与stu_name必填
+    if (stu_name == '' || stu_id == '') {
       wx.showToast({
-        title: '保存成功',
-        icon: 'success'
+        title: '学号姓名必填',
+        icon: 'error'
       })
       return
     }
-    student_db.where({
-      Sid: stu_id
-    }).get({
-      success: function(res) {
-        if (res.data.length === 0) {
-          wx.showToast({
-            title: '信息没有录入',
-            icon: 'error'
-          })
-        }
-        else if (res.data[0].Sname === stu_name) {
-          wx.setStorage({
-            key:"stu_name",
-            data: stu_name
-          })
-          wx.setStorage({
-            key:"stu_id",
-            data: stu_id
-          })
-          wx.setStorage({
-            key:"stu_email",
-            data: stu_email
-          })
-          wx.showToast({
-            title: '绑定成功',
-            icon: 'success'
-          })
-        } else {
-          wx.showToast({
-            title: '个人信息不正确',
-            icon: 'error'
-          })
-        }
+    let stu_email = e.detail.value.stu_email
+    let nickname = e.detail.value.nickname
+    // //上传数据库
+    // stuInfo_db.add({
+    //   data: {
+    //     sid: stu_id,
+    //     sname: stu_name,
+    //     email: stu_email,
+    //     nickname: nickname
+    //   },
+    //   success: function() {
+    //     wx.showToast({
+    //       title: '录入成功',
+    //       icon: 'success'
+    //     })
+    //   },
+    //   fail: function() {
+    //     wx.showToast({
+    //       title: '录入失败',
+    //       icon: 'error'
+    //     })
+    //   }
+    // })
+    wx.setStorageSync("stuInfo",{
+      stu_id: stu_id,
+      stu_name: stu_name,
+      email: stu_email,
+      nickname: nickname
+    })
+    //页面加载
+    global.setData({
+      stuInfo: {
+        stu_id: stu_id,
+        stu_name: stu_name,
+        email: stu_email,
+        nickname: nickname
       }
+    })
+    wx.showToast({
+      title: '绑定成功',
+      icon: 'success'
     })
   }
 })
