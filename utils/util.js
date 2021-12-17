@@ -1,19 +1,86 @@
-const formatTime = date => {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-  const second = date.getSeconds()
+const url = 'https://www.zhulegend.com/321CQU'
+const Password = 'CQUz5321'
 
-  return `${[year, month, day].map(formatNumber).join('/')} ${[hour, minute, second].map(formatNumber).join(':')}`
+// 对应学号的姓名
+function getStuName(stu_id) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Sid': stu_id,
+        'Method': 1
+      },
+      success: resolve,
+      fail: reject
+    })
+  }) 
 }
 
-const formatNumber = n => {
-  n = n.toString()
-  return n[1] ? n : `0${n}`
+// 志愿时长的记录
+function getVolunteerRecord(stu_id) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Sid': stu_id,
+        'Method': 3
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 志愿总时长
+function getVolunteerTime(stu_id) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Sid': stu_id,
+        'Method': 2
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 志愿发送至邮箱
+function sendVolunteer(stu_id, email, fid_list) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Sid': stu_id,
+        'Mail': email,
+        'Fid': fid_list,
+        'Method': 4
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 解析字符串到对象
+function parseFromStr(str) {
+  // return (new Function("return " + str))();
+  return JSON.parse(str)
 }
 
 module.exports = {
-  formatTime
+  getVolunteerTime,
+  getVolunteerRecord,
+  getStuName,
+  sendVolunteer,
+  parseFromStr,
 }

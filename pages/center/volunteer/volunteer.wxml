@@ -7,15 +7,18 @@
 		<view class="title">姓名</view>
 		<input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>
 	</view>
-
-    <view class="flex">
-      <view class="flex-sub">
-        <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">查询</button>
-      </view>
-      <view class="flex-sub">
-        <button style="margin: 30rpx 0;width: 100%;" formType="reset">重置</button>
-      </view>
+  <view class="cu-form-group">
+		<view class="title">邮箱</view>
+		<input bindblur="getEmail" name="email" placeholder="请输入你的邮箱" value="{{email}}"></input>
+	</view>
+  <view class="flex">
+    <view class="flex-sub">
+      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">查询</button>
     </view>
+    <view class="flex-sub">
+      <button style="margin: 30rpx 0;width: 100%;" formType="reset">重置</button>
+    </view>
+  </view>
 
 </form>
 <view class="cu-bar bg-white solid-bottom margin-top">
@@ -24,9 +27,34 @@
     <text class="cuIcon-title text-red"></text>志愿总时长：{{time_sum}}h
   </view>
 </view>
-<view wx:for="{{result}}" class="bg-white padding-lr">
+
+<view class="cu-bar margin-top bg-white">
+  <view class="action">
+      <text class="cuIcon-title text-green"></text>发送到我的邮箱
+  </view>
+  <switch class="sm" bindchange="sendToEmail" checked="{{can_send}}"></switch>
+  <!-- <button class="cu-btn bg-green">发送到邮箱</button> -->
+  <view class="action">
+    <radio-group bindchange="selectWay">
+      <label class="margin-left-sm">
+        <radio class="blue sm radio" value="self" checked></radio>
+        <text>自定义</text>
+      </label>
+      <label class="margin-left-sm">
+        <radio class="blue sm radio" value="all"></radio>
+        <text>全选</text>
+      </label>
+    </radio-group>
+  </view>
+</view>
+
+<checkbox-group bindchange="selectWhich">
+  <view wx:for="{{result}}" class="bg-white padding-lr">
     <view class="solids-bottom padding-xs flex align-center">
-        <view class="padding" style="color: orange;font-weight: bold;">{{index+1}}</view>
+        <view class="padding" style="color: orange;font-weight: bold;">
+        <view>{{index+1}}</view>
+        <checkbox value="{{item.Fid}}" checked="{{way=='all'?true:false}}"></checkbox>
+        </view>
         <view class="flex-sub text-center">
             <view class="solid-bottom text-df padding" style="color: gray;font-style: italic;">
             <text style="color: brown;">{{item.StartDate}} ~ {{item.EndDate}}</text></view>
@@ -35,6 +63,8 @@
         </view>
   </view>
 </view>
+
+</checkbox-group>
 
 
 

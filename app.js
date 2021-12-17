@@ -14,7 +14,14 @@ App({
               content: '新版本已经准备好，是否重启应用？',
               success: function (res) {
                 if (res.confirm) {
+                  // 小程序更新
                   updateManager.applyUpdate()
+                  // 清除缓存
+                  wx.clearStorage({
+                    success: (res) => {
+                      console.log("缓存清除成功")
+                    },
+                  })
                 }
               }
             })
@@ -28,26 +35,10 @@ App({
         }
       })
     }
-    // 云开发环境初始化
-    wx.cloud.init({
-      env: "cqu321cloud-2gdf3sav27999792"
-    })
-    // 加载用户本地缓存信息
-    wx.getStorage({
-      key: 'stuInfo',
-      success (res) {
-        global.globalData.stuInfo = res.data
-      }
-    })
-    wx.getStorage({
-      key: 'userInfo',
-      success (res) {
-        global.globalData.userInfo = res.data
-      }
-    })
+    // ?(暂时不需要)加载用户本地缓存信息
+    // TODO
   },
   globalData: {
-    userInfo: null,
-    stuInfo: null
+  
   }
 })

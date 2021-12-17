@@ -1,148 +1,179 @@
-// pages/center/volunteer/volunteer.js
-const student_db = wx.cloud.database().collection('Student')
+const util = require('../../../utils/util')
 
 Page({
-
-    /**
-     * 页面的初始数据
-     */
     data: {
-        stu_name: "",
-        stu_id: "",
-        result: [],
-        time_sum: 0
+        stu_name: wx.getStorageSync('stu_name'),
+        stu_id: wx.getStorageSync('stu_id'),
+        email: wx.getStorageSync('email'),
+        result: [], 
+        time_sum: 0,
+        can_send: false,
+        need_fid_list: [],
+        way: 'self',
     },
-
-
-    getAllRecords(stu_id) {
-        // volunteer_db.where({
-        //     Sid: stu_id
-        //     }).get({
-        //     success: function(res) {
-        //         global.setData({
-        //             result: res.data
-        //         })
-        //         console.log(global.getTimeSum())
-        //         global.setData({
-        //             time_sum: global.getTimeSum()
-        //         })
-
-        //     }
-        //     })
-        let global = this
-        wx.cloud.callFunction({
-            name: "getVolunteer",
-            data: {
-                where: {
-                    Sid: stu_id
-                }
-            },
-            success: function(res) {
-                let data = res.result.data
-                let total = data.length
-                let batch_size = 20
-                let left = 0
-                let right = batch_size
-                global.data.result = []
-                while (right <= total) {
-                    global.setData({
-                        result: global.data.result.concat(data.slice(left, right))
-                    })
-                    left += batch_size
-                    right += batch_size
-                }
-                global.setData({
-                    result: global.data.result.concat(data.slice(left, total))
-                })
-                global.setData({
-                    time_sum: global.getTimeSum()
-                })
-            },
-            fail(res) {
-                wx.showToast({
-                    title: '网络错误',
-                    icon: 'error'
-                })
-            }
+    onShow() {
+        this.setData({
+            stu_name: wx.getStorageSync('stu_name'),
+            stu_id: wx.getStorageSync('stu_id'),
+            email: wx.getStorageSync('email'),
         })
     },
-    /**
-     * 生命周期函数--监听页面加载
-     */
+    getEmail(res) {
+        this.setData({
+            email: res.detail.value
+        })
+    },
     onLoad: function (options) {
-        let global = this;
-        wx.getStorage({
-            key: 'stuInfo',
-            success (res) {
-                global.setData({
-                    stu_name: res.data.stu_name
-                })
-            }
-          })
-        wx.getStorage({
-            key: 'stuInfo',
-            success (res) {
-                global.setData({
-                    stu_id: res.data.stu_id
-                })
-            }
+    },
+    // 解析志愿记录并存储
+    loadAllRecords(data) {
+        let tmpResult = []
+        for (let i = 0; i < data.length; i++) {
+            tmpResult.push({
+                'StartDate': data[i][0],
+                'EndDate': data[i][1],
+                'Aname': data[i][2],
+                'Duration': data[i][3],
+                'Fid': data[i][4]
+            })
+        }
+        this.setData({
+            result: tmpResult
         })
     },
-
-    getTimeSum() {
-        let sum = 0
-        this.data.result.forEach((value)=>{
-            sum += value.Duration;
+    selectWhich(e) {
+        console.log(e.detail.value)
+        this.setData({
+            need_fid_list: e.detail.value
         })
-        return sum;
+    },
+    // 选择订阅方式
+    selectWay(e) {
+        let way = e.detail.value
+        this.setData({
+            way: way
+        })
+    },
+    sendToEmail() {
+        let stu_id = this.data.stu_id
+        let email = this.data.email
+        // 邮箱不能为空
+        if (email == '' || email == undefined) {
+            wx.showToast({
+              title: '请填写邮箱',
+              icon: 'error'
+            })
+            this.setData({
+                can_send: false
+            })
+            return
+        }
+        // 发送请求
+        let fid_list = ''
+        if (this.data.way === 'all') {
+            fid_list = '0'
+        } else if (this.data.need_fid_list.length === 0) {
+            wx.showToast({
+              title: '请选择文件',
+              icon: 'error'
+            })
+            this.setData({
+                can_send: false
+            })
+            return
+        } else {
+            for (let i = 0; i < this.data.need_fid_list.length; i++) {
+                fid_list += this.data.need_fid_list[i] + ',';
+            }
+        }
+        wx.showLoading({
+          title: '稍等~',
+        })
+        util.sendVolunteer(stu_id, email, fid_list).then(res => {
+            if(res.statusCode !== 200) {
+                wx.showToast({
+                  title: '请求异常',
+                  icon: 'error'
+                })
+            } else {
+                console.log(res)        
+                this.setData({
+                    can_send: false
+                })
+                wx.hideLoading()
+                wx.showToast({
+                  title: '请注意查收',
+                  icon: 'success'
+                })
+            }
+        })
     },
     formSubmit(e) {
-        let global = this;
-        let stu_name = e.detail.value.stu_name;
-        let stu_id = e.detail.value.stu_id;
+        let global = this
+        let stu_name = e.detail.value.stu_name
+        let stu_id = e.detail.value.stu_id
+        let email = e.detail.value.email
+
+        // 保存到页面
+        this.setData({
+            stu_name: stu_name,
+            stu_id: stu_id,
+            email: email
+        })
+
+        // id和name不能为空
         if (stu_id == '' || stu_name == '') {
             wx.showToast({
               title: '请填写完整！',
               icon: 'error'
             })
         } else {
-            // 如果stu_id能转换成数字，那就进行转换
-            if (!isNaN(stu_id)) stu_id = parseInt(stu_id)
-            // 对接云存储
-            // 校验身份
-            // 研究生不用校验
-            if (!(stu_id <= 100000000)) {
-                global.getAllRecords(stu_id)
-                return
-            }
-            student_db.where({
-                Sid: stu_id
-              }).get({
-                success: function(res) {
-                    if (res.data.length === 0) {
+            // 向服务器校验身份信息
+            wx.showLoading({
+              title: '校验信息',
+            })
+            util.getStuName(stu_id).then(res => {
+                wx.hideLoading()
+                if (res.statusCode !== 200) {
+                    wx.showToast({
+                      title: '暂无记录',
+                      icon: 'error'
+                    })
+                } else {
+                    let std_name = util.parseFromStr(res.data)[1]
+                    if (std_name === stu_name) {
+                        wx.showLoading({
+                          title: '查询中',
+                        })
+                        // 获取志愿时长记录
+                        util.getVolunteerRecord(stu_id).then(res => {
+                            global.loadAllRecords(util.parseFromStr(res.data))
+                            // 获取总志愿时长
+                            util.getVolunteerTime(stu_id).then(res => {
+                                global.setData({
+                                    time_sum: util.parseFromStr(res.data)[1]
+                                })
+                                wx.hideLoading()
+                            })
+                        })
+                        
+                    } else {
                         wx.showToast({
-                          title: '信息没有录入',
+                          title: '信息有误',
                           icon: 'error'
                         })
                     }
-                    else if (res.data[0].Sname === stu_name){
-                        global.getAllRecords(stu_id)
-                    } 
-                    else {
-                    wx.showToast({
-                        title: '个人信息不正确',
-                        icon: 'error'
-                    })
-                    }
-                },
+                }
             })
         }
     },
     formReset(e) {
         this.setData({
             result: [],
-            time_sum: 0
+            time_sum: 0,
+            stu_name: '',
+            stu_id: '',
+            email: ''
         });
     }
-    
 })
