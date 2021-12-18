@@ -1,47 +1,10 @@
-// pages/center/feedback/edit/edit.js
+const util = require("../../../../utils/util")
+
 Page({
 
-    /**
-     * 页面的初始数据
-     */
     data: {
         message: "",
-        stuInfo: {},
-        userInfo: {}
-    },
-
-    /**
-     * 生命周期函数--监听页面加载
-     */
-    onLoad: function (options) {
-        this.setData({
-            userInfo: wx.getStorageSync("userInfo")
-        })
-        // wx.getStorage({
-        //     key: 'userInfo',
-        //     success: function(res) {
-        //       global.setData({
-        //         userInfo: res.data
-        //       })
-        //       console.log(res.data)
-        //     }
-        // })
-        // wx.getStorage({
-        // key: 'stuInfo',
-        // success: function(res) {
-        //     global.setData({
-        //     stuInfo: res.data
-        //     })
-        // }
-        // })
-        this.setData({
-        userInfo: wx.getStorageSync("userInfo")
-        })
-      
-        this.setData({
-            stuInfo: wx.getStorageSync("stuInfo")
-        })
-        console.log(this.data.userInfo)
+        stu_id: wx.getStorageSync('stu_id'),
     },
 
     bindInput(e) {
@@ -51,7 +14,7 @@ Page({
     },
 
     sendFeedback() {
-        if (this.data.stuInfo.stu_id == undefined || this.data.userInfo.avatarUrl == undefined) {
+        if (this.data.stu_id == "" || this.data.stu_id == undefined) {
             wx.showToast({
               title: '请先绑定信息',
               icon: 'error'
@@ -59,36 +22,33 @@ Page({
             return
         }
         let global = this
-       if (this.data.message != '') {
-            wx.cloud.database().collection("Comment").add({
-                data: {
-                    avatar: global.data.userInfo.avatarUrl,
-                    stu_id: global.data.stuInfo.stu_id,
-                    nickname: global.data.stuInfo.nickname,
-                    time: wx.cloud.database().serverDate(),
-                    message: global.data.message,
-                    view: 0,
-                    agree: 0
-                },
-                success(res) {
+        if (this.data.message != '') {
+            // 发送反馈信息
+            util.sendFeedback(this.data.stu_id, this.data.message).then(res => {
+                if (util.parseFromStr(res.data) == "1") {
                     wx.showToast({
-                        title: '反馈成功，谢谢您的宝贵意见！',
-                        icon: 'success'
-                    });
-                },
-                fail(res) {
+                        title: '感谢您的反馈',
+                        icon: 'none'
+                    })
+                } else {
                     wx.showToast({
-                        title: '反馈失败，请联系管理员',
-                        icon: 'error'
+                      title: '反馈失败',
+                      icon: 'none'
                     })
                 }
+                // 一秒后自动返回上一级
+                setTimeout(() => {
+                    wx.navigateBack({
+                        delta:1
+                    })
+                }, 1000)
             })
-       } else {
-           wx.showToast({
-             title: '反馈不能为空',
-             icon: 'error'
-           })
-       }
+        } else {
+            wx.showToast({
+                title: '反馈不能为空',
+                icon: 'error'
+            })
+        }
     }
 
 })

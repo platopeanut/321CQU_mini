@@ -18,11 +18,11 @@ Page({
             email: wx.getStorageSync('email'),
         })
     },
-    getEmail(res) {
-        this.setData({
-            email: res.detail.value
-        })
-    },
+    // getEmail(res) {
+    //     this.setData({
+    //         email: res.detail.value
+    //     })
+    // },
     onLoad: function (options) {
     },
     // 解析志愿记录并存储
@@ -60,7 +60,7 @@ Page({
         // 邮箱不能为空
         if (email == '' || email == undefined) {
             wx.showToast({
-              title: '请填写邮箱',
+              title: '请绑定邮箱',
               icon: 'error'
             })
             this.setData({
@@ -68,7 +68,7 @@ Page({
             })
             return
         }
-        // 发送请求
+        // 解析fid_list
         let fid_list = ''
         if (this.data.way === 'all') {
             fid_list = '0'
@@ -86,25 +86,38 @@ Page({
                 fid_list += this.data.need_fid_list[i] + ',';
             }
         }
-        wx.showLoading({
-          title: '稍等~',
+        
+        // 添加至任务管理
+        let task_map = getApp().globalData.task_map
+        let task_id = new Date().getTime()
+        task_map[task_id] = {
+            'icon': 'like',
+            'icon_color': 'red',
+            'title': '志愿时长',
+            'content': '正在处理...',
+            'status': 0
+        }
+        wx.showToast({
+            title: '已添加至任务管理',
+            icon: 'none'
+          })
+        this.setData({
+            can_send: false
         })
+        // 发送请求
         util.sendVolunteer(stu_id, email, fid_list).then(res => {
             if(res.statusCode !== 200) {
-                wx.showToast({
-                  title: '请求异常',
-                  icon: 'error'
-                })
+                task_map[task_id]['status'] = -1
+                task_map[task_id]['content'] = "网络错误"
             } else {
-                console.log(res)        
-                this.setData({
-                    can_send: false
-                })
-                wx.hideLoading()
-                wx.showToast({
-                  title: '请注意查收',
-                  icon: 'success'
-                })
+                if (util.parseFromStr(res.data) == "1") {
+                    task_map[task_id]['status'] = 1
+                    task_map[task_id]['content'] = "已发送至邮箱"
+                } else {
+                    // 失败
+                    task_map[task_id]['status'] = -1
+                    task_map[task_id]['content'] = "发送失败"
+                }
             }
         })
     },
@@ -112,13 +125,13 @@ Page({
         let global = this
         let stu_name = e.detail.value.stu_name
         let stu_id = e.detail.value.stu_id
-        let email = e.detail.value.email
+        // let email = e.detail.value.email
 
         // 保存到页面
         this.setData({
             stu_name: stu_name,
             stu_id: stu_id,
-            email: email
+            // email: email
         })
 
         // id和name不能为空

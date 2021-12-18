@@ -1,4 +1,4 @@
-<view wx:for="{{feedback_data}}" wx:key="time">
+<view wx:for="{{feedback_data}}">
     <view class="cu-card dynamic {{isCard?'no-card':''}}">
     <view class="cu-item shadow">
     <view class="cu-list menu-avatar">
@@ -15,11 +15,10 @@
     <view class="text-content" data-item="{{item}}" bindtap="jumpToDetail">
         <text user-select>{{item.message}}</text>
     </view>
-    
+    <!-- 点赞浏览次数 -->
     <view class="text-gray text-sm text-right padding">
-      <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
-      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}
-      
+      <!-- <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
+      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}} -->
     </view>
     </view>
     </view>

@@ -39,6 +39,6 @@ App({
     // TODO
   },
   globalData: {
-  
+    task_map: {},
   }
 })

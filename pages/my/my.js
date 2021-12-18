@@ -79,18 +79,45 @@ Page({
     let stu_name = e.detail.value.stu_name
     let stu_id = e.detail.value.stu_id
     let email = e.detail.value.email
-    // let nickname = e.detail.value.nickname
+    let nickname = e.detail.value.nickname
+    // 设置昵称
+    if (nickname != "") {
+      // 校验身份
+      if (stu_id == "" || stu_name == "") {
+        wx.showToast({
+          title: '学号姓名必填',
+          icon: 'error'
+        })
+        return
+      } else {
+        util.getStuName(stu_id).then(res => {
+          if(util.parseFromStr(res.data)[1] == stu_name) {
+            // 设置昵称
+            nickname = this.setNickname(stu_id, nickname)
+            if (nickname == "") {
+              return
+            }
+          } else {
+            wx.showToast({
+              title: '信息有误',
+              icon: 'error'
+            })
+            return
+          } 
+        })
+      }
+    }
     wx.setStorageSync('stu_name', stu_name)
     wx.setStorageSync('stu_id', stu_id)
     wx.setStorageSync('email', email)
-    // wx.setStorageSync('nickname', nickname)
+   
     //页面加载
     global.setData({
       stuInfo: {
         stu_id: stu_id,
         stu_name: stu_name,
         email: email,
-        // nickname: nickname
+        nickname: nickname
       }
     })
     wx.showToast({
@@ -98,4 +125,28 @@ Page({
       icon: 'success'
     })
   },
+
+  setNickname(stu_id, nickname) {
+    let global = this
+    util.setNickname(stu_id, nickname).then(res => {
+      if (res.statusCode == 200) {
+        if (util.parseFromStr(res.data) == "1") {
+          wx.setStorageSync('nickname', nickname)
+          return nickname
+        } else {
+          wx.showToast({
+            title: '昵称已存在',
+            icon: 'error'
+          })
+          return ""
+        }
+      } else {
+        wx.showToast({
+          title: '网络错误',
+          icon: 'error'
+        })
+        return ""
+      }
+    })
+  }
 })

@@ -33,10 +33,10 @@
   <view class="title">邮箱</view>
   <input name="email" placeholder="请输入你的邮箱" value="{{stuInfo.email}}"></input>
   </view>
-  <!-- <view class="cu-form-group">
+  <view class="cu-form-group">
   <view class="title">昵称</view>
   <input name="nickname" placeholder="请设置你的昵称" value="{{stuInfo.nickname}}"></input>
-  </view> -->
+  </view>
   <view>
       <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
   </view>

@@ -16,6 +16,12 @@ Component({
           icon: 'comment'
         },
         {
+          title: '任务管理',
+          name: 'task',
+          color: 'blue',
+          icon: 'deliver'
+        },
+        {
           title: '成绩查询',
           name: '敬请期待',
           color: 'grey',

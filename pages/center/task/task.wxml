@@ -1,0 +1,28 @@
+<view wx:if="{{isEmpty}}">
+    <view class="cu-load"><text class="text-grey">当前没有任务噢</text></view>
+</view>
+<view wx:else>
+    <view class="cu-list menu card-menu margin-top" wx:for="{{task_map}}" wx:key="key">
+        <!-- <view class="cu-item">
+        <view class="content">
+            <text class="cuIcon-{{item.icon}} text-{{item.icon_color}}"></text>
+            <text class="text-grey">{{item.content}}</text>
+            <text></text>
+        </view>
+        </view> -->
+        
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-{{item.icon}} text-{{item.icon_color}}"></text>
+                <text class="text-black">{{item.title}} </text>
+                <text class="text-grey"> {{item.content}}</text>
+            </view>
+            <view class="action">
+                <view wx:if="{{item.status == 0}}" class="cu-tag round bg-orange light">执行中</view>
+                <view wx:elif="{{item.status == 1}}" class="cu-tag round bg-olive light">成功</view>
+                <view wx:elif="{{item.status == -1}}" class="cu-tag round bg-blue light">失败</view>
+            </view>
+        </view>
+    </view>
+</view>
+

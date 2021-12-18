@@ -6,6 +6,7 @@
     "pages/center/feedback/feedback",
     "pages/center/feedback/detail/detail",
     "pages/center/feedback/edit/edit",
+    "pages/center/task/task",
     "pages/my/about/about"
   ],
   "window": {

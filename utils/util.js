@@ -71,10 +71,62 @@ function sendVolunteer(stu_id, email, fid_list) {
   })
 }
 
+function setNickname(stu_id, nickname) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Sid': stu_id,
+        'Username': nickname,
+        'Method': 5
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
 // 解析字符串到对象
 function parseFromStr(str) {
-  // return (new Function("return " + str))();
   return JSON.parse(str)
+}
+
+
+// 获取反馈信息
+function getFeedback(limit) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Method': 7,
+        'Limit': limit
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 发送反馈信息
+function sendFeedback(stu_id, message) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url,
+      method: 'POST',
+      data: {
+        'Password': Password,
+        'Method': 6,
+        'Sid': stu_id,
+        'Content': message,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
 }
 
 module.exports = {
@@ -83,4 +135,7 @@ module.exports = {
   getStuName,
   sendVolunteer,
   parseFromStr,
+  setNickname,
+  getFeedback,
+  sendFeedback,
 }
