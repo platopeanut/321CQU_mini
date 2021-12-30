@@ -22,10 +22,22 @@ Component({
           icon: 'deliver'
         },
         {
+          title: '课表',
+          name: 'curriculum',
+          color: 'orange',
+          icon: 'deliver'
+        },
+        {
           title: '成绩查询',
-          name: '敬请期待',
-          color: 'grey',
-          icon: 'colorlens'
+          name: 'grade',
+          color: 'mauve',
+          icon: 'search'
+        },
+        {
+          title: '考试',
+          name: 'exam',
+          color: 'olive',
+          icon: 'time'
         },
         {
           title: '评教',
@@ -38,12 +50,6 @@ Component({
           name: '敬请期待',
           color: 'grey',
           icon: 'icon'
-        },
-        {
-          title: '考试',
-          name: '敬请期待',
-          color: 'grey',
-          icon: 'btn'
         },
       ],
     },

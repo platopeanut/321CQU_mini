@@ -7,7 +7,11 @@
     "pages/center/feedback/detail/detail",
     "pages/center/feedback/edit/edit",
     "pages/center/task/task",
-    "pages/my/about/about"
+    "pages/my/about/about",
+    "pages/my/info/info",
+    "pages/center/curriculum/curriculum",
+    "pages/center/grade/grade",
+    "pages/center/exam/exam"
   ],
   "window": {
     "backgroundTextStyle": "light",

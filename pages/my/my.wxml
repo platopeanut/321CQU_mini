@@ -19,31 +19,15 @@
     </block>
   </view>
 </view>
-<!-- 信息填写 -->
-  <form catchsubmit="saveInfo">
-  <view class="cu-form-group margin-top">
-  <view class="title">学号</view>
-  <input name="stu_id" placeholder="请输入你的学号" value="{{stuInfo.stu_id}}"></input>
-  </view>
-  <view class="cu-form-group">
-  <view class="title">姓名</view>
-  <input name="stu_name" placeholder="请输入你的姓名" value="{{stuInfo.stu_name}}"></input>
-  </view>
-  <view class="cu-form-group">
-  <view class="title">邮箱</view>
-  <input name="email" placeholder="请输入你的邮箱" value="{{stuInfo.email}}"></input>
-  </view>
-  <view class="cu-form-group">
-  <view class="title">昵称</view>
-  <input name="nickname" placeholder="请设置你的昵称" value="{{stuInfo.nickname}}"></input>
-  </view>
-  <view>
-      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
-  </view>
-  </form>
 
 
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
+    <view class="cu-item arrow">
+      <view class="content" bindtap="editInfo">
+        <text class="cuIcon-form text-yellow"></text>
+        <text class="text-grey">绑定信息</text>
+      </view>
+    </view>
     <view class="cu-item">
       <view class="content" bindtap="clearCache">
         <text class="cuIcon-refresh text-red"></text>
@@ -75,12 +59,12 @@
     </view>
   </view>
   <view class="padding-xl">
-    我们收集的数据仅用于方便本小程序功能的查询，且信息为本地存储，用户可以放心使用
+    我们收集的数据仅用于方便本小程序功能的查询，除授权的用户昵称和头像外其余信息为本地存储，用户可以放心使用
   </view>
   <view class="cu-bar bg-white justify-end">
     <view class="action">
-      <button class="cu-btn line-green text-green" bindtap="hideModal">取消</button>
-      <button class="cu-btn bg-green margin-left" bindtap="hideModal">确定</button>
+      <button class="cu-btn line-green text-green" bindtap="hideModal_cancel">取消</button>
+      <button class="cu-btn bg-green margin-left" bindtap="hideModal_sure">确定</button>
     </view>
   </view>
   </view>

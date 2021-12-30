@@ -1,0 +1,73 @@
+.top {
+    position: fixed;
+    top: 0rpx;
+    height: 100rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;    /**子view垂直居中*/
+    vertical-align: center; /**垂直居中*/
+    justify-content: center; /**内容居中*/
+    text-align: center;
+    color: black;
+    border-bottom: 1rpx solid rgb(233, 234, 236);
+    z-index: 1;
+    background-color: white;
+}
+
+.top .left {
+    width: 50rpx;
+    background-color: rgb(251, 252, 254);
+}
+
+.top .item {
+    width: 100rpx;
+}
+
+.body {
+    height: 130rpx;
+    display: flex;
+    flex-direction: row;
+    text-align: center; 
+    line-height: 130rpx;
+    background-color: white;
+    /* overflow: auto; */
+}
+
+.body .left {
+    width: 50rpx;
+    background-color: rgb(251, 252, 254);
+}
+
+.body .item {
+    width: 100rpx;
+}
+
+.bottom {
+    position:fixed; 
+    bottom:0;
+    height: 100rpx;
+    width: 750rpx;
+    flex-direction: row;
+    line-height: 100rpx;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    z-index: 1;
+    background-color: white;
+    border-top: 1rpx solid rgb(233, 234, 236);
+}
+
+.bottom view text {
+    margin-left: 40rpx;
+    margin-right: 40rpx;
+}
+
+.bottom .mid {
+    font-weight: normal;
+}
+
+.lesson {
+    
+    text-align: center;
+    line-height:normal;
+}

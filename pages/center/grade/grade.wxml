@@ -1,0 +1,41 @@
+<scroll-view scroll-x class="bg-white nav text-center">
+  <view class="cu-item {{item == curr_term?'text-blue cur':'text-black'}}" wx:for="{{term_list}}" wx:key="index" bindtap="selectTerm" data-id="{{item}}">
+    {{item}}
+  </view>
+</scroll-view>
+
+<view class="cu-card case">
+  <view class="cu-item shadow" wx:for="{{grade_list[curr_term]}}" wx:key="index">
+    <view class="cu-list menu">
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-title text-blue"></text>
+                <text class="text-black">课程：{{item.CourseName}}</text>
+            </view>
+        </view>   
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-title text-yellow"></text>
+                <text class="text-black">学分：{{item.CourseCredit}}</text>
+                <text class="cuIcon-title text-red"></text>
+                <text class="text-black">类型：{{item.StudyNature}} {{item.CourseNature}}</text>
+            </view>
+        </view>
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-title text-yellow"></text>
+                <text class="text-black">课程号：{{item.CourseCode}}</text>
+                <text class="cuIcon-title text-red"></text>
+                <text class="text-black">教师：{{item.InstructorName}}</text>
+            </view>
+        </view>
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-title text-green"></text>
+                <text class="text-black">分数：<text style="font-size: large; color: {{isNaN(item.EffectiveScoreShow)?'green':(item.EffectiveScoreShow>90?'green':item.EffectiveScoreShow>80?'#33cc00':item.EffectiveScoreShow>70?'#669900':item.EffectiveScoreShow>60?'#996600':'#red')}};">{{item.EffectiveScoreShow}}</text></text>
+            </view>
+        </view>
+    </view> 
+  </view>
+
+</view>

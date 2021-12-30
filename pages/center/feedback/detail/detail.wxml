@@ -20,7 +20,7 @@
       <view class="bg-img {{isCard?'':'only-img'}}" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);" wx:for="{{isCard?9:1}}" wx:key="{{index}}">
       </view>
     </view> -->
-    <view class="text-gray text-sm text-right padding">
+    <!-- <view class="text-gray text-sm text-right padding">
       <view wx:if="{{isAgree}}">
         <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
         <text class="cuIcon-appreciate margin-lr-xs"></text> {{item.agree?item.agree:0}}
@@ -30,13 +30,13 @@
         <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}
       </view>
       <!-- <text class="cuIcon-messagefill margin-lr-xs"></text> {{}} -->
-    </view>
+    <!-- </view> -->
     </view>
     </view>
 </view>
 
-<movable-area bindtap="addAgree" class="movable-area">
+<!-- <movable-area bindtap="addAgree" class="movable-area">
     <movable-view class="movable-view" direction="all">
     <image src="../../../../res/icons/agree.png"></image>
     </movable-view>
-</movable-area>
+</movable-area> -->

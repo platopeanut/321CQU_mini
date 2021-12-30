@@ -1,0 +1,63 @@
+<view>
+
+<!-- 信息填写 -->
+<form catchsubmit="saveInfo">
+  <view class="cu-bar bg-white solid-bottom margin-top">
+  <view class="action">
+    <text class="cuIcon-title text-green"></text>基础信息
+  </view>
+  </view>
+
+  <view class="cu-form-group">
+  <view class="title">学号</view>
+  <input name="stu_id" placeholder="请输入你的学号" value="{{stuInfo.stu_id}}"></input>
+  </view>
+
+  <view class="cu-form-group">
+  <view class="title">姓名</view>
+  <input name="stu_name" placeholder="请输入你的姓名" value="{{stuInfo.stu_name}}"></input>
+  </view>
+
+  <view class="cu-form-group">
+  <view class="title">邮箱</view>
+  <input name="email" placeholder="请输入你的邮箱" value="{{stuInfo.email}}"></input>
+  </view>
+
+  <view class="cu-form-group">
+  <view class="title">昵称</view>
+  <input name="nickname" placeholder="请设置你的昵称" value="{{stuInfo.nickname}}"></input>
+  </view>
+  
+  <view>
+      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
+  </view>
+  </form>
+
+
+<form catchsubmit="saveUid">
+<!-- 统一身份认证 -->
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class="action">
+    <text class="cuIcon-title text-green"></text>统一身份认证
+  </view>
+  </view>
+  <view class="cu-form-group">
+  <view class="title">账号</view>
+  <input name="uid" placeholder="请输入你的统一身份认证账号" value="{{stuInfo.uid}}">
+  </input>
+  </view>
+
+  <view class="cu-form-group">
+  <view class="title">密码</view>
+  <input name="uid_pwd" type="password" placeholder="请输入你的统一身份认证密码" value="{{stuInfo.uid_pwd}}">
+  </input>
+  </view>
+
+  <view>
+      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
+  </view>
+
+
+</form>
+
+</view>

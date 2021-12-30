@@ -1,4 +1,4 @@
-const util = require("../../../../utils/util")
+const api = require("../../../../utils/api")
 
 Page({
 
@@ -24,8 +24,8 @@ Page({
         let global = this
         if (this.data.message != '') {
             // 发送反馈信息
-            util.sendFeedback(this.data.stu_id, this.data.message).then(res => {
-                if (util.parseFromStr(res.data) == "1") {
+            api.sendFeedback(this.data.stu_id, this.data.message).then(res => {
+                if (res.data.Statue == 1) {
                     wx.showToast({
                         title: '感谢您的反馈',
                         icon: 'none'
@@ -36,12 +36,12 @@ Page({
                       icon: 'none'
                     })
                 }
-                // 一秒后自动返回上一级
+                // 0.5秒后自动返回上一级
                 setTimeout(() => {
                     wx.navigateBack({
                         delta:1
                     })
-                }, 1000)
+                }, 500)
             })
         } else {
             wx.showToast({

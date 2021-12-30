@@ -11,7 +11,7 @@
         </view>
         </view> -->
         
-        <view class="cu-item">
+        <view class="cu-item" bindtap="onTouchItem" data-index="{{index}}">
             <view class="content">
                 <text class="cuIcon-{{item.icon}} text-{{item.icon_color}}"></text>
                 <text class="text-black">{{item.title}} </text>
@@ -24,5 +24,17 @@
             </view>
         </view>
     </view>
+</view>
+
+<view class="cu-modal bottom-modal {{modalShow?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white">
+      <view class="action text-green" bindtap="deleteSure">确定</view>
+      <view class="action text-blue" bindtap="deleteCancel">取消</view>
+    </view>
+    <view class="padding-xl">
+      是否删除此项
+    </view>
+  </view>
 </view>
 

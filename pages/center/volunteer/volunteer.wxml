@@ -63,8 +63,8 @@
             <view class="padding">{{item.Aname}}</view>
             <view class="padding" style="font-size: large;color: green;">{{item.Duration}}h</view>
         </view>
+    </view>
   </view>
-</view>
 
 </checkbox-group>
 

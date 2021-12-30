@@ -1,4 +1,4 @@
-const util = require('../../../utils/util')
+const api = require('../../../utils/api')
 
 Page({
     data: {
@@ -18,11 +18,6 @@ Page({
             email: wx.getStorageSync('email'),
         })
     },
-    // getEmail(res) {
-    //     this.setData({
-    //         email: res.detail.value
-    //     })
-    // },
     onLoad: function (options) {
     },
     // 解析志愿记录并存储
@@ -42,7 +37,6 @@ Page({
         })
     },
     selectWhich(e) {
-        console.log(e.detail.value)
         this.setData({
             need_fid_list: e.detail.value
         })
@@ -63,9 +57,11 @@ Page({
               title: '请绑定邮箱',
               icon: 'error'
             })
-            this.setData({
-                can_send: false
-            })
+            setTimeout(() => {
+                this.setData({
+                    can_send: false
+                })
+            }, 200)
             return
         }
         // 解析fid_list
@@ -77,9 +73,11 @@ Page({
               title: '请选择文件',
               icon: 'error'
             })
-            this.setData({
-                can_send: false
-            })
+            setTimeout(() => {
+                this.setData({
+                    can_send: false
+                })
+            }, 200)
             return
         } else {
             for (let i = 0; i < this.data.need_fid_list.length; i++) {
@@ -101,16 +99,18 @@ Page({
             title: '已添加至任务管理',
             icon: 'none'
           })
-        this.setData({
-            can_send: false
-        })
+        setTimeout(() => {
+            this.setData({
+                can_send: false
+            })
+        }, 200)
         // 发送请求
-        util.sendVolunteer(stu_id, email, fid_list).then(res => {
+        api.sendVolunteer(stu_id, email, fid_list).then(res => {
             if(res.statusCode !== 200) {
                 task_map[task_id]['status'] = -1
                 task_map[task_id]['content'] = "网络错误"
             } else {
-                if (util.parseFromStr(res.data) == "1") {
+                if (res.data.Statue == 1) {
                     task_map[task_id]['status'] = 1
                     task_map[task_id]['content'] = "已发送至邮箱"
                 } else {
@@ -145,26 +145,47 @@ Page({
             wx.showLoading({
               title: '校验信息',
             })
-            util.getStuName(stu_id).then(res => {
+            api.getStuName(stu_id).then(res => {
                 wx.hideLoading()
                 if (res.statusCode !== 200) {
                     wx.showToast({
-                      title: '暂无记录',
+                      title: '网络错误',
                       icon: 'error'
                     })
                 } else {
-                    let std_name = util.parseFromStr(res.data)[1]
+                    if(res.data.Statue == 0) {
+                        wx.showToast({
+                            title: '暂无记录',
+                            icon: 'error'
+                        })
+                        return
+                    }
+                    let std_name = res.data.Sname
                     if (std_name === stu_name) {
                         wx.showLoading({
                           title: '查询中',
                         })
                         // 获取志愿时长记录
-                        util.getVolunteerRecord(stu_id).then(res => {
-                            global.loadAllRecords(util.parseFromStr(res.data))
+                        api.getVolunteerRecord(stu_id).then(res => {
+                            if (res.Statue == 0) {
+                                wx.showToast({
+                                  title: '查询志愿记录失败',
+                                  icon: 'none'
+                                })
+                                return
+                            }
+                            global.loadAllRecords(res.data.AllActivity)
                             // 获取总志愿时长
-                            util.getVolunteerTime(stu_id).then(res => {
+                            api.getVolunteerTime(stu_id).then(res => {
+                                if (res.Statue == 0) {
+                                    wx.showToast({
+                                      title: '查询志愿总时长失败',
+                                      icon: 'none'
+                                    })
+                                    return
+                                }
                                 global.setData({
-                                    time_sum: util.parseFromStr(res.data)[1]
+                                    time_sum: res.TotalDuration
                                 })
                                 wx.hideLoading()
                             })
@@ -186,7 +207,6 @@ Page({
             time_sum: 0,
             stu_name: '',
             stu_id: '',
-            email: ''
         });
     }
 })

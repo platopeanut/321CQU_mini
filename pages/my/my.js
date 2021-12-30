@@ -1,16 +1,10 @@
-const util = require('../../utils/util')
+const api = require('../../utils/api')
 
 Page({
   data: {
     // 是否显示新用户界面
     has_bind: true,
     userInfo: wx.getStorageSync('userInfo'),
-    stuInfo: {
-      stu_name: wx.getStorageSync('stu_name'),
-      stu_id: wx.getStorageSync('stu_id'),
-      email: wx.getStorageSync('email'),
-      nickname: wx.getStorageSync('nickname')
-    },
   },
 
   // 用于第一次绑定显示弹窗
@@ -20,9 +14,18 @@ Page({
     })
   },
   // 用于第一次绑定关闭弹窗
-  hideModal(e) {
+  hideModal_cancel(e) {
     this.setData({
       has_bind: true
+    })    
+  },
+  hideModal_sure(e) {
+    this.setData({
+      has_bind: true
+    })    
+    wx.setStorageSync('has_bind', true)
+    wx.navigateTo({
+      url: './info/info'
     })
   },
   // 重新授权
@@ -31,10 +34,7 @@ Page({
       userInfo: ""
     })
   },
-
-  onLoad() {
-  },
-  
+  // 获取用户信息
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '完善用户信息资料', 
@@ -46,13 +46,24 @@ Page({
         wx.setStorageSync("userInfo",res.userInfo)
       }
     })
-    
   },
 
+  // 跳转到绑定信息界面
+  editInfo() {
+    // 初次绑定进行提示
+    if (!wx.getStorageSync('has_bind')) {
+      this.showModal()
+    } else {
+      wx.navigateTo({
+        url: './info/info'
+      })
+    }
+  },
+
+  // 清除缓存
   clearCache(e) {
     this.setData({
       has_bind: true,
-      stuInfo: {},
     })
     wx.clearStorage({
       success: (res) => {
@@ -69,84 +80,5 @@ Page({
       }
     })
   },
-  saveInfo(e) {
-    // 初次绑定进行提示
-    if (!wx.getStorageSync('has_bind')) {
-      wx.setStorageSync('has_bind', true)
-      this.showModal()
-    }
-    let global = this;
-    let stu_name = e.detail.value.stu_name
-    let stu_id = e.detail.value.stu_id
-    let email = e.detail.value.email
-    let nickname = e.detail.value.nickname
-    // 设置昵称
-    if (nickname != "") {
-      // 校验身份
-      if (stu_id == "" || stu_name == "") {
-        wx.showToast({
-          title: '学号姓名必填',
-          icon: 'error'
-        })
-        return
-      } else {
-        util.getStuName(stu_id).then(res => {
-          if(util.parseFromStr(res.data)[1] == stu_name) {
-            // 设置昵称
-            nickname = this.setNickname(stu_id, nickname)
-            if (nickname == "") {
-              return
-            }
-          } else {
-            wx.showToast({
-              title: '信息有误',
-              icon: 'error'
-            })
-            return
-          } 
-        })
-      }
-    }
-    wx.setStorageSync('stu_name', stu_name)
-    wx.setStorageSync('stu_id', stu_id)
-    wx.setStorageSync('email', email)
-   
-    //页面加载
-    global.setData({
-      stuInfo: {
-        stu_id: stu_id,
-        stu_name: stu_name,
-        email: email,
-        nickname: nickname
-      }
-    })
-    wx.showToast({
-      title: '绑定成功',
-      icon: 'success'
-    })
-  },
 
-  setNickname(stu_id, nickname) {
-    let global = this
-    util.setNickname(stu_id, nickname).then(res => {
-      if (res.statusCode == 200) {
-        if (util.parseFromStr(res.data) == "1") {
-          wx.setStorageSync('nickname', nickname)
-          return nickname
-        } else {
-          wx.showToast({
-            title: '昵称已存在',
-            icon: 'error'
-          })
-          return ""
-        }
-      } else {
-        wx.showToast({
-          title: '网络错误',
-          icon: 'error'
-        })
-        return ""
-      }
-    })
-  }
 })

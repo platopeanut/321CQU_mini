@@ -1,4 +1,4 @@
-const util = require("../../../utils/util")
+const api = require("../../../utils/api")
 let page = Page({
 
     data: {
@@ -16,9 +16,16 @@ let page = Page({
       let batch_size = 20
       let limit_index = this.data.limit_index
       // 请求服务器
-      util.getFeedback(`${limit_index},${limit_index+batch_size}`).then(res => {
+      api.getFeedback(`${limit_index},${limit_index+batch_size}`).then(res => {
         if (res.statusCode == 200) {
-          let list = util.parseFromStr(res.data)
+          if (res.data.Statue == 0) {
+            wx.showToast({
+              title: '获取失败',
+              icon: 'error'
+            })
+            return
+          }
+          let list = res.data.FeedbackList
           let feedback_list = []
           for (let i = 0; i < list.length; i++) {
             feedback_list.push({
