@@ -51,7 +51,25 @@
 
 </view>
 
-
+<view class="cu-modal {{subscribeRecord?'':'show'}}">
+  <view class="cu-dialog">
+  <view class="cu-bar bg-white justify-end">
+    <view class="content">用户信息隐私说明</view>
+    <view class="action" bindtap="hideModal">
+      <text class="cuIcon-close text-red"></text>
+    </view>
+  </view>
+  <view class="padding-xl">
+  本次订阅会在服务器端存储学号、统一身份认证账号和密码
+  </view>
+  <view class="cu-bar bg-white justify-end">
+    <view class="action">
+      <button class="cu-btn line-green text-green" bindtap="hideModal_cancel">取消</button>
+      <button class="cu-btn bg-green margin-left" bindtap="hideModal_sure">同意</button>
+    </view>
+  </view>
+  </view>
+  </view>
 
 
 <!-- 删除界面 -->

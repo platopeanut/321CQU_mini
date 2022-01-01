@@ -98,7 +98,6 @@ Page({
       wx.showLoading()
       wx.login({
         success: function(res) {
-          console.log(res.code)
           api.checkUidInfo(stu_id, uid, uid_pwd, res.code).then(res => {
             if (res.statusCode == 200) {
               if (res.data.Statue == 1) {
@@ -108,23 +107,25 @@ Page({
                   uid: uid,
                   uid_pwd: uid_pwd,
                 })
+                wx.hideLoading()
                 wx.showToast({
                   title: '绑定成功',
                   icon: 'success'
                 })
               } else {
+                wx.hideLoading()
                 wx.showToast({
                   title: '校验失败',
                   icon: 'error'
                 })
               }
             } else {
+              wx.hideLoading()
               wx.showToast({
                 title: '网络错误',
                 icon: 'error'
               })
             }
-            wx.hideLoading()
           })
         },
         fail: function() {

@@ -8,30 +8,50 @@ Page({
         modalShow: false, 
         curr_index: "",
         subscribe_list: [],
+        subscribeRecord: true,
+    },
+
+    hideModal_cancel: function() {
+        this.setData({
+            subscribeRecord: true,
+        })
+    },
+
+    hideModal_sure: function() {
+        wx.setStorageSync('subscribeRecord', true)
+        this.setData({
+            subscribeRecord: true,
+        })
     },
 
     update: function() {
-        if (wx.getStorageSync('subscribe_list') == '') {
-            this.setData({
-                subscribe_list: [
-                    {
-                        title: 'grade',
-                        content: '成绩更新通知提醒',
-                        isSubscribed: false
-                    }
-                ],
-            })
-        } else {
-            this.setData({
-                subscribe_list: [
-                    {
-                        title: 'grade',
-                        content: '成绩更新通知提醒',
-                        isSubscribed: wx.getStorageSync('subscribe_list')['grade']==''?false:true
-                    }
-                ],
-            })
-        }
+        let grade_id = '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
+        let subscribe_list = [
+            {
+                title: 'grade',
+                content: '成绩更新通知提醒',
+                isSubscribed: false
+            },
+        ]
+        let that = this
+        wx.getSetting({
+          withSubscriptions: true,
+          success: function(res) {
+              console.log(res.subscriptionsSetting[grade_id])
+              if (res.subscriptionsSetting[grade_id] == 'accept') {
+                subscribe_list[0].isSubscribed = true
+              }
+              that.setData({
+                  subscribe_list: subscribe_list
+              }) 
+          },
+          fail: function() {
+              wx.showToast({
+                title: '加载失败',
+                icon: 'error'
+              })
+          }
+        })
     },
 
     // cancelItem: function(res) {
@@ -44,7 +64,6 @@ Page({
         let stu_id = wx.getStorageSync('stu_id')
         let uid = wx.getStorageSync('uid')
         let uid_pwd = wx.getStorageSync('uid_pwd')
-        console.log(`${stu_id}, ${uid}, ${uid_pwd}`)
         if (stu_id == '' || uid == '' || uid_pwd == '') {
             wx.showToast({
               title: '请完善统一身份认证账号密码，学号信息',
@@ -55,36 +74,40 @@ Page({
         let curr_item = res.target.dataset.id
         let that = this
         if (curr_item == 'grade') {
+            if (wx.getStorageSync('subscribeRecord') == '') {
+                this.setData({
+                    subscribeRecord: false
+                })
+                return
+            }
             let id = '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
             wx.requestSubscribeMessage({
               tmplIds: [id,],
               success: function(res) {
+                wx.showLoading()
                 if (res[id] == 'accept') {
                     wx.login({
                         success: function(res) {
                             // 订阅
                             api.subscribe(res.code, stu_id, uid, uid_pwd).then(res => {
                                 if (res.data.Statue == 1) {
-                                    // 缓存
-                                    let subscribe_list = wx.getStorageSync('subscribe_list')
-                                    if (subscribe_list == '') subscribe_list = {}
-                                    subscribe_list['grade'] = true
-                                    wx.setStorageSync('subscribe_list', subscribe_list)
                                     that.update()
+                                    wx.hideLoading()
                                     wx.showToast({
                                     title: '订阅成功',
                                     icon: 'success'
                                     })
                                 } else {
+                                    wx.hideLoading()
                                     wx.showToast({
                                       title: '订阅失败',
                                       icon: 'error',
                                     })
                                 }
                             })
-                            
                         }, 
                         fail: function(res) {
+                            wx.hideLoading()
                             wx.showToast({
                               title: '订阅失败',
                               icon: 'error'
@@ -92,6 +115,7 @@ Page({
                         }
                     })
                 } else {
+                    wx.hideLoading()
                     wx.showToast({
                       title: '订阅失败',
                       icon: 'error'
@@ -102,7 +126,7 @@ Page({
                 wx.showToast({
                     title: '订阅失败',
                     icon: 'error'
-                  })
+                })
               }
             })
         }

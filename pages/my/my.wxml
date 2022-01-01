@@ -58,8 +58,7 @@
       <text class="cuIcon-close text-red"></text>
     </view>
   </view>
-  <view class="padding-xl">
-    我们收集的数据仅用于方便本小程序功能的查询，除授权的用户昵称和头像外其余信息为本地存储，用户可以放心使用
+  <view class="padding-xl">学号、姓名、统一认证账号、密码均为本地存储，有特殊功能需要存储于服务器时会单独通知，请放心使用。详细隐私协议可见321CQU小程序隐私保护指引
   </view>
   <view class="cu-bar bg-white justify-end">
     <view class="action">
