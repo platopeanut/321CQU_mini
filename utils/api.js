@@ -125,7 +125,7 @@ function sendFeedback(stu_id, message) {
 }
 
 // 统一身份认证校验
-function checkUidInfo(stu_id, uid, uid_pwd) {
+function checkUidInfo(stu_id, uid, uid_pwd, code) {
   return new Promise((resolve,reject) => {
     wx.request({
       url: url + '/student/get_score',
@@ -135,7 +135,8 @@ function checkUidInfo(stu_id, uid, uid_pwd) {
         'Sid': stu_id,
         'UserName': uid,
         'Password': uid_pwd,
-        'NeedAll': false
+        'NeedAll': false,
+        'Code': code
       },
       success: resolve,
       fail: reject
@@ -144,7 +145,7 @@ function checkUidInfo(stu_id, uid, uid_pwd) {
 }
 
 // 成绩查询
-function getGrade(stu_id, uid, uid_pwd) {
+function getGrade(stu_id, uid, uid_pwd, code) {
   return new Promise((resolve,reject) => {
     wx.request({
       url: url + '/student/get_score',
@@ -154,6 +155,7 @@ function getGrade(stu_id, uid, uid_pwd) {
         'Sid': stu_id,
         'UserName': uid,
         'Password': uid_pwd,
+        'Code': code,
         'NeedAll': true
       },
       success: resolve,
@@ -180,6 +182,39 @@ function getExamSchedule(stu_id, uid, uid_pwd) {
   })
 }
 
+// 获取关于界面
+function getAboutUs() {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/about/about_us',
+      method: 'POST',
+      data: {
+        'Key': Password,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 订阅
+function subscribe(code, stu_id, uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/message/subscribe',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Code': code,
+        'Sid': stu_id,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
 
 module.exports = {
   getVolunteerTime,
@@ -192,4 +227,6 @@ module.exports = {
   checkUidInfo,
   getGrade,
   getExamSchedule,
+  getAboutUs,
+  subscribe,
 }

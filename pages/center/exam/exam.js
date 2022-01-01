@@ -30,6 +30,13 @@ Page({
         let stu_id = wx.getStorageSync('stu_id')
         let uid = wx.getStorageSync('uid')
         let uid_pwd = wx.getStorageSync('uid_pwd')
+        if (stu_id == '' || uid == '' || uid_pwd == '') {
+            wx.showToast({
+              title: '请先绑定学号，统一身份认证账号及密码',
+              icon: 'none'
+            })
+            return
+        }
         let that = this
         api.getExamSchedule(stu_id, uid, uid_pwd).then(res => {
             if (res.statusCode == 200) {
@@ -77,6 +84,8 @@ Page({
     onPullDownRefresh: function() {
         wx.showLoading()
         this.updateData()
+        wx.stopPullDownRefresh()
         wx.hideLoading()
+        
     }
 })

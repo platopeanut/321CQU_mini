@@ -29,37 +29,48 @@ Page({
             return
         }
         wx.showLoading()
-        api.getGrade(this.data.stu_id, this.data.uid, this.data.uid_pwd).then(res => {
-            if (res.statusCode == 200) {
-                if (res.data.Statue == 1) {
-                    that.setData({
-                        grade_list: res.data.ScoreLog,
-                        term_list: Object.keys(res.data.ScoreLog),
-                    })
-                    let curr_term = this.data.term_list[0]
-                    this.setData({
-                        curr_term: curr_term
-                    })
-                    // 本地缓存
-                    let grade_info = {
-                        grade_list: that.data.grade_list,
-                        term_list: that.data.term_list,
-                        curr_term: that.data.curr_term
+        wx.login({
+            success: function(res) {
+                api.getGrade(that.data.stu_id, that.data.uid, that.data.uid_pwd, res.code).then(res => {
+                    if (res.statusCode == 200) {
+                        if (res.data.Statue == 1) {
+                            that.setData({
+                                grade_list: res.data.ScoreLog,
+                                term_list: Object.keys(res.data.ScoreLog),
+                            })
+                            let curr_term = that.data.term_list[0]
+                            that.setData({
+                                curr_term: curr_term
+                            })
+                            // 本地缓存
+                            let grade_info = {
+                                grade_list: that.data.grade_list,
+                                term_list: that.data.term_list,
+                                curr_term: that.data.curr_term
+                            }
+                            wx.setStorageSync('grade_info', grade_info)
+                        } else {
+                            wx.showToast({
+                              title: '信息错误',
+                              icon: 'error',
+                            })
+                        }
+                    } else {
+                        wx.showToast({
+                          title: '网络错误',
+                          icon: 'error'
+                        })
                     }
-                    wx.setStorageSync('grade_info', grade_info)
-                } else {
-                    wx.showToast({
-                      title: '信息错误',
-                      icon: 'error',
-                    })
-                }
-            } else {
+                    wx.hideLoading()
+                })
+            },
+            fail: function() {
                 wx.showToast({
-                  title: '网络错误',
+                  title: '登陆失败',
                   icon: 'error'
                 })
+                wx.hideLoading()
             }
-            wx.hideLoading()
         })
     },
     onShow: function () {
@@ -78,6 +89,7 @@ Page({
     },
     onPullDownRefresh: function() {
         this.updateData()
+        wx.stopPullDownRefresh()
     }
 
 })

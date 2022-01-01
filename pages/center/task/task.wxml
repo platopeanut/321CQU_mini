@@ -1,16 +1,20 @@
-<view wx:if="{{isEmpty}}">
-    <view class="cu-load"><text class="text-grey">当前没有任务噢</text></view>
+<view>
+<scroll-view scroll-x class="bg-white nav">
+  <view class="flex text-center">
+    <view class="cu-item flex-sub {{item == curr_page?'text-blue cur':'text-black'}}" wx:for="{{page_list}}" wx:key="index" bindtap="selectPage" data-id="{{item}}">
+      {{item}}
+    </view>
+  </view>
+</scroll-view>
 </view>
+
+<view wx:if="{{curr_page == '任务'}}">
+
+  <view wx:if="{{isEmpty}}">
+      <view class="cu-load"  style="margin-top: 20rpx;"><text class="text-grey">当前没有任务噢</text></view>
+  </view>
 <view wx:else>
     <view class="cu-list menu card-menu margin-top" wx:for="{{task_map}}" wx:key="key">
-        <!-- <view class="cu-item">
-        <view class="content">
-            <text class="cuIcon-{{item.icon}} text-{{item.icon_color}}"></text>
-            <text class="text-grey">{{item.content}}</text>
-            <text></text>
-        </view>
-        </view> -->
-        
         <view class="cu-item" bindtap="onTouchItem" data-index="{{index}}">
             <view class="content">
                 <text class="cuIcon-{{item.icon}} text-{{item.icon_color}}"></text>
@@ -26,6 +30,31 @@
     </view>
 </view>
 
+</view>
+
+<view wx:if="{{curr_page == '订阅'}}">
+  <view class="cu-list menu-avatar" wx:for="{{subscribe_list}}">
+      <view class="cu-item" style="border-bottom: 1rpx solid #dcdcdc;border-top: 1rpx solid #dcdcdc;border-radius: 10rpx;">
+        <text style="position: absolute;left: 20rpx;"><text class="cuIcon-title text-blue"></text>
+        <text style="margin-left: 20rpx;">{{item.content}}</text></text>
+        <view class="action" style="margin-right: 40rpx;">
+          <view wx:if="{{item.isSubscribed}}">
+            <button class="cu-btn round bg-blue shadow" style="width: max-content;">已订阅</button>
+          </view>
+          <view wx:else>
+            <button class="cu-btn round bg-green shadow" style="width: max-content;" bindtap="subscribeItem" data-id="{{item.title}}">订阅</button>
+          </view>
+        </view>
+      </view>
+  </view>    
+    
+
+</view>
+
+
+
+
+<!-- 删除界面 -->
 <view class="cu-modal bottom-modal {{modalShow?'show':''}}">
   <view class="cu-dialog">
     <view class="cu-bar bg-white">

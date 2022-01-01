@@ -1,31 +1,39 @@
-<scroll-view scroll-x class="bg-white nav text-center">
-  <view class="cu-item {{item == curr_term?'text-blue cur':'text-black'}}" wx:for="{{term_list}}" wx:key="index" bindtap="selectTerm" data-id="{{item}}">
+<view>
+    <view class="nav">
+    <scroll-view scroll-x class="bg-white nav text-center">
+    <view class="cu-item {{item == curr_term?'text-blue cur':'text-black'}}" wx:for="{{term_list}}" wx:key="index" bindtap="selectTerm" data-id="{{item}}">
     {{item}}
-  </view>
-</scroll-view>
+    </view>
+    </scroll-view>
+    </view>
 
+<view class="body">
+
+<!-- 占位 -->
+<view style="height: 80rpx;"></view>
+    
 <view class="cu-card case">
   <view class="cu-item shadow" wx:for="{{grade_list[curr_term]}}" wx:key="index">
     <view class="cu-list menu">
         <view class="cu-item">
             <view class="content">
                 <text class="cuIcon-title text-blue"></text>
-                <text class="text-black">课程：{{item.CourseName}}</text>
+                <text class="text-black">课程：<text style="font-weight: bold;">{{item.CourseName}}</text></text>
             </view>
         </view>   
         <view class="cu-item">
             <view class="content">
                 <text class="cuIcon-title text-yellow"></text>
                 <text class="text-black">学分：{{item.CourseCredit}}</text>
-                <text class="cuIcon-title text-red"></text>
+                <text class="cuIcon-title text-purple" style="margin-left: 100rpx;"></text>
                 <text class="text-black">类型：{{item.StudyNature}} {{item.CourseNature}}</text>
             </view>
         </view>
         <view class="cu-item">
             <view class="content">
-                <text class="cuIcon-title text-yellow"></text>
+                <text class="cuIcon-title text-cyan"></text>
                 <text class="text-black">课程号：{{item.CourseCode}}</text>
-                <text class="cuIcon-title text-red"></text>
+                <text class="cuIcon-title text-red" style="margin-left: 50rpx;"></text>
                 <text class="text-black">教师：{{item.InstructorName}}</text>
             </view>
         </view>
@@ -37,5 +45,9 @@
         </view>
     </view> 
   </view>
+
+</view>
+</view>
+
 
 </view>

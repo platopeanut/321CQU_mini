@@ -7,10 +7,6 @@
 		<view class="title">姓名</view>
 		<input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>
 	</view>
-  <!-- <view class="cu-form-group">
-		<view class="title">邮箱</view>
-		<input bindblur="getEmail" name="email" placeholder="请输入你的邮箱" value="{{email}}"></input>
-	</view> -->
   <view class="flex">
     <view class="flex-sub">
       <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">查询</button>

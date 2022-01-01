@@ -79,6 +79,7 @@ let page = Page({
           icon: 'none'
         })
       }
+      wx.stopPullDownRefresh()
     },
     // 触底刷新
     onReachBottom: function() {

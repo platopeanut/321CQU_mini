@@ -1,1 +1,5 @@
-/* pages/center/grade/grade.wxss */
+.nav {
+    position: fixed;
+    top: 0rpx;
+    z-index: 1;
+}

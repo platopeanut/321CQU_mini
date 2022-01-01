@@ -6,12 +6,12 @@ Page({
         week: -1,   // 第几周
         today: 3,   // 今天周几
         showMode: 0, // 显示模式，0为每周，1为整个学期
-        startYear: 2021,    // 开始学年
-        termIndex: '二',    // 第几学期
+        startYear: 2022,    // 开始学年
+        termIndex: '一',    // 第几学期
         scrollHeight: 0,
     },
     getDayList() {
-        return [20,21,22,23,24,25,26]
+        return [13,14,15,16,17,18,19]
     },
     getTable() {
         let table = new Array(12)
@@ -23,8 +23,6 @@ Page({
                 table[i][j] = ""
             }
         }
-        // table[11][2] = "Hello"
-        // table[1][2] = "数据结构与算法数据结构与算法"
         return table
     },
     onReady: function() {
@@ -49,7 +47,7 @@ Page({
             month: 12,
             week_list: week_list,
             table: table,
-            week: 17,
+            week: 13,
         })
     },
 
@@ -63,5 +61,10 @@ Page({
             showMode: 0
         })
     },
-
+    onShow: function() {
+        wx.showToast({
+          title: '敬请期待',
+          icon: 'none'
+        })
+    }
 })

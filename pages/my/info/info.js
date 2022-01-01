@@ -77,6 +77,8 @@ Page({
             stu_name: stu_name,
             email: email,
             nickname: nickname,
+            uid: wx.getStorageSync('uid'),
+            uid_pwd: wx.getStorageSync('uid_pwd'),
           }
         })
     },
@@ -85,6 +87,7 @@ Page({
       let uid = e.detail.value.uid
       let uid_pwd = e.detail.value.uid_pwd
       let stu_id = this.data.stuInfo.stu_id
+      let that = this
       if (uid == '' || uid_pwd == '' || stu_id == '') {
         wx.showToast({
           title: '学号，统一身份认证账号及密码必填',
@@ -92,32 +95,44 @@ Page({
         })
         return
       }
-      api.checkUidInfo(stu_id, uid, uid_pwd).then(res => {
-        console.log(res)
-        if (res.statusCode == 200) {
-          if (res.data.Statue == 1) {
-            console.log(res.data)
-            wx.setStorageSync('uid', uid)
-            wx.setStorageSync('uid_pwd', uid_pwd)
-            this.setData({
-              uid: uid,
-              uid_pwd: uid_pwd,
-            })
-            wx.showToast({
-              title: '绑定成功',
-              icon: 'success'
-            })
-          } else {
-            wx.showToast({
-              title: '校验失败',
-              icon: 'error'
-            })
-          }
-        } else {
-          wx.showToast({
-            title: '网络错误',
-            icon: 'error'
+      wx.showLoading()
+      wx.login({
+        success: function(res) {
+          console.log(res.code)
+          api.checkUidInfo(stu_id, uid, uid_pwd, res.code).then(res => {
+            if (res.statusCode == 200) {
+              if (res.data.Statue == 1) {
+                wx.setStorageSync('uid', uid)
+                wx.setStorageSync('uid_pwd', uid_pwd)
+                that.setData({
+                  uid: uid,
+                  uid_pwd: uid_pwd,
+                })
+                wx.showToast({
+                  title: '绑定成功',
+                  icon: 'success'
+                })
+              } else {
+                wx.showToast({
+                  title: '校验失败',
+                  icon: 'error'
+                })
+              }
+            } else {
+              wx.showToast({
+                title: '网络错误',
+                icon: 'error'
+              })
+            }
+            wx.hideLoading()
           })
+        },
+        fail: function() {
+          wx.showToast({
+            title: '登陆失败',
+            icon: 'error'
+          }),
+          wx.hideLoading()
         }
       })
     },
@@ -133,10 +148,9 @@ Page({
             })
             return
         }
+        wx.showLoading()
         api.setNickname(stu_id, nickname, avatarUrl).then(res => {
             if (res.statusCode == 200) {
-              console.log(stu_id, nickname, avatarUrl)
-              console.log(res)
             if (res.data.Statue == 1) {
                 wx.setStorageSync('nickname', nickname)
                 wx.showToast({
@@ -155,8 +169,9 @@ Page({
                 title: '网络错误',
                 icon: 'error'
             })
-            return ""
+            wx.hideLoading()
             }
         })
+        
     }
 })
