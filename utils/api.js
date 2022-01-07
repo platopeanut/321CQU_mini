@@ -95,7 +95,7 @@ function setNickname(stu_id, nickname, avatarUrl) {
 function getFeedback(limit) {
   return new Promise((resolve,reject) => {
     wx.request({
-      url: url + '/feedback/get',
+      url: url + '/test_api/feedback/get',
       method: 'POST',
       data: {
         'Key': Password,
@@ -123,6 +123,41 @@ function sendFeedback(stu_id, message) {
     })
   })
 }
+
+// 获取反馈评论
+function get_feedback_comment(FBid) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/test_api/feedback/get_comment',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'FBid': FBid,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 发表反馈评论
+function send_feedback_comment(Sid, Content, FBid) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/test_api/feedback/send_comment',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'FBid': FBid,
+        'Sid': Sid,
+        'Content': Content,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
 
 // 统一身份认证校验
 function checkUidInfo(stu_id, uid, uid_pwd, code) {
@@ -247,4 +282,6 @@ module.exports = {
   getExamSchedule,
   getAboutUs,
   subscribe,
+  send_feedback_comment,
+  get_feedback_comment,
 }

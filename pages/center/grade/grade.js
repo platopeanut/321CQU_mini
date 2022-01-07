@@ -9,6 +9,10 @@ Page({
         grade_list: [],
         term_list: [],
         curr_term: '',
+        point_info: [],
+        avg_point: 0,
+        modalState: false,
+        score_analysis_record: wx.getStorageSync('score_analysis_record') != ''
     },
     selectTerm: function(res) {
         this.setData({
@@ -100,7 +104,72 @@ Page({
         this.updateData()
         wx.stopPullDownRefresh()
     },
-    // score_analysis: function () {
-    //     console.log("score_analysis")
-    // }
+    score_analysis: function () {
+        this.setData({
+            modalState: true
+        })
+        if (!this.data.score_analysis_record) {
+            wx.showToast({
+                title: '统计采用四分制，统计过程过滤了四六级考试和重修科目',
+                icon: 'none',
+                duration: 2000
+            })
+            wx.setStorageSync('score_analysis_record', true)
+            this.setData({
+                score_analysis_record: true
+            })
+        }
+        let grade_list = this.data.grade_list
+        let term_list = this.data.term_list
+        let point_list = []
+        let credit_list = []
+        console.log(grade_list)
+        console.log(term_list)
+        for (let i = 0; i < term_list.length; i++) {
+            let term = term_list[i]
+            let point = 0
+            let credit = 0
+            for (let j = 0; j < grade_list[term].length; j++) {
+                let item = grade_list[term][j]
+                // 过滤项
+                if (item.CourseName === '大学英语(国家四级)' || item.CourseName === '大学英语(国家六级)') continue
+                if (item.StudyNature !== '初修') continue
+                credit += parseFloat(item.CourseCredit)
+                point += parseFloat(item.CourseCredit) * util.score2point(item.EffectiveScoreShow)
+            }
+            point /= credit
+            point = point.toFixed(4)
+            point_list.push(point)
+            credit_list.push(credit)
+        }
+        console.log(point_list)
+        console.log(credit_list)
+        let avg_point = 0
+        let credit_sum = 0
+        for (let i = 0; i < point_list.length; i++) {
+            avg_point += point_list[i] * credit_list[i]
+            credit_sum += credit_list[i]
+        }
+        avg_point /= credit_sum
+        avg_point = avg_point.toFixed(4)
+        console.log(avg_point)
+        let point_info = []
+        for (let i = 0; i < point_list.length; i++) {
+            point_info.push({
+                point: point_list[i],
+                credit: credit_list[i],
+                term: term_list[i]
+            })
+        }
+        this.setData({
+            point_info: point_info,
+            avg_point: avg_point
+        })
+    },
+
+    hideModal: function () {
+        this.setData({
+            modalState: false
+        })
+    }
 })

@@ -1,42 +1,57 @@
-<view wx:for="{{feedback_data}}" wx:key="time">
+<!--主体-->
+<view class="cu-card dynamic {{isCard?'no-card':''}}" >
+<view class="cu-item shadow" style="border-bottom: 1rpx solid rgb(201, 227, 254);">
+<view class="cu-list menu-avatar">
+  <view class="cu-item">
+    <!-- 这里未来插入用户头像 -->
+    <view class="cu-avatar round lg" style="background-image:url({{feedback_data.UserImg}});"></view>
+    <view class="content flex-sub">
+      <view>{{feedback_data.UserName?feedback_data.UserName:feedback_data.Sid}}</view>
+      <view class="text-gray text-sm flex justify-between">
+        {{feedback_data.Time}}
+      </view>
+    </view>
+  </view>
+</view>
+    <view class="text-content">
+        <text user-select>{{feedback_data.Content}}</text>
+    </view>
+</view>
+</view>
+
+
+
+<!--评论-->
+<view wx:for="{{comment_list}}">
     <view class="cu-card dynamic {{isCard?'no-card':''}}">
-    <view class="cu-item shadow">
-    <view class="cu-list menu-avatar">
-      <view class="cu-item">
-        <!-- 这里未来插入用户头像 -->
-        <view class="cu-avatar round lg" style="background-image:url({{item.avatar}});"></view>
-        <view class="content flex-sub">
-          <view>{{item.nickname?item.nickname:item.stu_id}}</view>
-          <view class="text-gray text-sm flex justify-between">
-            {{item.time}}
-          </view>
+        <view class="cu-item shadow">
+            <view class="cu-list menu-avatar">
+                <view class="cu-item">
+                    <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
+                    <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
+                    <view class="content flex-sub">
+                        <view>{{item.UserName?item.UserName:item.Sid}}</view>
+                        <view class="text-gray text-sm flex justify-between">
+                            {{item.Time}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="text-content" data-item="{{item}}" bindtap="jumpToDetail">
+                <text user-select>{{item.Content}}</text>
+            </view>
+            <!-- 点赞浏览次数 -->
+            <view class="text-gray text-sm text-right padding">
+                <!-- <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
+                <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}} -->
+            </view>
         </view>
-      </view>
-    </view>
-    <view class="text-content" data-item="{{item}}" bindtap="jumpToDetail">
-        <text user-select>{{item.message}}</text>
-    </view>
-    <!-- <view class="grid flex-sub padding-lr {{isCard?'col-3 grid-square':'col-1'}}">
-      <view class="bg-img {{isCard?'':'only-img'}}" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);" wx:for="{{isCard?9:1}}" wx:key="{{index}}">
-      </view>
-    </view> -->
-    <!-- <view class="text-gray text-sm text-right padding">
-      <view wx:if="{{isAgree}}">
-        <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
-        <text class="cuIcon-appreciate margin-lr-xs"></text> {{item.agree?item.agree:0}}
-      </view>
-      <view wx:else>
-        <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
-        <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}
-      </view>
-      <!-- <text class="cuIcon-messagefill margin-lr-xs"></text> {{}} -->
-    <!-- </view> -->
-    </view>
     </view>
 </view>
 
-<!-- <movable-area bindtap="addAgree" class="movable-area">
-    <movable-view class="movable-view" direction="all">
-    <image src="../../../../res/icons/agree.png"></image>
-    </movable-view>
-</movable-area> -->
+
+<!--发送评论-->
+<view class="cu-bar foot input {{InputBottom!=0?'cur':''}}" style="bottom:{{InputBottom}}px">
+    <input class="solid-bottom" bindfocus="InputFocus" value="{{comment}}" bindinput="InputValue" bindblur="InputBlur" adjust-position="{{false}}" focus="{{false}}" maxlength="1000" cursor-spacing="10"></input>
+    <button class="cu-btn bg-green shadow" style="width: max-content;" bindtap="send_comment">发送</button>
+</view>

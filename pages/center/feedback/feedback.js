@@ -26,17 +26,7 @@ let page = Page({
             })
             return
           }
-          let list = res.data.FeedbackList
-          let feedback_list = []
-          for (let i = 0; i < list.length; i++) {
-            feedback_list.push({
-              'stu_id': list[i][0],
-              'nickname': list[i][1],
-              'avatar': list[i][2],
-              'message': list[i][3],
-              'time': list[i][4],
-            })
-          }
+          let feedback_list = res.data.FeedbackList
           // 本地显示
           that.setData({
             feedback_data: this.data.feedback_data.concat(feedback_list)
@@ -46,7 +36,7 @@ let page = Page({
             limit_index: that.data.limit_index + batch_size
           })
           // 末尾设置标志位
-          if (list.length < batch_size) {
+          if (feedback_list.length < batch_size) {
             that.setData({
               limit_end: true
             })
@@ -96,7 +86,8 @@ let page = Page({
     
     // 跳转到具体反馈界面
     jumpToDetail(e) {
-        let item = e.currentTarget.dataset.item;
+        let item = e.currentTarget.dataset.item
+        if (item.UserImg == null) item.UserImg = this.data.anonymous
         wx.navigateTo({
           url: './detail/detail',
           events: {
@@ -107,7 +98,9 @@ let page = Page({
           },
           success: function(res) {
             // 通过eventChannel向被打开页面传送数据
-            res.eventChannel.emit('acceptDataFromOpenerPage', { data: [item] })
+            res.eventChannel.emit('acceptDataFromOpenerPage', {
+                data: item
+            })
           }
         })
     }

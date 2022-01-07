@@ -5,11 +5,13 @@ Page({
     data: {
         message: "",
         stu_id: wx.getStorageSync('stu_id'),
+        length: 0
     },
 
     bindInput(e) {
         this.setData({
-            message: e.detail.value
+            message: e.detail.value,
+            length: e.detail.value.length
         })
     },
 

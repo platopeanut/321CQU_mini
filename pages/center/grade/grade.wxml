@@ -40,12 +40,7 @@
         <view class="cu-item">
             <view class="content">
                 <text class="cuIcon-title text-green"></text>
-                <text class="text-black">分数：<text wx:if="{{item.EffectiveScoreShow == null}}" style="font-size: large; color:black">未评教</text><text wx:else style="font-size: large; color: {{isNaN(item.EffectiveScoreShow)?'green':(item.EffectiveScoreShow>90?'green':item.EffectiveScoreShow>80?'#33cc00':item.EffectiveScoreShow>70?'#669900':item.EffectiveScoreShow>60?'#996600':'#red')}};">{{item.EffectiveScoreShow}}</text>
-                </text>
-                <text wx:if="{{item.point !== ''}}">
-                    <text class="cuIcon-title text-orange"  style="margin-left:100rpx;"></text>
-                    <text class="text-black">绩点：</text>
-                    <text class="text-gray" style="font-weight:bold;">{{item.point}}</text>
+                <text class="text-black">分数：<text wx:if="{{item.EffectiveScoreShow == null}}" style="font-size: large; color:black">未评教</text><text wx:else style="font-size: large; color: {{isNaN(item.EffectiveScoreShow)?'green':(item.EffectiveScoreShow>=90?'green':item.EffectiveScoreShow>=80?'#669900':item.EffectiveScoreShow>=70?'#03A89E':item.EffectiveScoreShow>=60?'#996600':'#red')}};">{{item.EffectiveScoreShow}}</text>
                 </text>
             </view>
         </view>
@@ -56,8 +51,37 @@
 </view>
 </view>
 
-<!--<movable-area bindtap="score_analysis" class="movable-area">-->
-<!--    <movable-view class="movable-view" direction="all">-->
-<!--    <image src="../../../res/icons/data.png"></image>-->
-<!--    </movable-view>-->
-<!--</movable-area>-->
+<movable-area bindtap="score_analysis" class="movable-area">
+    <movable-view class="movable-view" direction="all">
+    <image src="../../../res/icons/data.png"></image>
+    </movable-view>
+</movable-area>
+<!-- {{modalName=='gridModal'?'show':''}} -->
+<view class="cu-modal {{modalState?'show':''}}" bindtap="hideModal">
+    <view class="cu-dialog" catchtap>
+        <radio-group class="block">
+            <view class="cu-list menu text-left">
+                <view class="cu-item" wx:for="{{point_info}}" wx:key>
+                    <label class="flex justify-between align-center flex-sub">
+                        <view class="flex-sub">
+                            <text class="cuIcon-title text-blue"></text>
+                            <text class="text-black" style="margin-left: 20rpx">{{item.term}}</text>
+                            <text class="text-orange" style="position: absolute; left: 300rpx;">{{item.credit}}<text class="text-grey">学分</text></text>
+                            <text class="text-green" style="position: absolute; right: 50rpx;">{{item.point}}</text>
+                        </view>
+                    </label>
+                </view>
+            </view>
+        </radio-group>
+        <view class="cu-list menu text-left solid-top">
+            <view class="cu-item">
+                <view class="content">
+                    <text class="text-grey">平均绩点:</text>
+                </view>
+                <view class="action" style="position: absolute; right: 50rpx;">
+                    <text class="text-green" style="font-weight:bold;">{{avg_point}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

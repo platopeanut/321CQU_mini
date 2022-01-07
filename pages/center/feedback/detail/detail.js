@@ -1,17 +1,82 @@
+const api = require('../../../../utils/api')
+
+
 Page({
 
     data: {
-        feedback_data: [],
-        isAgree : false
+        feedback_data: '',
+        isAgree : false,
+        FBid: '',
+        comment_list: [],
+        InputBottom: 0,
+        comment: '',
     },
 
-    onLoad: function (options) {
-        let global = this
+    InputFocus(e) {
+        this.setData({
+            InputBottom: e.detail.height
+        })
+    },
+    InputValue(e) {
+        this.setData({
+            comment: e.detail.value
+        })
+    },
+    InputBlur(e) {
+        this.setData({
+            InputBottom: 0
+        })
+    },
+
+    send_comment: function() {
+        if (this.data.comment == '') {
+            wx.showToast({
+              title: '消息不能为空',
+              icon: 'error'
+            })
+            return
+        }
+        let Sid = wx.getStorageSync('stu_id')
+        if (Sid == '') {
+            wx.showToast({
+              title: '请绑定学号',
+              icon: 'error'
+            })
+        }
+        let that = this
+        wx.showLoading()
+        api.send_feedback_comment(Sid, this.data.comment, this.data.FBid).then(res => {
+            if (res.statusCode === 200 && res.data.Statue === 1) {
+                wx.hideLoading()
+                // wx.showToast({
+                //   title: '发送成功',
+                //   icon: 'none',
+                //   duration: 1000,
+                // })
+                that.setData({
+                    comment: '',
+                })
+                that.update()
+            } else {
+                wx.hideLoading()
+                wx.showToast({
+                  title: '发送失败',
+                  icon: 'error'
+                })
+            }
+        })
+    },
+
+    onShow: function (options) {
+        let that = this
         const eventChannel = this.getOpenerEventChannel()
         eventChannel.on('acceptDataFromOpenerPage', function(data) {
-            global.setData({
-                feedback_data: data.data
+            that.setData({
+                feedback_data: data.data,
+                FBid: data.data.FBid
             })
+            // 获取评论
+            that.update()
             // 浏览次数加一
             // let curr = data.data[0].view
             // curr ++
@@ -21,6 +86,24 @@ Page({
             //         view: curr
             //     }
             // })
+        })
+    },
+    update: function() {
+        let that = this
+        wx.showLoading()
+        api.get_feedback_comment(this.data.FBid).then(res => {
+            console.log(res)
+            if (res.statusCode === 200 && res.data.Statue === 1) {
+                that.setData({
+                    comment_list: res.data.FeedbackList
+                })
+            } else {
+                wx.showToast({
+                    title: '网络错误',
+                    icon: 'none'
+                })
+            }
+            wx.hideLoading()
         })
     },
     // addAgree() {
@@ -40,4 +123,8 @@ Page({
     //       icon: 'success'
     //     })
     // },
+    onPullDownRefresh: function() {
+        this.update()
+        wx.stopPullDownRefresh()
+    }
 })
