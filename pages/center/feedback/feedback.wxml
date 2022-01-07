@@ -3,7 +3,7 @@
     <view class="cu-item shadow">
     <view class="cu-list menu-avatar">
       <view class="cu-item">
-        <view wx:if="{{!item.avatar}}" class="cu-avatar round lg" style="background-image:url(../../../res/icons/anonymous.jpg);"></view>
+        <view wx:if="{{!item.avatar}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
         <view wx:else class="cu-avatar round lg" style="background-image:url({{item.avatar}});"></view>
         <view class="content flex-sub">
           <view>{{item.nickname?item.nickname:item.stu_id}}</view>
