@@ -95,7 +95,7 @@ function setNickname(stu_id, nickname, avatarUrl) {
 function getFeedback(limit) {
   return new Promise((resolve,reject) => {
     wx.request({
-      url: url + '/test_api/feedback/get',
+      url: url + '/feedback/get',
       method: 'POST',
       data: {
         'Key': Password,
@@ -128,7 +128,7 @@ function sendFeedback(stu_id, message) {
 function get_feedback_comment(FBid) {
   return new Promise((resolve,reject) => {
     wx.request({
-      url: url + '/test_api/feedback/get_comment',
+      url: url + '/feedback/get_comment',
       method: 'POST',
       data: {
         'Key': Password,
@@ -144,7 +144,7 @@ function get_feedback_comment(FBid) {
 function send_feedback_comment(Sid, Content, FBid) {
   return new Promise((resolve,reject) => {
     wx.request({
-      url: url + '/test_api/feedback/send_comment',
+      url: url + '/feedback/send_comment',
       method: 'POST',
       data: {
         'Key': Password,
