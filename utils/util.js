@@ -104,6 +104,16 @@ function daysDistance(date1,date2){
 function parseFromStr(str) {
     return JSON.parse(str)
 }
+
+// 分数转换为绩点
+function score2point(score) {
+    if (score < 0 || score > 100 || isNaN(score)) return ''
+    if (score < 60) return 0
+    if (score >= 90) return 4
+    let a = score % 10 * 0.1
+    let b = parseInt(score / 10) - 6 + 1
+    return a + b
+}
   
 
 
@@ -117,4 +127,5 @@ module.exports = {
     compareTime,
     parseTime,
     daysDistance,
+    score2point,
 }

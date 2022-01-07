@@ -17,13 +17,13 @@
 
 .movable-view { 
     pointer-events:auto;/*重设为auto,覆盖父属性设置*/ 
-    height: 50px; 
-    width: 50px; 
-    left: 90%; 
+    height: 50px;
+    width: 50px;
+    left: 85%;
     top: 80%; 
     background-color:transparent; 
     border-radius: 50%; 
-    text-align: center; 
+    text-align: center;
 } 
 
 .movable-view image {

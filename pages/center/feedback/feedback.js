@@ -12,13 +12,13 @@ let page = Page({
     // 获取评论总数，每次获取20条，已到达末尾则返回false
     getComments() {
       wx.showLoading()
-      let global = this
+      let that = this
       let batch_size = 20
       let limit_index = this.data.limit_index
       // 请求服务器
-      api.getFeedback(`${limit_index},${limit_index+batch_size}`).then(res => {
-        if (res.statusCode == 200) {
-          if (res.data.Statue == 0) {
+      api.getFeedback(`${limit_index},${limit_index + batch_size}`).then(res => {
+        if (res.statusCode === 200) {
+          if (res.data.Statue === 0) {
             wx.showToast({
               title: '获取失败',
               icon: 'error'
@@ -37,16 +37,16 @@ let page = Page({
             })
           }
           // 本地显示
-          global.setData({
+          that.setData({
             feedback_data: this.data.feedback_data.concat(feedback_list)
           })
           // index自增
-          global.setData({
-            limit_index: global.data.limit_index + 1
+          that.setData({
+            limit_index: that.data.limit_index + batch_size
           })
           // 末尾设置标志位
           if (list.length < batch_size) {
-            global.setData({
+            that.setData({
               limit_end: true
             })
           }
@@ -59,7 +59,7 @@ let page = Page({
         wx.hideLoading()
       })
     },
-    onShow: function (options) {
+    onShow: function () {
       this.setData({
         limit_index: 0,
         feedback_data: [],
@@ -71,14 +71,7 @@ let page = Page({
     
     // 下拉刷新
     onPullDownRefresh: function() {
-      if (!this.data.limit_end) {
-        this.getComments()
-      } else {
-        wx.showToast({
-          title: '没有更多了',
-          icon: 'none'
-        })
-      }
+      this.onShow()
       wx.stopPullDownRefresh()
     },
     // 触底刷新
@@ -93,7 +86,7 @@ let page = Page({
       }
     },
 
-    // 挑战到添加反馈界面
+    // 跳转到添加反馈界面
     addFeedback: function() {
       wx.navigateTo({
         url: './edit/edit',

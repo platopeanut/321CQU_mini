@@ -42,6 +42,11 @@
                 <text class="cuIcon-title text-green"></text>
                 <text class="text-black">分数：<text wx:if="{{item.EffectiveScoreShow == null}}" style="font-size: large; color:black">未评教</text><text wx:else style="font-size: large; color: {{isNaN(item.EffectiveScoreShow)?'green':(item.EffectiveScoreShow>90?'green':item.EffectiveScoreShow>80?'#33cc00':item.EffectiveScoreShow>70?'#669900':item.EffectiveScoreShow>60?'#996600':'#red')}};">{{item.EffectiveScoreShow}}</text>
                 </text>
+                <text wx:if="{{item.point !== ''}}">
+                    <text class="cuIcon-title text-orange"  style="margin-left:100rpx;"></text>
+                    <text class="text-black">绩点：</text>
+                    <text class="text-gray" style="font-weight:bold;">{{item.point}}</text>
+                </text>
             </view>
         </view>
     </view> 
@@ -49,6 +54,10 @@
 
 </view>
 </view>
-
-
 </view>
+
+<!--<movable-area bindtap="score_analysis" class="movable-area">-->
+<!--    <movable-view class="movable-view" direction="all">-->
+<!--    <image src="../../../res/icons/data.png"></image>-->
+<!--    </movable-view>-->
+<!--</movable-area>-->

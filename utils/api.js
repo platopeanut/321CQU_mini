@@ -216,7 +216,25 @@ function subscribe(code, stu_id, uid, uid_pwd) {
   })
 }
 
+// test 测试接口
+function test(data) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/test_data',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Data': data
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+
 module.exports = {
+  test,
   getVolunteerTime,
   getVolunteerRecord,
   getStuName,

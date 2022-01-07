@@ -185,7 +185,7 @@ Page({
                                     return
                                 }
                                 global.setData({
-                                    time_sum: res.TotalDuration
+                                    time_sum: res.data.TotalDuration
                                 })
                                 wx.hideLoading()
                             })

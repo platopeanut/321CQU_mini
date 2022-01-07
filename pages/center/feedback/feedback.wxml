@@ -3,7 +3,7 @@
     <view class="cu-item shadow">
     <view class="cu-list menu-avatar">
       <view class="cu-item">
-        <view class="cu-avatar round lg" style="background-image:url({{item.avatar}});"></view>
+        <view class="cu-avatar round lg" style="background-image:url({{item.avatar?item.avatar:'../../../res/icons/anonymous.jpg'}});"></view>
         <view class="content flex-sub">
           <view>{{item.nickname?item.nickname:item.stu_id}}</view>
           <view class="text-gray text-sm flex justify-between">
