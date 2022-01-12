@@ -163,7 +163,7 @@ function send_feedback_comment(Sid, Content, FBid) {
 function checkUidInfo(stu_id, uid, uid_pwd, code) {
   return new Promise((resolve,reject) => {
     wx.request({
-      url: url + '/student/get_score',
+      url: url + '/user/login',
       method: 'POST',
       data: {
         'Key': Password,
@@ -267,6 +267,23 @@ function test(data) {
   })
 }
 
+// 获取课表
+function getCurriculum(stu_id, uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/student/get_course',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Sid': stu_id,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
 
 module.exports = {
   test,
@@ -284,4 +301,5 @@ module.exports = {
   subscribe,
   send_feedback_comment,
   get_feedback_comment,
+  getCurriculum,
 }

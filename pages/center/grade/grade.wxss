@@ -14,12 +14,6 @@
     right: 0;
     bottom: 0;
 }
-/* .movable-view {
-    pointer-events:auto;
-    height: 50px;
-    width: 50px;
-    background: red;
-} */
 
 .movable-view {
     pointer-events:auto;/*重设为auto,覆盖父属性设置*/
@@ -37,3 +31,60 @@
     height: 30px;
 
 }
+
+.movable-area2 {
+    pointer-events:none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.movable-view2 {
+    pointer-events:auto;/*重设为auto,覆盖父属性设置*/
+    height: 30px;
+    width: 30px;
+    left: 85%;
+    top: 90%;
+    background-color:transparent;
+    border-radius: 50%;
+    text-align: center;
+}
+
+.movable-view2 image {
+    width: 30px;
+    height: 30px;
+
+}
+
+.movable-area3 {
+    pointer-events:none;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.movable-view3 {
+    pointer-events:auto;/*重设为auto,覆盖父属性设置*/
+    height: 30px;
+    width: 30px;
+    left: 85%;
+    top: 70%;
+    background-color:transparent;
+    border-radius: 50%;
+    text-align: center;
+}
+
+.movable-view3 image {
+    width: 30px;
+    height: 30px;
+
+}
+

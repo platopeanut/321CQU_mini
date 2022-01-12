@@ -1,9 +1,8 @@
 <!--主体-->
-<view class="cu-card dynamic {{isCard?'no-card':''}}" >
+<view class="cu-card" >
 <view class="cu-item shadow" style="border-bottom: 1rpx solid rgb(201, 227, 254);">
 <view class="cu-list menu-avatar">
   <view class="cu-item">
-    <!-- 这里未来插入用户头像 -->
     <view class="cu-avatar round lg" style="background-image:url({{feedback_data.UserImg}});"></view>
     <view class="content flex-sub">
       <view>{{feedback_data.UserName?feedback_data.UserName:feedback_data.Sid}}</view>
@@ -13,7 +12,7 @@
     </view>
   </view>
 </view>
-    <view class="text-content">
+    <view class="text-content" style="margin: 20rpx;">
         <text user-select>{{feedback_data.Content}}</text>
     </view>
 </view>
@@ -23,7 +22,7 @@
 
 <!--评论-->
 <view wx:for="{{comment_list}}">
-    <view class="cu-card dynamic {{isCard?'no-card':''}}">
+    <view class="cu-card">
         <view class="cu-item shadow">
             <view class="cu-list menu-avatar">
                 <view class="cu-item">
@@ -37,7 +36,7 @@
                     </view>
                 </view>
             </view>
-            <view class="text-content" data-item="{{item}}" bindtap="jumpToDetail">
+            <view class="text-content"  style="margin: 20rpx;">
                 <text user-select>{{item.Content}}</text>
             </view>
             <!-- 点赞浏览次数 -->
@@ -48,6 +47,8 @@
         </view>
     </view>
 </view>
+
+<view style="height: 100rpx;width: 750rpx;"></view>
 
 
 <!--发送评论-->

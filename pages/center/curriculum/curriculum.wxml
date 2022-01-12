@@ -14,34 +14,52 @@
 
 
 <!-- 课程表 -->
-<scroll-view scroll-y="true" style="height: {{scrollHeight-200}}rpx;">
-  <view class="body"  wx:for="{{12}}">
-    <view class="left">{{index+1}}</view>
-    <view class="item" wx:for="{{table[index]}}">
-      <view wx:if="{{index+1 == today}}" style="background-color: rgb(201, 227, 254);">
-        <view  class="lesson"><text>{{item}}</text></view>
+<!--<scroll-view scroll-y="true" style="height: {{scrollHeight-200}}rpx;">-->
+<!--  <view class="body"  wx:for="{{12}}">-->
+<!--    <view class="left">{{index+1}}</view>-->
+<!--    <view class="item" wx:for="{{table[index]}}">-->
+<!--      <view wx:if="{{index+1 == today}}" style="background-color: rgb(201, 227, 254);">-->
+<!--        <view  class="lesson"><text>{{item}}</text></view>-->
+<!--      </view>-->
+<!--      <view wx:else>-->
+<!--        <view  class="lesson"><text>{{item}}</text></view>-->
+<!--      </view>-->
+<!--    </view>-->
+<!--  </view>-->
+
+<!--</scroll-view>-->
+
+<view class="box">
+  <view class="left">
+  <view wx:for="{{13}}" class="index">{{index+1}}</view>
+  </view>
+  <view wx:for="{{table[week]}}" class="day_item" wx:key>
+    <view wx:for="{{item}}" class="item" wx:key>
+      <view wx:if="{{item}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: orange;">
+        <text>{{item.CourseName}}</text>
       </view>
-      <view wx:else>
-        <view  class="lesson"><text>{{item}}</text></view>
+      <view wx:else style="height: 130rpx;">
       </view>
     </view>
   </view>
+</view>
 
-</scroll-view>
 
+<!-- 占位 -->
+<view style="height: 100rpx;"></view>
 
 
 <!-- 底部栏 -->
-<view class="bottom" wx:if="{{showMode == 0}}">
-  <text class="cuIcon-refresh"></text>
+<view class="bottom" wx:if="{{showMode === 0}}">
+  <text class="cuIcon-refresh" bindtap="updateData"></text>
   <view style="width: 550rpx;display: inline-block;">
-    <text class="cuIcon-back"></text>
+    <text class="cuIcon-back" bindtap="pre_week"></text>
     <text class="mid">第{{week}}周</text>
-    <text class="cuIcon-right"></text>
+    <text class="cuIcon-right" bindtap="next_week"></text>
   </view>
   <text class="cuIcon-calendar" bindtap="switchModelTo1"></text>
 </view>
-<view class="bottom" wx:elif="{{showMode == 1}}">
+<view class="bottom" wx:elif="{{showMode === 1}}">
   <text class="cuIcon-refresh"></text>
   <view style="width: 550rpx;display: inline-block;">
     <text class="mid">{{startYear}}-{{startYear+1}}学年第{{termIndex}}学期</text>

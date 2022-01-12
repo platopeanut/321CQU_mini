@@ -50,14 +50,15 @@ Page({
 
   // 跳转到绑定信息界面
   editInfo() {
-    // 初次绑定进行提示
-    if (!wx.getStorageSync('has_bind')) {
-      this.showModal()
-    } else {
-      wx.navigateTo({
-        url: './info/info'
-      })
-    }
+    this.showModal()
+    // // 初次绑定进行提示
+    // if (!wx.getStorageSync('has_bind')) {
+    //   this.showModal()
+    // } else {
+    //   wx.navigateTo({
+    //     url: './info/info'
+    //   })
+    // }
   },
 
   // 清除缓存

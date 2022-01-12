@@ -14,8 +14,8 @@
     
 <view class="cu-card case">
   <view class="cu-item shadow" wx:for="{{grade_list[curr_term]}}" wx:key="index">
-    <view class="cu-list menu">
-        <view class="cu-item">
+    <view class="cu-list menu" bindtap="select_grade_item" data-item="{{item}}">
+        <view class="cu-item" style="background-color: {{item.select&&curr_mode?'rgba(0, 255, 0, 0.2)':'white'}};">
             <view class="content">
                 <text class="cuIcon-title text-blue"></text>
                 <text class="text-black">课程：<text style="font-weight: bold;">{{item.CourseName}}</text></text>
@@ -33,8 +33,10 @@
             <view class="content">
                 <text class="cuIcon-title text-cyan"></text>
                 <text class="text-black">课程号：{{item.CourseCode}}</text>
-                <text class="cuIcon-title text-red" style="margin-left: 50rpx;"></text>
-                <text class="text-black">教师：{{item.InstructorName}}</text>
+                <text wx:if="{{item.InstructorName}}">
+                    <text class="cuIcon-title text-red" style="margin-left: 50rpx;"></text>
+                    <text class="text-black">教师：{{item.InstructorName}}</text>
+                </text>
             </view>
         </view>
         <view class="cu-item">
@@ -56,7 +58,22 @@
     <image src="../../../res/icons/data.png"></image>
     </movable-view>
 </movable-area>
-<!-- {{modalName=='gridModal'?'show':''}} -->
+
+<view wx:if="{{curr_mode}}">
+    <movable-area bindtap="exit_analysis" class="movable-area2">
+    <movable-view class="movable-view2" direction="all">
+    <image src="../../../res/icons/exit.png"></image>
+    </movable-view>
+</movable-area>
+
+<movable-area bindtap="more_analysis" class="movable-area3">
+    <movable-view class="movable-view3" direction="all">
+    <image src="../../../res/icons/more.png"></image>
+    </movable-view>
+</movable-area>
+</view>
+
+<!-- 绩点界面 -->
 <view class="cu-modal {{modalState?'show':''}}" bindtap="hideModal">
     <view class="cu-dialog" catchtap>
         <radio-group class="block">
@@ -85,3 +102,47 @@
         </view>
     </view>
 </view>
+
+
+<!-- 配置界面 -->
+<!-- {{more_state?'show':''}} -->
+<view class="cu-modal {{more_state?'show':''}}" bindtap="hideModal">
+    <view class="cu-dialog" catchtap>
+      <scroll-view scroll-y style="height:300rpx">
+        <view class="cu-list menu text-left solid-top">
+            <view class="cu-item" style="text-align: center;">
+                <view class="content">
+                  <text class="text-black">绩点统计配置（已过滤四六级）</text>
+                </view>
+            </view>
+
+            <view class="cu-item">
+                <view class="content">
+                    <checkbox-group bindchange="first_select">
+                        <text class="text-grey">必修</text>
+                        <checkbox value="必修"/>
+                        <text class="text-grey" style="margin-left: 130rpx;">选修</text>
+                        <checkbox value="选修"/>
+                        <text class="text-grey" style="margin-left: 130rpx;">主修</text>
+                        <checkbox value="主修"/>
+                    </checkbox-group>
+                </view>
+            </view>
+
+            <view class="cu-item">
+                <view class="content">
+                    <checkbox-group bindchange="second_select">
+                        <text class="text-grey">初修</text>
+                        <checkbox value="初修"/>
+                        <text class="text-grey" style="margin-left: 130rpx;">重修</text>
+                        <checkbox value="重修"/>
+                        <text class="text-orange" style="margin-left: 130rpx;">全选</text>
+                        <checkbox value="全选"/>
+                    </checkbox-group>
+                </view>
+            </view>
+
+        </view>
+      </scroll-view>
+    </view>
+  </view>

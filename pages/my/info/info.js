@@ -1,5 +1,5 @@
 const api = require('../../../utils/api')
-
+const util = require('../../../utils/util')
 Page({
     data: {
         stuInfo: {
@@ -32,31 +32,30 @@ Page({
         let nickname = e.detail.value.nickname
 
         // 设置昵称
-        if (nickname != "") {
+        if (nickname !== "") {
           // 校验身份
-          if (stu_id == "" || stu_name == "") {
+          if (stu_id === "" || stu_name === "") {
             wx.showToast({
               title: '学号姓名必填',
               icon: 'error'
             })
           } else {
+            wx.showLoading()
             api.getStuName(stu_id).then(res => {
-              if (res.data.Statue == 0) {
-                wx.showToast({
-                  title: '校验失败',
-                  icon: 'error'
-                })
-                return
-              }
-              if(res.data.Sname == stu_name) {
+                wx.hideLoading()
+                if (res.data.Statue === 0) {
+                    util.showError(res)
+                    return
+                }
+                if(res.data.Sname === stu_name) {
                 // 设置昵称
                 this.setNickname(stu_id, nickname)
-              } else {
-                wx.showToast({
+                } else {
+                    wx.showToast({
                   title: '信息有误',
                   icon: 'error'
                 })
-              } 
+                }
             })
           }
         } else {
@@ -88,7 +87,7 @@ Page({
       let uid_pwd = e.detail.value.uid_pwd
       let stu_id = this.data.stuInfo.stu_id
       let that = this
-      if (uid == '' || uid_pwd == '' || stu_id == '') {
+      if (uid === '' || uid_pwd === '' || stu_id === '') {
         wx.showToast({
           title: '学号，统一身份认证账号及密码必填',
           icon: 'none'
@@ -98,29 +97,27 @@ Page({
       wx.showLoading()
       wx.login({
         success: function(res) {
+            console.log(`res.code: ${res.code}`)
           api.checkUidInfo(stu_id, uid, uid_pwd, res.code).then(res => {
-            if (res.statusCode == 200) {
-              if (res.data.Statue == 1) {
+              wx.hideLoading()
+              console.log(stu_id, uid, uid_pwd)
+              console.log(res)
+            if (res.statusCode === 200) {
+              if (res.data.Statue === 1) {
                 wx.setStorageSync('uid', uid)
                 wx.setStorageSync('uid_pwd', uid_pwd)
                 that.setData({
                   uid: uid,
                   uid_pwd: uid_pwd,
                 })
-                wx.hideLoading()
                 wx.showToast({
                   title: '绑定成功',
                   icon: 'success'
                 })
               } else {
-                wx.hideLoading()
-                wx.showToast({
-                  title: '校验失败',
-                  icon: 'error'
-                })
+                util.showError(res)
               }
             } else {
-              wx.hideLoading()
               wx.showToast({
                 title: '网络错误',
                 icon: 'error'
@@ -129,11 +126,11 @@ Page({
           })
         },
         fail: function() {
+          wx.hideLoading()
           wx.showToast({
             title: '登陆失败',
             icon: 'error'
-          }),
-          wx.hideLoading()
+          })
         }
       })
     },
@@ -142,7 +139,7 @@ Page({
         let global = this
         let avatarUrl = wx.getStorageSync('userInfo').avatarUrl
         // avatarUrl不存在则需要重新授权
-        if (avatarUrl == "" || avatarUrl == undefined) {
+        if (avatarUrl === "" || avatarUrl === undefined) {
             wx.showToast({
             title: '需要重新授权',
             icon: 'error',
@@ -151,26 +148,22 @@ Page({
         }
         wx.showLoading()
         api.setNickname(stu_id, nickname, avatarUrl).then(res => {
-            if (res.statusCode == 200) {
-            if (res.data.Statue == 1) {
-                wx.setStorageSync('nickname', nickname)
-                wx.showToast({
-                title: '绑定成功',
-                icon: 'success'
-                })
-            } else {
-                wx.showToast({
-                title: '昵称已存在',
-                icon: 'error'
-                })
-                return ""
-            }
-            } else {
-            wx.showToast({
-                title: '网络错误',
-                icon: 'error'
-            })
             wx.hideLoading()
+            if (res.statusCode === 200) {
+                if (res.data.Statue === 1) {
+                    wx.setStorageSync('nickname', nickname)
+                    wx.showToast({
+                    title: '绑定成功',
+                    icon: 'success'
+                    })
+                } else {
+                    util.showError(res)
+                }
+            } else {
+                wx.showToast({
+                    title: '网络错误',
+                    icon: 'error'
+                })
             }
         })
         

@@ -63,7 +63,7 @@
   <view class="cu-bar bg-white justify-end">
     <view class="action">
       <button class="cu-btn line-green text-green" bindtap="hideModal_cancel">取消</button>
-      <button class="cu-btn bg-green margin-left" bindtap="hideModal_sure">确定</button>
+      <button class="cu-btn bg-green margin-left" bindtap="hideModal_sure">同意</button>
     </view>
   </view>
   </view>

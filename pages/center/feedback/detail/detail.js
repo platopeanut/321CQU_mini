@@ -10,6 +10,7 @@ Page({
         comment_list: [],
         InputBottom: 0,
         comment: '',
+        anonymous: getApp().globalData.anonymous
     },
 
     InputFocus(e) {
@@ -94,8 +95,14 @@ Page({
         api.get_feedback_comment(this.data.FBid).then(res => {
             console.log(res)
             if (res.statusCode === 200 && res.data.Statue === 1) {
+                let data = res.data.FeedbackList.reverse()
+                for (let i = 0; i < data.length; i++) {
+                    if (!data[i].UserImg) {
+                        data[i].UserImg = this.data.anonymous
+                    }                    
+                }
                 that.setData({
-                    comment_list: res.data.FeedbackList
+                    comment_list: data
                 })
             } else {
                 wx.showToast({

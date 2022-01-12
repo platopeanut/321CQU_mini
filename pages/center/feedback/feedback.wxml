@@ -1,5 +1,5 @@
 <view wx:for="{{feedback_data}}">
-    <view class="cu-card dynamic {{isCard?'no-card':''}}">
+    <view class="cu-card">
     <view class="cu-item shadow">
     <view class="cu-list menu-avatar">
       <view class="cu-item">
@@ -13,7 +13,7 @@
         </view>
       </view>
     </view>
-    <view class="text-content" data-item="{{item}}" bindtap="jumpToDetail">
+    <view class="text-content" style="margin: 20rpx;" data-item="{{item}}" bindtap="jumpToDetail">
         <text user-select>{{item.Content}}</text>
     </view>
     <!-- 点赞浏览次数 -->

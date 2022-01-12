@@ -127,8 +127,70 @@ function score2point(score) {
     }
 }
   
+function showError(res) {
+    wx.showToast({
+        title: `[error:${res.data.ErrorCode}] ${res.data.ErrorInfo}`,
+        icon: 'none'
+    })
+}
 
+function parseFormat2List(str) {
+    let result = []
+    let list = str.split(',')
+    for (let i = 0; i < list.length; i++) {
+        let item = list[i].split('-')
+        if (item.length === 1) {
+            result.push(parseInt(item[0]))
+            continue
+        }
+        let left = parseInt(item[0])
+        let right = parseInt(item[1])
+        for (let j = left; j <= right; j++) {
+            result.push(j)
+        }
+    }
+    return result
+}
 
+function parseFormat2Lesson(str) {
+    let list = str.split('-')
+    if (list.length === 1) return [list[0], 1]
+    return [parseInt(list[0]), parseInt(list[1]) - parseInt(list[0]) + 1]
+}
+
+// ClassNbr: "049977-652"
+// CourseCode: "EDS20501"
+// CourseName: "商务英语翻译"
+// Credit: "2"
+// InstructorName: "邓春-[主讲];"
+// PeriodFormat: "1-2"
+// RoomName: "D1201"
+// TeachingWeekFormat: "1-4,6-17"
+// WeekDayFormat: "五"
+function parseWeekDayFormat(str) {
+    let week_list = ['一', '二', '三', '四', '五', '六', '日']
+    for (let i = 0; i < week_list.length; i++) {
+        if (week_list[i] === str) return i
+    }
+}
+function parseLesson(data) {
+    let book = {}
+    for (const item of data) {
+        for (const week_index of parseFormat2List(item.TeachingWeekFormat)) {
+            if(!book[week_index]) {
+                book[week_index] = new Array(7)
+                for (let i = 0; i < 7; i++) {
+                    book[week_index][i] = new Array(13)
+                }
+            }
+            if (!item.WeekDayFormat || !item.PeriodFormat) continue
+            for (const index of parseFormat2List(item.PeriodFormat)) {
+                book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1] = item
+            }
+        }
+    }
+    return book
+}
 
 module.exports = {
     getDate,
@@ -140,4 +202,6 @@ module.exports = {
     parseTime,
     daysDistance,
     score2point,
+    showError,
+    parseLesson,
 }

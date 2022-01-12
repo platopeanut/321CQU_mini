@@ -38,6 +38,7 @@
     background-color: rgb(251, 252, 254);
 }
 
+
 .body .item {
     width: 100rpx;
 }
@@ -70,4 +71,32 @@
     
     text-align: center;
     line-height:normal;
+}
+
+
+.box {
+    height: 1690rpx;    /*130*13*/
+    display: flex;
+}
+
+.box .left {
+    width: 50rpx;
+    background-color: rgb(251, 252, 254);
+}
+
+.box .left .index {
+    text-align: center;
+    height: 130rpx;
+    width: 50rpx;
+    line-height: 130rpx;
+}
+
+.box .day_item {
+    width: 100rpx;
+}
+
+.box .day_item .item {
+    /* height: 130rpx; */
+    /* width: 100rpx; */
+    /* line-height: 130rpx; */
 }
