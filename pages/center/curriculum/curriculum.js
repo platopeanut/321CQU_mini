@@ -4,23 +4,85 @@ const {parseLesson} = require("../../../utils/util");
 
 Page({
     data: {
+        curr_year: new Date().getFullYear(),
+        year: new Date().getFullYear(),
         month: -1,  // 月份
+        curr_month: -1,
         week_list: null,    // 顶部
         table: null,    // 主体课表
-        week_start: wx.getStorageSync('curriculum_week_start'),
-        week_end: wx.getStorageSync('curriculum_week_end'),
-        week: 1,   // 第几周
-        today: 3,   // 今天周几
+        week: -1,   // 第几周
+        curr_week: -1,
+        today: new Date().getDay(),   // 今天周几
         showMode: 0, // 显示模式，0为每周，1为整个学期
-        startYear: 2022,    // 开始学年
-        termIndex: '一',    // 第几学期
-        scrollHeight: 0,
+        detailState: false,
+        currDetailLesson: null,
+        schoolTermInfo: wx.getStorageSync('schoolTermInfo'),
+        selectTermState: false,
+        term_list: [],
     },
-    getDayList() {
-        return [13,14,15,16,17,18,19]
+    getCurrWeekList() {
+        let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
+        let day_list = []
+        let curDate = new Date()
+        let week_index = curDate.getDay()   // 周几
+        for (let i = week_index-1; i >=0; i--) {
+            day_list.push(new Date(curDate.getTime() - 24*60*60*1000*i).getDate())
+        }
+        for (let i = 0; i < 7-week_index; i++) {
+            day_list.push(new Date(curDate.getTime() + 24*60*60*1000*(i+1)).getDate())
+        }
+        for (let i = 0; i < week_list.length; i++) {
+            week_list[i].push(day_list[i])
+        }
+        return week_list
     },
 
+    // -1 为指定日期上一周， 1 为指定日期下一周
+    getNeighborDayList(date, flag) {
+        let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
+        let day_list = []
+        let week_index = date.getDay()   // 周几
+        let _date
+        if (flag === -1) {
+            for (let i = -7; i <= -1; i++) {
+                _date = new Date(date.getTime() + 24*60*60*1000*i)
+                day_list.push(_date.getDate())
+            }
+        } else if (flag === 1) {
+            for (let i = 0; i < 7; i++) {
+                _date = new Date(date.getTime() + 24*60*60*1000*(i+7))
+                day_list.push(_date.getDate())
+            }
+        }
+        for (let i = 0; i < week_list.length; i++) {
+            week_list[i].push(day_list[i])
+        }
+        _date = new Date(_date.getTime() - 24*60*60*1000*6)
+        this.setData({
+            month: _date.getMonth(),
+            year: _date.getFullYear()
+        })
+        return week_list
+    },
+
+    getDetailLessonInfo(e) {
+        let item = e.currentTarget.dataset.item
+        item.InstructorName = item.InstructorName.replace('-[主讲];', ' ')
+        this.setData({
+            detailState: true,
+            currDetailLesson: item
+        })
+        // console.log(e.currentTarget.dataset.item)
+    },
+    hideModal() {
+        this.setData({
+            detailState: false,
+            selectTermState: false,
+        })
+    },
     UIprocess(data) {
+        let color_list = getApp().globalData.color_list
+        let lesson_list = wx.getStorageSync('lesson_list')
         for (const key in data) {
             let week = data[key]
             for (let i = 0; i < 7; i++) {
@@ -28,10 +90,11 @@ Page({
                     if (week[i][j]) {
                         let k = j
                         for (; k < week[i].length; k++) {
-                            if (!week[i][k] || week[i][j].CourseName !== week[i][k].CourseName) break
+                            if (!week[i][k] || week[i][j].ClassNbr !== week[i][k].ClassNbr) break
                         }
                         week[i].splice(j+1, k-j-1)
                         week[i][j]['UILength'] = k-j
+                        week[i][j]['color'] = color_list[lesson_list.indexOf(week[i][j].CourseCode)]
                     }
                 }
             }
@@ -39,30 +102,44 @@ Page({
         return data
     },
 
+    // 计算当前是第几周
+    getCurrWeek() {
+        let StartDate = this.data.schoolTermInfo.StartDate
+        let _curr_date = util.getDate()
+        let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
+        let distance = util.daysDistance(StartDate, CurrDate)
+        return parseInt(distance/7+1)
+    },
+
     onShow: function() {
         let that = this
-        let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
-        let day_list = this.getDayList()
-        for (let i = 0; i < week_list.length; i++) {
-            week_list[i].push(day_list[i])
-        }
         this.setData({
-            month: 12,
-            week_list: week_list,
-            table: that.UIprocess(wx.getStorageSync('curriculum'))
+            month: new Date().getMonth(),
+            curr_month: new Date().getMonth(),
+            week_list: that.getCurrWeekList(),
+            table: that.UIprocess(wx.getStorageSync('curriculum')),
+            week: that.getCurrWeek(),
+            curr_week: that.getCurrWeek(),
+            term_list: [that.data.schoolTermInfo.Term]
         })
-        console.log(this.data.table)
     },
 
     next_week() {
+        let that = this
+        let date = new Date(this.data.year, this.data.month, this.data.week_list[0][1])
         this.setData({
-            week: this.data.week+1
+            week: that.data.week+1,
+            week_list: that.getNeighborDayList(date, 1),
         })
     },
 
     pre_week() {
+        let that = this
+        if (this.data.week <= 1) return
+        let date = new Date(this.data.year, this.data.month, this.data.week_list[0][1])
         this.setData({
-            week: this.data.week-1
+            week: that.data.week-1,
+            week_list: that.getNeighborDayList(date, -1),
         })
     },
 
@@ -74,6 +151,15 @@ Page({
     switchModelTo0() {
         this.setData({
             showMode: 0
+        })
+    },
+    selectTerm: function() {
+        this.setData({
+            selectTermState: true
+        })
+        wx.showToast({
+          title: '[待实现功能]选择学期',
+          icon: 'none'
         })
     },
     updateData: function() {
@@ -93,28 +179,41 @@ Page({
             if (res.statusCode === 200) {
                 wx.hideLoading()
                 if (res.data.Statue === 1) {
-                    let table = parseLesson(res.data.Courses)
-                    let week_start = 0
-                    let week_end = 0
-                    week_start = week_end = Object.keys(table)[0]
-                    for (const key of Object.keys(table)) {
-                        let curr = parseInt(key)
-                        if (curr > week_end) week_end = curr
-                        if (curr < week_start) week_start = curr
-                    }
+                    let table = util.parseLesson(res.data.Courses)
+                    let lesson_list = util.getLessonList(res.data.Courses)
                     wx.setStorageSync('curriculum', table)
-                    wx.setStorageSync('curriculum_week_start', week_start)
-                    wx.setStorageSync('curriculum_week_end', week_end)
-                    that.setData({
-                        table: that.UIprocess(table),
-                        week_start: week_start,
-                        week_end: week_end
-                    })
+                    wx.setStorageSync('lesson_list', lesson_list)
+                    that.onShow()
                 } else {
                     util.showError(res)
                 }
             } else {
                 wx.hideLoading()
+                wx.showToast({
+                    title: '网络错误',
+                    icon: 'none'
+                })
+            }
+        })
+        wx.showLoading()
+        api.getSchoolTermInfo(wx.getStorageSync('uid'), wx.getStorageSync('uid_pwd')).then(res => {
+            wx.hideLoading()
+            if (res.statusCode === 200) {
+                if (res.data.Statue === 1) {
+                    console.log(res.data)
+                    let schoolTermInfo = {
+                        EndDate: res.data.EndDate,
+                        StartDate: res.data.StartDate,
+                        Term: res.data.Term
+                    }
+                    wx.setStorageSync('schoolTermInfo', schoolTermInfo)
+                    that.setData({
+                        schoolTermInfo: schoolTermInfo
+                    })
+                } else {
+                    util.showError(res)
+                }
+            } else {
                 wx.showToast({
                     title: '网络错误',
                     icon: 'none'

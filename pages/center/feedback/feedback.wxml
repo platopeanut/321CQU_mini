@@ -18,8 +18,11 @@
     </view>
     <!-- 点赞浏览次数 -->
     <view class="text-gray text-sm text-right padding">
-      <!-- <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view?item.view:0}}
-      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}} -->
+      <text wx:if="{{item.CommentNum>0}}">
+          <text class="cuIcon-comment margin-lr-xs" style="font-size:medium"></text>
+          <text>{{item.CommentNum}}</text>
+      </text>
+<!--      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}-->
     </view>
     </view>
     </view>

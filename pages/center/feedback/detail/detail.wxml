@@ -15,6 +15,14 @@
     <view class="text-content" style="margin: 20rpx;">
         <text user-select>{{feedback_data.Content}}</text>
     </view>
+    <!-- 点赞浏览次数 -->
+    <view class="text-gray text-sm text-right padding">
+      <text wx:if="{{feedback_data.CommentNum>0}}">
+          <text class="cuIcon-comment margin-lr-xs" style="font-size:medium"></text>
+          <text>{{feedback_data.CommentNum}}</text>
+      </text>
+<!--      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.agree?item.agree:0}}-->
+    </view>
 </view>
 </view>
 

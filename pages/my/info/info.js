@@ -9,21 +9,10 @@ Page({
             nickname: wx.getStorageSync('nickname'),
             uid: wx.getStorageSync('uid'),
             uid_pwd: wx.getStorageSync('uid_pwd'),
+            identity: wx.getStorageSync('identity'), // 研究生还是本科生
         },
     },
 
-    onShow: function() {
-        this.setData({
-            stuInfo: {
-                stu_name: wx.getStorageSync('stu_name'),
-                stu_id: wx.getStorageSync('stu_id'),
-                email: wx.getStorageSync('email'),
-                nickname: wx.getStorageSync('nickname'),
-                uid: wx.getStorageSync('uid'),
-                uid_pwd: wx.getStorageSync('uid_pwd'),
-            },
-        })
-    },
     saveInfo(e) {
         let global = this;
         let stu_name = e.detail.value.stu_name
@@ -86,55 +75,103 @@ Page({
       let uid = e.detail.value.uid
       let uid_pwd = e.detail.value.uid_pwd
       let stu_id = this.data.stuInfo.stu_id
+      let identity = this.data.identity?this.data.identity:'本科生'
       let that = this
-      if (uid === '' || uid_pwd === '' || stu_id === '') {
-        wx.showToast({
-          title: '学号，统一身份认证账号及密码必填',
-          icon: 'none'
-        })
-        return
-      }
-      wx.showLoading()
-      wx.login({
-        success: function(res) {
-            console.log(`res.code: ${res.code}`)
-          api.checkUidInfo(stu_id, uid, uid_pwd, res.code).then(res => {
-              wx.hideLoading()
-              console.log(stu_id, uid, uid_pwd)
-              console.log(res)
-            if (res.statusCode === 200) {
-              if (res.data.Statue === 1) {
-                wx.setStorageSync('uid', uid)
-                wx.setStorageSync('uid_pwd', uid_pwd)
-                that.setData({
-                  uid: uid,
-                  uid_pwd: uid_pwd,
-                })
-                wx.showToast({
-                  title: '绑定成功',
-                  icon: 'success'
-                })
-              } else {
-                util.showError(res)
-              }
-            } else {
+      if (identity === '本科生') {
+          if (uid === '' || uid_pwd === '' || stu_id === '') {
               wx.showToast({
-                title: '网络错误',
-                icon: 'error'
+                  title: '学号，统一身份认证账号及密码必填',
+                  icon: 'none'
               })
-            }
+              return
+          }
+      } else if (identity === '研究生') {
+          if (uid === '' || uid_pwd === '') {
+              wx.showToast({
+                  title: '统一身份认证账号及密码必填',
+                  icon: 'none'
+              })
+              return
+          }
+      }
+
+      wx.showLoading()
+      if (identity === '本科生') {
+          wx.login({
+              success: function(res) {
+                  api.checkUidInfo(stu_id, uid, uid_pwd, res.code).then(res => {
+                      wx.hideLoading()
+                      if (res.statusCode === 200) {
+                          if (res.data.Statue === 1) {
+                              wx.setStorageSync('uid', uid)
+                              wx.setStorageSync('uid_pwd', uid_pwd)
+                              wx.setStorageSync('identity', '本科生')
+                              that.setData({
+                                  uid: uid,
+                                  uid_pwd: uid_pwd,
+                              })
+                              wx.showToast({
+                                  title: '绑定成功',
+                                  icon: 'success'
+                              })
+                          } else {
+                              util.showError(res)
+                          }
+                      } else {
+                          wx.showToast({
+                              title: '网络错误',
+                              icon: 'error'
+                          })
+                      }
+                  })
+              },
+              fail: function() {
+                  wx.hideLoading()
+                  wx.showToast({
+                      title: '登陆失败',
+                      icon: 'error'
+                  })
+              }
           })
-        },
-        fail: function() {
+      } else if (identity === '研究生') {
+          api.checkPGUidInfo(uid, uid_pwd).then(res => {
+              wx.hideLoading()
+              if (res.statusCode === 200) {
+                  if (res.data.Statue === 1) {
+                      wx.setStorageSync('uid', uid)
+                      wx.setStorageSync('uid_pwd', uid_pwd)
+                      wx.setStorageSync('identity', '研究生')
+                      that.setData({
+                          uid: uid,
+                          uid_pwd: uid_pwd,
+                      })
+                      wx.showToast({
+                          title: '绑定成功',
+                          icon: 'success'
+                      })
+                  } else {
+                      util.showError(res)
+                  }
+              } else {
+                  wx.showToast({
+                      title: '网络错误',
+                      icon: 'none'
+                  })
+              }
+          })
+      } else {
           wx.hideLoading()
           wx.showToast({
-            title: '登陆失败',
-            icon: 'error'
+              title: '身份错误',
+              icon: 'none'
           })
-        }
-      })
+      }
     },
-
+    identity_choice: function (e) {
+        this.setData({
+            identity: e.detail.value
+        })
+    },
     setNickname(stu_id, nickname) {
         let global = this
         let avatarUrl = wx.getStorageSync('userInfo').avatarUrl

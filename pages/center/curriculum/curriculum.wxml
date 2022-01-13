@@ -4,39 +4,22 @@
 <!-- 头部 -->
 <view class="shadow bg-white" style="height: 100rpx;">
 <view class="top">
-<view class="left" style="font-weight: bold;">{{month}}\n月</view>
+<view class="left" style="font-weight: bold;">{{(month+1)<10?'0'+(month+1):month+1}}\n月</view>
 <view class="item" wx:for="{{week_list}}">
   <view style="font-weight: bold;">{{item[0]}}</view>
-  <view>{{item[1]}}日</view>
+  <view>{{item[1]<10?'0'+item[1]:item[1]}}日</view>
 </view>
 </view>
 </view>
-
-
-<!-- 课程表 -->
-<!--<scroll-view scroll-y="true" style="height: {{scrollHeight-200}}rpx;">-->
-<!--  <view class="body"  wx:for="{{12}}">-->
-<!--    <view class="left">{{index+1}}</view>-->
-<!--    <view class="item" wx:for="{{table[index]}}">-->
-<!--      <view wx:if="{{index+1 == today}}" style="background-color: rgb(201, 227, 254);">-->
-<!--        <view  class="lesson"><text>{{item}}</text></view>-->
-<!--      </view>-->
-<!--      <view wx:else>-->
-<!--        <view  class="lesson"><text>{{item}}</text></view>-->
-<!--      </view>-->
-<!--    </view>-->
-<!--  </view>-->
-
-<!--</scroll-view>-->
 
 <view class="box">
   <view class="left">
   <view wx:for="{{13}}" class="index">{{index+1}}</view>
   </view>
-  <view wx:for="{{table[week]}}" class="day_item" wx:key>
+  <view wx:for="{{table[week]}}" class="day_item" style="background-color: {{index+1 === today&&week===curr_week?'rgb(201, 227, 254);':'white'}}" wx:key>
     <view wx:for="{{item}}" class="item" wx:key>
-      <view wx:if="{{item}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: orange;">
-        <text>{{item.CourseName}}</text>
+      <view wx:if="{{item}}" bindtap="getDetailLessonInfo" data-item="{{item}}"  style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;margin: 2rpx;">
+        <text style="color: white;">{{item.RoomName}}{{item.CourseName}}</text>
       </view>
       <view wx:else style="height: 130rpx;">
       </view>
@@ -53,22 +36,110 @@
 <view class="bottom" wx:if="{{showMode === 0}}">
   <text class="cuIcon-refresh" bindtap="updateData"></text>
   <view style="width: 550rpx;display: inline-block;">
-    <text class="cuIcon-back" bindtap="pre_week"></text>
+    <view bindtap="pre_week" style="display: inline-block;width: 100rpx;"><text class="cuIcon-back"></text></view>
     <text class="mid">第{{week}}周</text>
-    <text class="cuIcon-right" bindtap="next_week"></text>
+    <view bindtap="next_week" style="display: inline-block;width: 100rpx;">
+      <text class="cuIcon-right"></text>
+    </view>
   </view>
   <text class="cuIcon-calendar" bindtap="switchModelTo1"></text>
 </view>
 <view class="bottom" wx:elif="{{showMode === 1}}">
-  <text class="cuIcon-refresh"></text>
-  <view style="width: 550rpx;display: inline-block;">
-    <text class="mid">{{startYear}}-{{startYear+1}}学年第{{termIndex}}学期</text>
+  <text class="cuIcon-refresh" bindtap="updateData"></text>
+  <view style="width: 550rpx;display: inline-block;" bindtap="selectTerm">
+    <text class="mid">{{schoolTermInfo.Term}}</text>
   </view>
   <text class="cuIcon-cascades" bindtap="switchModelTo0"></text>
 </view>
 
+<!--  课程信息详情-->
+  <view class="cu-modal {{detailState?'show':''}}" bindtap="hideModal">
+    <view class="cu-dialog" catchtap>
+      <scroll-view scroll-y>
+        <view class="cu-list menu text-left solid-top">
+          <view class="cu-item" style="text-align: center;">
+            <view class="content">
+              <text class="text-black">{{currDetailLesson.CourseName}}</text>
+            </view>
+          </view>
 
+          <view class="cu-item">
+            <view class="content">
+              <text class="text-grey">上课时段</text>
+            </view>
+            <view class="action">
+              <text class="text-black">周{{currDetailLesson.WeekDayFormat}}{{currDetailLesson.PeriodFormat}}节</text>
+            </view>
+          </view>
 
+          <view class="cu-item">
+            <view class="content">
+              <text class="text-grey">上课教室</text>
+            </view>
+            <view class="action">
+              <text class="text-black">{{currDetailLesson.RoomName}}</text>
+            </view>
+          </view>
 
+          <view class="cu-item">
+            <view class="content">
+              <text class="text-grey">课程编号</text>
+            </view>
+            <view class="action">
+              <text class="text-black">{{currDetailLesson.CourseCode}}</text>
+            </view>
+          </view>
+
+          <view class="cu-item">
+            <view class="content">
+              <text class="text-grey">任课教师</text>
+            </view>
+            <view class="action">
+              <text class="text-black">{{currDetailLesson.InstructorName}}</text>
+            </view>
+          </view>
+
+          <view class="cu-item">
+            <view class="content">
+              <text class="text-grey">教学班号</text>
+            </view>
+            <view class="action">
+              <text class="text-black">{{currDetailLesson.ClassNbr}}</text>
+            </view>
+          </view>
+
+          <view class="cu-item">
+            <view class="content">
+              <text class="text-grey">上课周次</text>
+            </view>
+            <view class="action">
+              <text class="text-black">{{currDetailLesson.TeachingWeekFormat}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+<!--  选择学期-->
+  <view class="cu-modal {{selectTermState?'show':''}}" bindtap="hideModal">
+    <view class="cu-dialog" catchtap>
+      <scroll-view scroll-y>
+        <view class="cu-list menu text-left solid-top">
+          <view class="cu-item" style="text-align: center;">
+            <view class="content">
+              <text class="text-black">学期</text>
+            </view>
+          </view>
+
+          <view class="cu-item" wx:for="{{term_list}}">
+            <view class="content">
+              <text class="text-grey">{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
 
 </view>
+

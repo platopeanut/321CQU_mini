@@ -53,6 +53,23 @@
   </input>
   </view>
 
+  <view wx:if="{{stuInfo.identity==='研究生'}}" class="cu-form-group">
+    <radio-group bindchange="identity_choice">
+      <text>本科生</text>
+      <radio value="本科生"/>
+      <text style="margin-left: 100rpx;">研究生</text>
+      <radio value="研究生" checked="true"/>
+    </radio-group>
+  </view>
+  <view  wx:else class="cu-form-group">
+    <radio-group bindchange="identity_choice">
+      <text>本科生</text>
+      <radio value="本科生" checked="true"/>
+      <text style="margin-left: 100rpx;">研究生</text>
+      <radio value="研究生"/>
+    </radio-group>
+  </view>
+
   <view>
       <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
   </view>

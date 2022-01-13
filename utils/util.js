@@ -91,11 +91,10 @@ function daysDistance(date1,date2){
     if (startDate>endDate){
         return 0;
     }
-    if (startDate==endDate){
+    if (startDate===endDate){
         return 1;
     }
-    let days=(endDate - startDate)/(1*24*60*60*1000);
-    return  days;
+    return  (endDate - startDate) / (24 * 60 * 60 * 1000);
 }
 
 
@@ -192,6 +191,27 @@ function parseLesson(data) {
     return book
 }
 
+function getLessonList(data) {
+    let lesson_list = []
+    for (const item of data) {
+        if(!lesson_list.includes(item.CourseCode)) lesson_list.push(item.CourseCode)
+    }
+    return lesson_list
+}
+
+function shuffle(arr){
+    let l = arr.length
+    let index, temp
+    while(l>0){
+        index = Math.floor(Math.random()*l)
+        temp = arr[l-1]
+        arr[l-1] = arr[index]
+        arr[index] = temp
+        l--
+    }
+    return arr
+}
+
 module.exports = {
     getDate,
     parseFromStr,
@@ -204,4 +224,6 @@ module.exports = {
     score2point,
     showError,
     parseLesson,
+    getLessonList,
+    shuffle,
 }

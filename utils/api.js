@@ -159,7 +159,7 @@ function send_feedback_comment(Sid, Content, FBid) {
 }
 
 
-// 统一身份认证校验
+// 本科生统一身份认证校验
 function checkUidInfo(stu_id, uid, uid_pwd, code) {
   return new Promise((resolve,reject) => {
     wx.request({
@@ -285,6 +285,72 @@ function getCurriculum(stu_id, uid, uid_pwd) {
   })
 }
 
+// 研究生统一身份认证校验
+function checkPGUidInfo(uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/pg_student/is_match',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 研究生成绩查询
+function getPGGrade(uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/pg_student/get_score',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 学校当前学期信息
+function getSchoolTermInfo(uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_curr_term',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+// 学校下学期信息
+function getSchoolNextTermInfo(uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_next_term',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
 module.exports = {
   test,
   getVolunteerTime,
@@ -302,4 +368,8 @@ module.exports = {
   send_feedback_comment,
   get_feedback_comment,
   getCurriculum,
+  checkPGUidInfo,
+  getPGGrade,
+  getSchoolTermInfo,
+  getSchoolNextTermInfo,
 }

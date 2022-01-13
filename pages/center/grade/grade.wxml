@@ -21,7 +21,7 @@
                 <text class="text-black">课程：<text style="font-weight: bold;">{{item.CourseName}}</text></text>
             </view>
         </view>   
-        <view class="cu-item">
+        <view wx:if="{{identity==='本科生'}}" class="cu-item">
             <view class="content">
                 <text class="cuIcon-title text-yellow"></text>
                 <text class="text-black">学分：{{item.CourseCredit}}</text>
@@ -29,13 +29,23 @@
                 <text class="text-black">类型：{{item.StudyNature}} {{item.CourseNature}}</text>
             </view>
         </view>
-        <view class="cu-item">
+        <view wx:if="{{identity==='本科生'}}" class="cu-item">
             <view class="content">
                 <text class="cuIcon-title text-cyan"></text>
                 <text class="text-black">课程号：{{item.CourseCode}}</text>
                 <text wx:if="{{item.InstructorName}}">
                     <text class="cuIcon-title text-red" style="margin-left: 50rpx;"></text>
                     <text class="text-black">教师：{{item.InstructorName}}</text>
+                </text>
+            </view>
+        </view>
+        <view wx:if="{{identity==='研究生'}}" class="cu-item">
+            <view class="content">
+                <text class="cuIcon-title text-cyan"></text>
+                <text class="text-black">课程号：{{item.CourseCode}}</text>
+                <text>
+                    <text class="cuIcon-title text-red" style="margin-left: 50rpx;"></text>
+                    <text class="text-black">学分：{{item.CourseCredit}}</text>
                 </text>
             </view>
         </view>
