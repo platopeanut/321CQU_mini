@@ -40,6 +40,15 @@
         <text class="text-grey">重新授权</text>
       </view>
     </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-sponsor text-cyan"></text>
+        <text class="text-grey">已观看广告次数</text>
+      </view>
+      <view class="action">
+        <text>{{ad_count}}</text>
+      </view>
+    </view>
     <view class="cu-item arrow">
       <navigator class="content" url="/pages/my/about/about" hover-class="none">
         <text class="cuIcon-formfill text-green"></text>

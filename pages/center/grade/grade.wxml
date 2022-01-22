@@ -24,7 +24,7 @@
         <view wx:if="{{identity==='本科生'}}" class="cu-item">
             <view class="content">
                 <text class="cuIcon-title text-yellow"></text>
-                <text class="text-black">学分：{{item.CourseCredit}}</text>
+                <text class="text-black">学分：{{item.CourseCredit===-1?'缓登':item.CourseCredit}}</text>
                 <text class="cuIcon-title text-purple" style="margin-left: 100rpx;"></text>
                 <text class="text-black">类型：{{item.StudyNature}} {{item.CourseNature}}</text>
             </view>
@@ -45,7 +45,7 @@
                 <text class="text-black">课程号：{{item.CourseCode}}</text>
                 <text>
                     <text class="cuIcon-title text-red" style="margin-left: 50rpx;"></text>
-                    <text class="text-black">学分：{{item.CourseCredit}}</text>
+                    <text class="text-black">学分：{{item.CourseCredit===-1?'缓登':item.CourseCredit}}</text>
                 </text>
             </view>
         </view>

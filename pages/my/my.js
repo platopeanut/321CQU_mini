@@ -5,6 +5,13 @@ Page({
     // 是否显示新用户界面
     has_bind: true,
     userInfo: wx.getStorageSync('userInfo'),
+    ad_count: null,
+  },
+
+  onShow() {
+    this.setData({
+      ad_count: 66
+    })
   },
 
   // 用于第一次绑定显示弹窗
@@ -51,14 +58,6 @@ Page({
   // 跳转到绑定信息界面
   editInfo() {
     this.showModal()
-    // // 初次绑定进行提示
-    // if (!wx.getStorageSync('has_bind')) {
-    //   this.showModal()
-    // } else {
-    //   wx.navigateTo({
-    //     url: './info/info'
-    //   })
-    // }
   },
 
   // 清除缓存

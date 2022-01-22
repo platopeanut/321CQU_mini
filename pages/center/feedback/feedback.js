@@ -56,12 +56,13 @@ let page = Page({
       })
     },
     onLoad: function () {
-      this.setData({
+        // 必须绑定学号才能看 todo
+        this.setData({
         limit_index: 0,
         feedback_data: [],
         limit_end: false,
-      })
-      this.getComments()
+        })
+        this.getComments()
     },
     
     

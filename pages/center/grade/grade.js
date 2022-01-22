@@ -29,6 +29,13 @@ Page({
             stu_id: wx.getStorageSync('stu_id'),
             identity: wx.getStorageSync('identity'),
         })
+        if (this.data.identity === '') {
+            wx.showToast({
+                title: '请先绑定学号，统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
         if (this.data.identity === '本科生') {
             if (this.data.stu_id === '' || this.data.uid === '' || this.data.uid_pwd === '') {
                 wx.showToast({
@@ -46,6 +53,7 @@ Page({
                 return
             }
         }
+
         wx.showLoading()
         if (this.data.identity === '本科生') {
             wx.login({
@@ -59,11 +67,13 @@ Page({
                                 let gid = 0
                                 for (const term_name of term_list) {
                                     for (let i = 0; i < grade_list[term_name].length; i++) {
-                                        // 过滤四六级和未评教
-                                        if (!grade_list[term_name][i].EffectiveScoreShow || grade_list[term_name][i].CourseName === '大学英语(国家四级)' || grade_list[term_name][i].CourseName === '大学英语(国家六级)') continue
+                                        // 过滤四六级和未评教,缓登
+                                        if (grade_list[term_name][i].CourseCredit===-1||!grade_list[term_name][i].EffectiveScoreShow || grade_list[term_name][i].CourseName === '大学英语(国家四级)' || grade_list[term_name][i].CourseName === '大学英语(国家六级)')
+                                            continue
                                         grade_list[term_name][i]['select'] = true  // 每一项成绩用户是否选择，默认不选择
                                         grade_list[term_name][i]['gid'] = gid   // 每一项成绩id号
                                         gid ++
+
                                     }
                                 }
                                 that.setData({
@@ -86,7 +96,7 @@ Page({
                             }
                         } else {
                             wx.showToast({
-                                title: '网络错误',
+                                title: `网络错误[${res.statusCode}]`,
                                 icon: 'error'
                             })
                         }
@@ -121,8 +131,8 @@ Page({
                                 'CourseCredit' : item.Credit,
                                 'EffectiveScoreShow': item.Score
                             }
-                            // 过滤四六级和未评教
-                            if (!item.Score || item.Cname === '大学英语(国家四级)' || item.Cname === '大学英语(国家六级)') {
+                            // 过滤四六级和未评教,缓登
+                            if (item.Credit===-1||!item.Score || item.Cname === '大学英语(国家四级)' || item.Cname === '大学英语(国家六级)') {
                                 grade_list[term_name].push(curr_item)
                                 continue
                             }
@@ -151,7 +161,7 @@ Page({
                     }
                 } else {
                     wx.showToast({
-                        title: '网络错误',
+                        title: `网络错误${res.statusCode}`,
                         icon: 'none'
                     })
                 }
@@ -165,7 +175,6 @@ Page({
         }
     },
     onShow: function () {
-
         let grade_info = wx.getStorageSync('grade_info')
         this.setData({
             grade_list: grade_info.grade_list,
@@ -281,7 +290,8 @@ Page({
     select_grade_item: function(e) {
         if (this.data.curr_mode) {
             let curr_item = e.currentTarget.dataset.item
-            if (!curr_item.EffectiveScoreShow ||curr_item.CourseName === '大学英语(国家四级)' || curr_item.CourseName === '大学英语(国家六级)') return
+            // 缓登，分数异常，四六级无法被选中
+            if (curr_item.CourseCredit===-1||!curr_item.EffectiveScoreShow ||curr_item.CourseName === '大学英语(国家四级)' || curr_item.CourseName === '大学英语(国家六级)') return
             let grade_list = this.data.grade_list
             for (const term of this.data.term_list) {
                 for (let i = 0; i < grade_list[term].length; i++) {

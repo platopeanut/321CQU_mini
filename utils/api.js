@@ -285,6 +285,24 @@ function getCurriculum(stu_id, uid, uid_pwd) {
   })
 }
 
+// 下学期课表预览
+function getNextCurriculum(stu_id, uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/student/get_enrollment',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Sid': stu_id,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
 // 研究生统一身份认证校验
 function checkPGUidInfo(uid, uid_pwd) {
   return new Promise((resolve,reject) => {
@@ -351,6 +369,21 @@ function getSchoolNextTermInfo(uid, uid_pwd) {
     })
   })
 }
+// 广告观看一次
+function ad_advertise(code) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/user/advertise',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Code': code,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
 module.exports = {
   test,
   getVolunteerTime,
@@ -368,8 +401,10 @@ module.exports = {
   send_feedback_comment,
   get_feedback_comment,
   getCurriculum,
+  getNextCurriculum,
   checkPGUidInfo,
   getPGGrade,
   getSchoolTermInfo,
   getSchoolNextTermInfo,
+  ad_advertise,
 }

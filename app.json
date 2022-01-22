@@ -7,6 +7,7 @@
     "pages/center/feedback/detail/detail",
     "pages/center/feedback/edit/edit",
     "pages/center/task/task",
+    "pages/center/sponsor/sponsor",
     "pages/my/about/about",
     "pages/my/info/info",
     "pages/center/curriculum/curriculum",

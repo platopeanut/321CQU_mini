@@ -1,5 +1,5 @@
 const api = require("../../../../utils/api")
-
+const util = require("../../../../utils/util")
 Page({
 
     data: {
@@ -26,15 +26,24 @@ Page({
         let global = this
         if (this.data.message != '') {
             // 发送反馈信息
+            wx.showLoading()
             api.sendFeedback(this.data.stu_id, this.data.message).then(res => {
-                if (res.data.Statue == 1) {
-                    wx.showToast({
-                        title: '感谢您的反馈',
-                        icon: 'none'
-                    })
+                wx.hideLoading()
+                if (res.statusCode === 200) {
+                    if (res.data.Statue == 1) {
+                        wx.showToast({
+                            title: '感谢您的反馈',
+                            icon: 'none'
+                        })
+                        global.setData({
+                            message: ""
+                        })
+                    } else {
+                        util.showError(res)
+                    }
                 } else {
                     wx.showToast({
-                      title: '反馈失败',
+                      title: '网络错误',
                       icon: 'none'
                     })
                 }

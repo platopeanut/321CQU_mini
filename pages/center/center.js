@@ -30,7 +30,7 @@ Component({
         {
           title: '成绩查询',
           name: 'grade',
-          color: 'mauve',
+          color: 'cyan',
           icon: 'search'
         },
         {
@@ -40,16 +40,10 @@ Component({
           icon: 'time'
         },
         {
-          title: '评教',
-          name: '敬请期待',
-          color: 'grey',
-          icon: 'font'
-        },
-        {
-          title: '一卡通',
-          name: '敬请期待',
-          color: 'grey',
-          icon: 'icon'
+          title: '支持我们',
+          name: 'sponsor',
+          color: 'brown',
+          icon: 'sponsor'
         },
       ],
     },

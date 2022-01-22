@@ -96,6 +96,11 @@ function daysDistance(date1,date2){
     }
     return  (endDate - startDate) / (24 * 60 * 60 * 1000);
 }
+function daysDistance2(date1,date2){
+    let startDate = Date.parse(date1);
+    let endDate = Date.parse(date2);
+    return  (endDate - startDate) / (24 * 60 * 60 * 1000);
+}
 
 
 
@@ -221,6 +226,7 @@ module.exports = {
     compareTime,
     parseTime,
     daysDistance,
+    daysDistance2,
     score2point,
     showError,
     parseLesson,

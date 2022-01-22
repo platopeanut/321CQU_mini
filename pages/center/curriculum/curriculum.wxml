@@ -1,5 +1,5 @@
 <view>
-
+  <wxs src="./tool.wxs" module="tool"></wxs>
 
 <!-- 头部 -->
 <view class="shadow bg-white" style="height: 100rpx;">
@@ -12,14 +12,17 @@
 </view>
 </view>
 
+
 <view class="box">
   <view class="left">
   <view wx:for="{{13}}" class="index">{{index+1}}</view>
   </view>
-  <view wx:for="{{table[week]}}" class="day_item" style="background-color: {{index+1 === today&&week===curr_week?'rgb(201, 227, 254);':'white'}}" wx:key>
-    <view wx:for="{{item}}" class="item" wx:key>
-      <view wx:if="{{item}}" bindtap="getDetailLessonInfo" data-item="{{item}}"  style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;margin: 2rpx;">
-        <text style="color: white;">{{item.RoomName}}{{item.CourseName}}</text>
+  <view wx:for="{{table[week]?table[week]:7}}" class="day_item" style="background-color: {{index+1 === today&&week===curr_week?'rgb(201, 227, 254);':'white'}}" wx:key>
+    <view wx:for="{{item!==index?item:0}}" wx:key>
+      <view wx:if="{{item}}" bindtap="getDetailLessonInfo" data-item="{{item}}"  style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+        <view style="color: white;">
+          {{item.RoomName}}\n{{item.CourseName.length<18?item.CourseName:tool.cut_str(item.CourseName,0,16)}}
+        </view>  
       </view>
       <view wx:else style="height: 130rpx;">
       </view>
@@ -47,7 +50,7 @@
 <view class="bottom" wx:elif="{{showMode === 1}}">
   <text class="cuIcon-refresh" bindtap="updateData"></text>
   <view style="width: 550rpx;display: inline-block;" bindtap="selectTerm">
-    <text class="mid">{{schoolTermInfo.Term}}</text>
+    <text class="mid">{{currSchoolTermInfo.Term}}</text>
   </view>
   <text class="cuIcon-cascades" bindtap="switchModelTo0"></text>
 </view>
@@ -132,8 +135,9 @@
           </view>
 
           <view class="cu-item" wx:for="{{term_list}}">
-            <view class="content">
-              <text class="text-grey">{{item}}</text>
+            <view class="content" bindtap="selectTerm2" data-item="{{item}}">
+              <text class="text-blue" wx:if="{{currSchoolTermInfo.Term === item.Term}}">{{item.Term}}</text>
+              <text class="text-grey" wx:else>{{item.Term}}</text>
             </view>
           </view>
         </view>
