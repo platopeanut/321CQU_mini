@@ -46,7 +46,9 @@ Page({
         let grade_list = this.data.grade_list
         for (const key in grade_list) {
             for (const item of grade_list[key]) {
-                item.select = list.includes(item[target]);
+                if (item.CourseCredit===-1||!item.EffectiveScoreShow || item.CourseName === '大学英语(国家四级)' || item.CourseName === '大学英语(国家六级)')
+                    continue
+                item.select = list.includes(item[target])
             }
         }
         this.setData({
