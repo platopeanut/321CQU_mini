@@ -9,19 +9,28 @@ Page({
         ad_record: wx.getStorageSync('ad_record')
     },
     adShow: function() {
+        wx.showLoading()
         // 在页面onLoad回调事件中创建激励视频广告实例
         if (wx.createRewardedVideoAd) {
             videoAd = wx.createRewardedVideoAd({
                 adUnitId: 'adunit-f65c555df75701e8'
             })
-            videoAd.onLoad(() => {})
-            videoAd.onError((err) => {})
+            videoAd.onLoad(() => {
+                wx.hideLoading()
+            })
+            videoAd.onError((err) => {
+                wx.hideLoading()
+                wx.showToast({
+                    title: '加载错误',
+                    icon: 'none'
+                })
+            })
             videoAd.onClose(res => {
                 if (res && res.isEnded) {
                     // 正常播放结束，可以下发游戏奖励
                     wx.login({
                         success: function(res) {
-                            api.ad_advertise(res.code).then(res => {
+                            api.ad_look(res.code).then(res => {
                                 if (res.statusCode === 200) {
                                     if (res.data.Statue===1) {
                                         wx.showToast({
@@ -37,6 +46,10 @@ Page({
                                         icon: 'none'
                                     })
                                 }
+                                setTimeout(()=>{
+                                    wx.navigateBack({ delta: 1 })
+                                }, 1000)
+
                             })
                         },
                         fail: function() {
@@ -45,6 +58,9 @@ Page({
                                 title: '登陆失败',
                                 icon: 'error'
                             })
+                            setTimeout(()=>{
+                                wx.navigateBack({ delta: 1 })
+                            }, 1000)
                         }
                     })
                 } else {

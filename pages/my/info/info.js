@@ -22,30 +22,15 @@ Page({
 
         // 设置昵称
         if (nickname !== "") {
-          // 校验身份
+          // 学号姓名不能为空
           if (stu_id === "" || stu_name === "") {
             wx.showToast({
               title: '学号姓名必填',
               icon: 'error'
             })
           } else {
-            wx.showLoading()
-            api.getStuName(stu_id).then(res => {
-                wx.hideLoading()
-                if (res.data.Statue === 0) {
-                    util.showError(res)
-                    return
-                }
-                if(res.data.Sname === stu_name) {
-                // 设置昵称
-                this.setNickname(stu_id, nickname)
-                } else {
-                    wx.showToast({
-                  title: '信息有误',
-                  icon: 'error'
-                })
-                }
-            })
+            // 设置昵称
+            this.setNickname(stu_id, nickname)
           }
         } else {
           wx.showToast({
@@ -119,7 +104,7 @@ Page({
                           }
                       } else {
                           wx.showToast({
-                              title: '网络错误',
+                              title: `网络错误[${res.statusCode}]`,
                               icon: 'error'
                           })
                       }
@@ -154,7 +139,7 @@ Page({
                   }
               } else {
                   wx.showToast({
-                      title: '网络错误',
+                      title: `网络错误[${res.statusCode}]`,
                       icon: 'none'
                   })
               }
@@ -198,7 +183,7 @@ Page({
                 }
             } else {
                 wx.showToast({
-                    title: '网络错误',
+                    title: `网络错误[${res.statusCode}]`,
                     icon: 'error'
                 })
             }

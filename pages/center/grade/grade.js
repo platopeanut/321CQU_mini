@@ -1,5 +1,6 @@
 const api = require('../../../utils/api')
 const util = require('../../../utils/util')
+const {getVolunteerRecord} = require("../../../utils/api");
 
 Page({
     data: {
@@ -14,13 +15,58 @@ Page({
         modalState: false,
         curr_mode: false,   // true为统计模式，false为普通模式
         more_state: false,
-        identity: wx.getStorageSync('identity')
+        identity: wx.getStorageSync('identity'),
+        calculation_rule: wx.getStorageSync('calculation_rule')?wx.getStorageSync('calculation_rule'):'four',
+        user_grade_config: wx.getStorageSync('user_grade_config')?wx.getStorageSync('user_grade_config'):{},
+        more_analysis_config_first: [],
+        more_analysis_config_second: [],
     },
+    user_grade_config_process: function () {
+        let grade_list = this.data.grade_list
+        let user_grade_config =this.data.user_grade_config
+        console.log(user_grade_config)
+        // 用户自定义配置
+        for (const term in user_grade_config) {
+            for (const curr_item of user_grade_config[term]) {
+                for (const item of grade_list[term]) {
+                    if (curr_item.CourseCode === item.CourseCode) {
+                        item.select = curr_item.select
+                    }
+                }
+            }
+        }
+        this.setData({
+            grade_list: grade_list
+        })
+    },
+    more_analysis_config_process: function (list, index) {
+        let target = null
+        if (index === 0) target = 'CourseNature'
+        else if (index === 1) target = 'StudyNature'
+        let grade_list = this.data.grade_list
+        for (const key in grade_list) {
+            for (const item of grade_list[key]) {
+                item.select = list.includes(item[target]);
+            }
+        }
+        this.setData({
+            grade_list: grade_list
+        })
+    },
+    // 选择绩点是四分制计算还是五分制计算
+    select_calculation_rule: function (e) {
+        this.setData({
+            calculation_rule: e.detail.value
+        })
+        wx.setStorageSync('calculation_rule', this.data.calculation_rule)
+    },
+    // 选择学期
     selectTerm: function(res) {
         this.setData({
             curr_term: res.target.dataset.id
         })
     },
+    // 刷新成绩
     updateData: function() {
         let that = this
         this.setData({
@@ -91,6 +137,7 @@ Page({
                                     curr_term: that.data.curr_term
                                 }
                                 wx.setStorageSync('grade_info', grade_info)
+                                that.user_grade_config_process()
                             } else {
                                 util.showError(res)
                             }
@@ -156,6 +203,7 @@ Page({
                             curr_term: that.data.curr_term
                         }
                         wx.setStorageSync('grade_info', grade_info)
+                        that.user_grade_config_process()
                     } else {
                         util.showError(res)
                     }
@@ -187,6 +235,7 @@ Page({
             icon: 'none'
             })
         }
+        this.user_grade_config_process()
     },
     onPullDownRefresh: function() {
         this.updateData()
@@ -200,6 +249,10 @@ Page({
             })
             let grade_list = this.data.grade_list
             let term_list = this.data.term_list
+            // 用户自定义配置
+            // this.user_grade_config_process()
+            wx.setStorageSync('user_grade_config', this.data.user_grade_config)
+
             let point_list = []
             let credit_list = []
             for (let i = 0; i < term_list.length; i++) {
@@ -211,7 +264,7 @@ Page({
                     // 过滤项
                     if (!item.select) continue
                     let curr_credit = item.CourseCredit
-                    let curr_point = util.score2point(item.EffectiveScoreShow)
+                    let curr_point = util.score2point(item.EffectiveScoreShow, this.data.calculation_rule)
                     if (!curr_credit || !curr_point) continue
                     credit += parseFloat(curr_credit)
                     point += parseFloat(curr_credit) * curr_point
@@ -292,25 +345,70 @@ Page({
             let curr_item = e.currentTarget.dataset.item
             // 缓登，分数异常，四六级无法被选中
             if (curr_item.CourseCredit===-1||!curr_item.EffectiveScoreShow ||curr_item.CourseName === '大学英语(国家四级)' || curr_item.CourseName === '大学英语(国家六级)') return
-            let grade_list = this.data.grade_list
-            for (const term of this.data.term_list) {
-                for (let i = 0; i < grade_list[term].length; i++) {
-                    if (grade_list[term][i].gid === curr_item.gid) {
-                        grade_list[term][i].select = !grade_list[term][i].select
-                        break
-                    }
+            // 在user_grade_config中修改
+            let user_grade_config = this.data.user_grade_config
+            let curr_term = this.data.curr_term
+            if (!user_grade_config[curr_term]) {
+                user_grade_config[curr_term] = []
+            }
+            let exist = false
+            // console.log(user_grade_config[curr_item])
+            for (const item of user_grade_config[curr_term]) {
+                if (curr_item.CourseCode === item.CourseCode) {
+                    exist = true
+                    item.select = !item.select
+                    break
                 }
             }
+            if (!exist) {
+                user_grade_config[curr_term].push({
+                    CourseCode: curr_item.CourseCode,
+                    select: !curr_item.select
+                })
+            }
             this.setData({
-                grade_list: grade_list
+                user_grade_config: user_grade_config
             })
+            this.user_grade_config_process()
+            // let grade_list = this.data.grade_list
+            // for (const term of this.data.term_list) {
+            //     for (let i = 0; i < grade_list[term].length; i++) {
+            //         if (grade_list[term][i].gid === curr_item.gid) {
+            //             grade_list[term][i].select = !grade_list[term][i].select
+            //             break
+            //         }
+            //     }
+            // }
+            // this.setData({
+            //     grade_list: grade_list
+            // })
         }
     },
     first_select: function(e) {
-        console.log(e)
+        if (this.data.identity === '研究生') {
+            wx.showToast({
+                title: '该功能对研究生无效',
+                icon: 'none'
+            })
+            return
+        }
+        this.setData({
+            more_analysis_config_first: e.detail.value
+        })
+        this.more_analysis_config_process(this.data.more_analysis_config_first, 0)
     },
 
     second_select: function(e) {
-        console.log(e)
+        if (this.data.identity === '研究生') {
+            wx.showToast({
+                title: '该功能对研究生无效',
+                icon: 'none'
+            })
+            return
+        }
+        this.setData({
+            more_analysis_config_second: e.detail.value
+        })
+        this.more_analysis_config_process(this.data.more_analysis_config_second, 1)
     }
 })

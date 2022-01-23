@@ -1,16 +1,43 @@
 const api = require('../../utils/api')
-
+const util = require('../../utils/util')
 Page({
   data: {
     // 是否显示新用户界面
     has_bind: true,
     userInfo: wx.getStorageSync('userInfo'),
-    ad_count: null,
+    ad_count: wx.getStorageSync('ad_count'),
   },
 
-  onShow() {
-    this.setData({
-      ad_count: 66
+  update_ad_times: function () {
+    let that = this
+    wx.login({
+      success: function(res) {
+        wx.showLoading()
+        api.ad_times(res.code).then(res => {
+          wx.hideLoading()
+          if (res.statusCode === 200) {
+            if (res.data.Statue===1) {
+              that.setData({
+                ad_count: res.data.Times
+              })
+              wx.setStorageSync('ad_count', that.data.ad_count)
+            } else {
+              util.showError(res)
+            }
+          } else {
+            wx.showToast({
+              title: `网络错误[${res.statusCode}]`,
+              icon: 'none'
+            })
+          }
+        })
+      },
+      fail: function() {
+        wx.showToast({
+          title: '登陆失败',
+          icon: 'error'
+        })
+      }
     })
   },
 

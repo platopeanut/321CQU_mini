@@ -14,8 +14,8 @@
     
 <view class="cu-card case">
   <view class="cu-item shadow" wx:for="{{grade_list[curr_term]}}" wx:key="index">
-    <view class="cu-list menu" bindtap="select_grade_item" data-item="{{item}}">
-        <view class="cu-item" style="background-color: {{item.select&&curr_mode?'rgba(0, 255, 0, 0.2)':'white'}};">
+    <view class="cu-list menu">
+        <view class="cu-item" bindtap="select_grade_item" data-item="{{item}}" style="background-color: {{item.select&&curr_mode?'rgba(0, 255, 0, 0.2)':'white'}};">
             <view class="content">
                 <text class="cuIcon-title text-blue"></text>
                 <text class="text-black">课程：<text style="font-weight: bold;">{{item.CourseName}}</text></text>
@@ -118,7 +118,7 @@
 <!-- {{more_state?'show':''}} -->
 <view class="cu-modal {{more_state?'show':''}}" bindtap="hideModal">
     <view class="cu-dialog" catchtap>
-      <scroll-view scroll-y style="height:300rpx">
+      <scroll-view scroll-y>
         <view class="cu-list menu text-left solid-top">
             <view class="cu-item" style="text-align: center;">
                 <view class="content">
@@ -126,6 +126,16 @@
                 </view>
             </view>
 
+          <view class="cu-item">
+            <view class="content">
+                <radio-group bindchange="select_calculation_rule">
+                    <radio value="four" checked="{{calculation_rule==='four'}}"></radio>
+                    <text style="color:grey;">四分制</text>
+                    <radio value="five" style="margin-left: 100rpx;" checked="{{calculation_rule==='five'}}"></radio>
+                    <text style="color:grey;">五分制</text>
+                </radio-group>
+            </view>
+          </view>
             <view class="cu-item">
                 <view class="content">
                     <checkbox-group bindchange="first_select">

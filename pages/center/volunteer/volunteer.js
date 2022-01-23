@@ -18,8 +18,6 @@ Page({
             email: wx.getStorageSync('email'),
         })
     },
-    onLoad: function (options) {
-    },
     // 解析志愿记录并存储
     loadAllRecords(data) {
         let tmpResult = []

@@ -369,11 +369,11 @@ function getSchoolNextTermInfo(uid, uid_pwd) {
     })
   })
 }
-// 广告观看一次
-function ad_advertise(code) {
+// 增加一次广告观看次数
+function ad_look(code) {
   return new Promise((resolve,reject) => {
     wx.request({
-      url: url + '/user/advertise',
+      url: url + '/user/advertise/look',
       method: 'POST',
       data: {
         'Key': Password,
@@ -384,6 +384,24 @@ function ad_advertise(code) {
     })
   })
 }
+
+function ad_times(code) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/user/advertise/times',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Code': code,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+
+
 module.exports = {
   test,
   getVolunteerTime,
@@ -406,5 +424,6 @@ module.exports = {
   getPGGrade,
   getSchoolTermInfo,
   getSchoolNextTermInfo,
-  ad_advertise,
+  ad_look,
+  ad_times,
 }

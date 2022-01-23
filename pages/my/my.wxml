@@ -1,5 +1,5 @@
 <!-- 授权登录 -->
-<view wx:if="{{userInfo == ''}}">
+<view wx:if="{{userInfo === ''}}">
   <view class='header'>
     <image mode='widthFix' src='../../res/icons/app.png'></image>
   </view>
@@ -41,7 +41,7 @@
       </view>
     </view>
     <view class="cu-item">
-      <view class="content">
+      <view class="content" bindtap="update_ad_times">
         <text class="cuIcon-sponsor text-cyan"></text>
         <text class="text-grey">已观看广告次数</text>
       </view>
