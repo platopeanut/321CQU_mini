@@ -333,11 +333,6 @@ Page({
         this.setData({
             more_state: true
         })
-        wx.showToast({
-            title: '功能待完善',
-            icon: 'none'
-        })
-        // if (item.StudyNature !== '初修') continue
     },
 
     select_grade_item: function(e) {
