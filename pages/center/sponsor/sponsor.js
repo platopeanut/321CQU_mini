@@ -6,7 +6,6 @@ let videoAd = null
 Page({
 
     data: {
-        ad_record: wx.getStorageSync('ad_record')
     },
     adShow: function() {
         wx.showLoading()
@@ -66,9 +65,12 @@ Page({
                 } else {
                     // 播放中途退出，不下发游戏奖励
                     wx.showToast({
-                        title: '播放中途退出，不下发奖励',
+                        title: '播放中途退出',
                         icon: 'none'
                     })
+                    setTimeout(()=>{
+                        wx.navigateBack({ delta: 1 })
+                    }, 1000)
                 }
             })
         }
@@ -89,14 +91,23 @@ Page({
         }
     },
     onLoad: function () {
-        if (!this.data.ad_record) {
-            wx.showToast({
-                title: '观看广告，获得一定奖励，观看次数可在我的/已观看广告次数页面中查看',
-                icon: 'none'
+        let that = this
+        if (!wx.getStorageSync('ad_record')) {
+            wx.showModal({
+                title: '支持我们',
+                content: '因为服务器和域名都需要费用，我们在开发小程序时耶付出了大量的精力，因此在这里提供了一个可选的观看视频广告的模块，并在服务器记录观看次数，后续我们可能（但不保证）会依照观看次数给一定服务（但不会有只有看了广告才能用的功能），感谢您的支持！',
+                cancelText:'确定',
+                confirmText:'不再提示',
+                success(res) {
+                    if(res.confirm){
+                        wx.setStorageSync('ad_record', true)
+                    }
+                    that.adShow()
+                }
             })
-            wx.setStorageSync('ad_record', true)
+        } else {
+            this.adShow()
         }
-        this.adShow()
     },
 
     onShareAppMessage: function () {
