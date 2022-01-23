@@ -25,6 +25,7 @@ Page({
         let day_list = []
         let curDate = new Date()
         let week_index = curDate.getDay()   // 周几
+        if (week_index===0) week_index = 7
         for (let i = week_index-1; i >=0; i--) {
             day_list.push(new Date(curDate.getTime() - 24*60*60*1000*i).getDate())
         }
@@ -72,7 +73,6 @@ Page({
             detailState: true,
             currDetailLesson: item
         })
-        // console.log(e.currentTarget.dataset.item)
     },
     hideModal() {
         this.setData({
@@ -164,7 +164,6 @@ Page({
         })
     },
     selectTerm2: function (e) {
-        console.log(e)
         let item = e.currentTarget.dataset.item
         let that = this
         this.setData({
@@ -227,7 +226,6 @@ Page({
             wx.hideLoading()
             if (res.statusCode === 200) {
                 if (res.data.Statue === 1) {
-                    console.log(res.data)
                     let schoolTermInfo = {
                         EndDate: res.data.EndDate,
                         StartDate: res.data.StartDate,
@@ -270,7 +268,6 @@ Page({
             wx.hideLoading()
             if (res.statusCode === 200) {
                 if (res.data.Statue === 1) {
-                    console.log(res.data)
                     let schoolTermInfo = {
                         EndDate: res.data.EndDate,
                         StartDate: res.data.StartDate,
