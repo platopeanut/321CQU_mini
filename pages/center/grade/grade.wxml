@@ -156,8 +156,6 @@
                         <checkbox value="初修"/>
                         <text class="text-grey" style="margin-left: 130rpx;">重修</text>
                         <checkbox value="重修"/>
-                        <text class="text-orange" style="margin-left: 130rpx;">全选</text>
-                        <checkbox value="全选"/>
                     </checkbox-group>
                 </view>
             </view>
