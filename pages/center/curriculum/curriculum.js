@@ -43,22 +43,17 @@ Page({
         let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
         let day_list = []
         let week_index = date.getDay()   // 周几
-        let _date
-        if (flag === -1) {
-            for (let i = -7; i <= -1; i++) {
-                _date = new Date(date.getTime() + 24*60*60*1000*i)
-                day_list.push(_date.getDate())
-            }
-        } else if (flag === 1) {
-            for (let i = 0; i < 7; i++) {
-                _date = new Date(date.getTime() + 24*60*60*1000*(i+7))
-                day_list.push(_date.getDate())
-            }
+        if (week_index === 0) week_index = 7
+        let _date = new Date(date.getTime() + 24*60*60*1000*7*flag)
+        for (let i = week_index-1; i >=0; i--) {
+            day_list.push(new Date(_date.getTime() - 24*60*60*1000*i).getDate())
+        }
+        for (let i = 0; i < 7-week_index; i++) {
+            day_list.push(new Date(_date.getTime() + 24*60*60*1000*(i+1)).getDate())
         }
         for (let i = 0; i < week_list.length; i++) {
             week_list[i].push(day_list[i])
         }
-        _date = new Date(_date.getTime() - 24*60*60*1000*6)
         this.setData({
             month: _date.getMonth(),
             year: _date.getFullYear()
@@ -132,7 +127,7 @@ Page({
 
     next_week() {
         let that = this
-        let date = new Date(this.data.year, this.data.month, this.data.week_list[0][1])
+        let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today][1])
         this.setData({
             week: that.data.week+1,
             week_list: that.getNeighborDayList(date, 1),
@@ -141,7 +136,7 @@ Page({
 
     pre_week() {
         let that = this
-        let date = new Date(this.data.year, this.data.month, this.data.week_list[0][1])
+        let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today][1])
         this.setData({
             week: that.data.week-1,
             week_list: that.getNeighborDayList(date, -1),

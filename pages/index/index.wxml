@@ -1,0 +1,7 @@
+<view class="cu-list grid col-{{gridCol}} border">
+    <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">
+        <view class="cuIcon-{{item.icon}} text-{{item.color}}">
+        </view>
+        <text>{{item.title}}</text>
+    </view>
+</view>

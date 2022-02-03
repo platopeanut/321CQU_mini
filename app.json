@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/center/center",
+    "pages/index/index",
     "pages/my/my",
     "pages/center/volunteer/volunteer",
     "pages/center/feedback/feedback",
@@ -12,7 +12,8 @@
     "pages/my/info/info",
     "pages/center/curriculum/curriculum",
     "pages/center/grade/grade",
-    "pages/center/exam/exam"
+    "pages/center/exam/exam",
+    "pages/center/rank/rank"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -24,7 +25,7 @@
     "selectedColor": "#1296db",
     "list": [
       {
-        "pagePath": "pages/center/center",
+        "pagePath": "pages/index/index",
         "text": "四次元口袋",
         "iconPath": "./res/icons/yinyong.png",
         "selectedIconPath": "./res/icons/yinyong-o.png"
