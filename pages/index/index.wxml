@@ -1,7 +1,22 @@
-<view class="cu-list grid col-{{gridCol}} border">
-    <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">
-        <view class="cuIcon-{{item.icon}} text-{{item.color}}">
+<view>
+
+    <view class="solids-bottom padding-xs flex align-center" style="background-color: white;">
+        <view class="flex-sub text-center">
+        <view class="solid-bottom text-xl padding">
+            <text text-gray text-bold>
+                {{curriculum_info}}
+            </text>
         </view>
-        <text>{{item.title}}</text>
+        <view class="padding">{{today_info}}</view>
+        </view>
+    </view>
+
+    <view class="cu-list grid col-{{gridCol}} border">
+        <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">
+            <view class="cuIcon-{{item.icon}} text-{{item.color}}">
+            </view>
+            <text>{{item.title}}</text>
+        </view>
     </view>
 </view>
+

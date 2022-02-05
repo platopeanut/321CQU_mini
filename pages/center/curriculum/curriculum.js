@@ -62,6 +62,7 @@ Page({
     },
 
     getDetailLessonInfo(e) {
+        console.log(e)
         let item = e.currentTarget.dataset.item
         item.InstructorName = item.InstructorName.replace('-[主讲];', ' ')
         this.setData({
@@ -280,5 +281,12 @@ Page({
             }
         })
         that.onShow()
+    },
+
+    set_new_item: function (e) {
+        wx.showToast({
+            title: `${e.mark.row_index}行 ${e.mark.col_index}列`,
+            icon: 'none'
+        })
     },
 })

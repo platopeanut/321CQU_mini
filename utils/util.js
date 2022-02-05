@@ -169,15 +169,6 @@ function parseFormat2Lesson(str) {
     return [parseInt(list[0]), parseInt(list[1]) - parseInt(list[0]) + 1]
 }
 
-// ClassNbr: "049977-652"
-// CourseCode: "EDS20501"
-// CourseName: "商务英语翻译"
-// Credit: "2"
-// InstructorName: "邓春-[主讲];"
-// PeriodFormat: "1-2"
-// RoomName: "D1201"
-// TeachingWeekFormat: "1-4,6-17"
-// WeekDayFormat: "五"
 function parseWeekDayFormat(str) {
     let week_list = ['一', '二', '三', '四', '五', '六', '日']
     for (let i = 0; i < week_list.length; i++) {
@@ -224,6 +215,46 @@ function shuffle(arr){
     return arr
 }
 
+// 送给首页的信息
+function get_index_info() {
+    let curriculum_info = ''
+    let curr_date = getDate()
+    let StartDate = wx.getStorageSync('schoolTermInfo').StartDate
+    let _curr_date = getDate()
+    let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
+    let distance = daysDistance2(StartDate, CurrDate)
+    let week
+    if (distance>0 ) week = parseInt(distance/7+1)
+    else week = parseInt(distance/7)
+    let curriculum = wx.getStorageSync('curriculum')
+    console.log(wx.getStorageSync('curriculum'))
+    let _today = new Date().getDay() - 1
+    if (curriculum[week] === undefined || curriculum[week][_today === -1?6:_today] === undefined)
+        curriculum_info = '今日无课'
+    else {
+        let _list = curriculum[week][_today === -1?6:_today]
+        let _flag = false
+        for (const item of _list) {
+            if (item) _flag = true
+        }
+        if (!_flag) curriculum_info = '今日无课'
+        else {
+            console.log(_list)
+        }
+    }
+    return {
+        today_info: {
+            year: curr_date.year,
+            month: curr_date.month,
+            day: curr_date.day,
+            week: week,
+            today: new Date().getDay()
+        },
+        curriculum_info: curriculum_info
+    }
+}
+
+
 module.exports = {
     getDate,
     parseFromStr,
@@ -239,4 +270,5 @@ module.exports = {
     parseLesson,
     getLessonList,
     shuffle,
+    get_index_info,
 }

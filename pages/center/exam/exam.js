@@ -3,6 +3,7 @@ const util = require('../../../utils/util')
 Page({
 
     data: {
+        has_exam: true,
         exam_list: [],
         exam_list_over: [],
         curr_date: util.getDate(),
@@ -11,8 +12,12 @@ Page({
 
     onShow: function() {
         // 从本地缓存中获取数据
+        let that = this
         let exams = wx.getStorageSync('exam_schedule')
-        if (exams === '') {
+        if (exams === '' || exams.length === 0) {
+            that.setData({
+                has_exam: false
+            })
             wx.showToast({
               title: '没有记录可以尝试下拉刷新',
               icon: 'none'
@@ -26,7 +31,7 @@ Page({
         let stu_id = wx.getStorageSync('stu_id')
         let uid = wx.getStorageSync('uid')
         let uid_pwd = wx.getStorageSync('uid_pwd')
-        if (stu_id == '' || uid == '' || uid_pwd == '') {
+        if (stu_id === '' || uid === '' || uid_pwd === '') {
             wx.showToast({
               title: '请先绑定学号，统一身份认证账号及密码',
               icon: 'none'
@@ -38,6 +43,16 @@ Page({
             if (res.statusCode === 200) {
                 if (res.data.Statue === 1) {
                     console.log(res)
+                    if (res.data.Exams.length === 0) {
+                        wx.showToast({
+                            title: '暂无考试安排',
+                            icon: 'none'
+                        })
+                        that.setData({
+                            has_exam: false
+                        })
+                        return
+                    }
                     that.parseData(res.data.Exams)
                     wx.setStorageSync('exam_schedule', res.data.Exams)
                 } else {

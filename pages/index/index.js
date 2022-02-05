@@ -1,6 +1,10 @@
+const util = require('../../utils/util')
+
 Page({
 
     data: {
+        today_info: '',
+        curriculum_info: '',
         gridCol: 2,
         iconList: [
             {
@@ -40,10 +44,10 @@ Page({
                 icon: 'time'
             },
             {
-                title: '排名',
-                path: 'rank',
+                title: '查课',
+                path: 'class_info',
                 color: 'purple',
-                icon: 'rankfill'
+                icon: 'list'
             },
             {
                 title: '支持我们',
@@ -55,6 +59,13 @@ Page({
     },
 
     onShow: function () {
+        let index_info = util.get_index_info()
+        let today_info = index_info.today_info
+        let curriculum_info = index_info.curriculum_info
+        this.setData({
+            today_info: `${today_info.year}年${today_info.month}月${today_info.day}日 第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
+            curriculum_info: curriculum_info?curriculum_info:'今日无课'
+        })
     },
 
     onShareAppMessage: function () {

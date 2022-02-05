@@ -1,57 +1,74 @@
-<view class="cu-card case">
-  <view class="cu-item shadow" wx:for="{{exam_list}}" wx:key="ExamDate">
-    <view class="cu-list menu">
-        <view class="cu-item">
-            <view class="content">
-                <text class="cuIcon-title text-blue"></text>
-                <text class="text-black">{{item.CourseName}}</text>
-                <text class="text-black" style="margin-left: 100rpx;">{{item.CourseCode}}</text>
-            </view>
-        </view>  
-        <view class="cu-item">
-          <view class="content">
-              <text class="cuIcon-title text-orange"></text>
-              <text class="text-black" style="font-weight: bold;">{{item.ExamDate}}</text>
-              <text class="text-black" style="margin-left: 100rpx;font-weight: bold;">{{item.StartTime}} ~ {{item.EndTime}}</text>  
-          </view>
-        </view>
-        <view class="cu-item">
-          <view class="content">
-            <text class="cuIcon-title text-green"></text>
-            <text class="text-black">考试地点：{{item.RoomName}}</text>
-            <text class="text-black" style="margin-left: 50rpx;">座位号：{{item.SeatNum}}</text>
-            <text style="margin-left: 50rpx;font-weight: bold;font-size: large;color: {{item.distance>10?'green':(item.distance>5?'#B4F200':(item.distance>3?'orange':'red'))}};">{{item.distance}}</text>
-            <text class="text-black" style="margin-left: 10rpx;">天后</text>
-          </view>
-        </view>
-    </view>
-  </view>
-</view>
+<view>
 
-<view class="cu-card case">
-  <view class="cu-item shadow" wx:for="{{exam_list_over}}" wx:key="ExamDate">
-    <view class="cu-list menu">
-        <view class="cu-item" style="background-color: #c0c0c0;">
-            <view class="content">
-                <text class="cuIcon-title text-blue"></text>
-                <text class="text-black">{{item.CourseName}}</text>
-                <text class="text-black" style="margin-left: 100rpx;">{{item.CourseCode}}</text>
+    <view wx:if="{{!has_exam}}">
+        <view class="solids-bottom padding-xs flex align-center">
+            <view class="flex-sub text-center">
+                <view class="solid-bottom text-xsl padding">
+                    <text class=" cuIcon-warnfill text-gray"></text>
+                </view>
+                <view class="padding">
+                    <text class="text-gray" style="font-size: large;">暂无考试安排</text>
+                </view>
             </view>
-        </view>  
-        <view class="cu-item" style="background-color: #c0c0c0;">
-          <view class="content">
-              <text class="cuIcon-title text-orange"></text>
-              <text class="text-black">{{item.ExamDate}}</text>
-              <text class="text-black" style="margin-left: 100rpx;">{{item.StartTime}} ~ {{item.EndTime}}</text>  
-          </view>
-        </view>
-        <view class="cu-item" style="background-color: #c0c0c0;">
-          <view class="content">
-            <text class="cuIcon-title text-green"></text>
-            <text class="text-black">考试地点：{{item.RoomName}}</text>
-            <text class="text-black" style="margin-left: 100rpx;">座位号：{{item.SeatNum}}</text>
-          </view>
         </view>
     </view>
-  </view>
+
+    <view class="cu-card case">
+        <view class="cu-item shadow" wx:for="{{exam_list}}" wx:key="ExamDate">
+            <view class="cu-list menu">
+                <view class="cu-item">
+                    <view class="content">
+                        <text class="cuIcon-title text-blue"></text>
+                        <text class="text-black">{{item.CourseName}}</text>
+                        <text class="text-black" style="margin-left: 100rpx;">{{item.CourseCode}}</text>
+                    </view>
+                </view>
+                <view class="cu-item">
+                    <view class="content">
+                        <text class="cuIcon-title text-orange"></text>
+                        <text class="text-black" style="font-weight: bold;">{{item.ExamDate}}</text>
+                        <text class="text-black" style="margin-left: 100rpx;font-weight: bold;">{{item.StartTime}} ~ {{item.EndTime}}</text>
+                    </view>
+                </view>
+                <view class="cu-item">
+                    <view class="content">
+                        <text class="cuIcon-title text-green"></text>
+                        <text class="text-black">考试地点：{{item.RoomName}}</text>
+                        <text class="text-black" style="margin-left: 50rpx;">座位号：{{item.SeatNum}}</text>
+                        <text style="margin-left: 50rpx;font-weight: bold;font-size: large;color: {{item.distance>10?'green':(item.distance>5?'#B4F200':(item.distance>3?'orange':'red'))}};">{{item.distance}}</text>
+                        <text class="text-black" style="margin-left: 10rpx;">天后</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view class="cu-card case">
+        <view class="cu-item shadow" wx:for="{{exam_list_over}}" wx:key="ExamDate">
+            <view class="cu-list menu">
+                <view class="cu-item" style="background-color: #c0c0c0;">
+                    <view class="content">
+                        <text class="cuIcon-title text-blue"></text>
+                        <text class="text-black">{{item.CourseName}}</text>
+                        <text class="text-black" style="margin-left: 100rpx;">{{item.CourseCode}}</text>
+                    </view>
+                </view>
+                <view class="cu-item" style="background-color: #c0c0c0;">
+                    <view class="content">
+                        <text class="cuIcon-title text-orange"></text>
+                        <text class="text-black">{{item.ExamDate}}</text>
+                        <text class="text-black" style="margin-left: 100rpx;">{{item.StartTime}} ~ {{item.EndTime}}</text>
+                    </view>
+                </view>
+                <view class="cu-item" style="background-color: #c0c0c0;">
+                    <view class="content">
+                        <text class="cuIcon-title text-green"></text>
+                        <text class="text-black">考试地点：{{item.RoomName}}</text>
+                        <text class="text-black" style="margin-left: 100rpx;">座位号：{{item.SeatNum}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
 </view>

@@ -13,7 +13,7 @@
     "pages/center/curriculum/curriculum",
     "pages/center/grade/grade",
     "pages/center/exam/exam",
-    "pages/center/rank/rank"
+    "pages/center/class_info/class_info"
   ],
   "window": {
     "backgroundTextStyle": "light",
