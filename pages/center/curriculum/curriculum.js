@@ -18,6 +18,7 @@ Page({
         currDetailLesson: null,
         currSchoolTermInfo: null,
         selectTermState: false,
+        longPressState: false,
         term_list: [],
     },
     getCurrWeekList() {
@@ -103,32 +104,46 @@ Page({
         let _curr_date = util.getDate()
         let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
         let distance = util.daysDistance2(StartDate, CurrDate)
-        if (distance>0 ) return parseInt(distance/7+1)
-        else return parseInt(distance/7)
+        if (distance >= 0 ) return parseInt(distance / 7 + 1)
+        else {
+            if (distance % 7 === 0) return parseInt(distance / 7) + 1
+            else return parseInt(distance / 7)
+        }
     },
 
     onShow: function() {
         let that = this
-        this.setData({
-            currSchoolTermInfo: wx.getStorageSync('schoolTermInfo'),
-            curr_year: new Date().getFullYear(),
-            year: new Date().getFullYear(),
-            month: new Date().getMonth(),
-            curr_month: new Date().getMonth(),
-            today: new Date().getDay(),
-            term_list: [wx.getStorageSync('schoolTermInfo'), wx.getStorageSync('nextSchoolTermInfo')],
-        })
-        this.setData({
-            week_list: that.getCurrWeekList(),
-            table: that.UIprocess(wx.getStorageSync('curriculum'), wx.getStorageSync('lesson_list')),
-            week: that.getCurrWeek(),
-            curr_week: that.getCurrWeek(),
-        })
+        if (!this.data.currSchoolTermInfo) {
+            this.setData({
+                currSchoolTermInfo: wx.getStorageSync('schoolTermInfo'),
+                curr_year: new Date().getFullYear(),
+                year: new Date().getFullYear(),
+                month: new Date().getMonth(),
+                curr_month: new Date().getMonth(),
+                today: new Date().getDay(),
+            })
+            if (wx.getStorageSync('nextSchoolTermInfo')) {
+                this.setData({
+                    term_list: [wx.getStorageSync('schoolTermInfo'), wx.getStorageSync('nextSchoolTermInfo')],
+                })
+            } else {
+                this.setData({
+                    term_list: [wx.getStorageSync('schoolTermInfo')],
+                })
+            }
+            this.setData({
+                week_list: that.getCurrWeekList(),
+                table: that.UIprocess(wx.getStorageSync('curriculum'), wx.getStorageSync('lesson_list')),
+                week: that.getCurrWeek(),
+                curr_week: that.getCurrWeek(),
+            })
+        }
     },
 
     next_week() {
         let that = this
-        let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today][1])
+        if (that.data.today === 0) that.data.today = 7
+        let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today - 1][1])
         this.setData({
             week: that.data.week+1,
             week_list: that.getNeighborDayList(date, 1),
@@ -137,7 +152,8 @@ Page({
 
     pre_week() {
         let that = this
-        let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today][1])
+        if (that.data.today === 0) that.data.today = 7
+        let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today - 1][1])
         this.setData({
             week: that.data.week-1,
             week_list: that.getNeighborDayList(date, -1),
@@ -243,6 +259,16 @@ Page({
             if (res.statusCode === 200) {
                 wx.hideLoading()
                 if (res.data.Statue === 1) {
+                    // 无课表信息适配
+                    if (res.data.Courses.length === 0) {
+                        wx.showToast({
+                            title: '暂无下学期课表信息',
+                            icon: 'none'
+                        })
+                        wx.setStorageSync('nextCurriculum', '')
+                        wx.setStorageSync('nextLesson_list', '')
+                        return
+                    }
                     let table = util.parseLesson(res.data.Courses)
                     let lesson_list = util.getLessonList(res.data.Courses)
                     wx.setStorageSync('nextCurriculum', table)
@@ -271,6 +297,7 @@ Page({
                     }
                     wx.setStorageSync('nextSchoolTermInfo', schoolTermInfo)
                 } else {
+                    wx.setStorageSync('nextSchoolTermInfo', '')
                     util.showError(res)
                 }
             } else {
@@ -284,9 +311,16 @@ Page({
     },
 
     set_new_item: function (e) {
+        wx.vibrateShort({
+            type: 'heavy'
+        })
+        console.log(e)
         wx.showToast({
-            title: `${e.mark.row_index}行 ${e.mark.col_index}列`,
+            title: `[${e.mark.row_index}行 ${e.mark.col_index}列]功能待完善`,
             icon: 'none'
+        })
+        this.setData({
+            longPressState: true
         })
     },
 })

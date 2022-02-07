@@ -1,0 +1,16 @@
+<view>
+
+    <view>
+        <view class="solids-bottom padding-xs flex align-center">
+            <view class="flex-sub text-center">
+                <view class="solid-bottom text-xsl padding">
+                    <text class=" cuIcon-warnfill text-gray"></text>
+                </view>
+                <view class="padding">
+                    <text class="text-gray" style="font-size: large;">敬请期待</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+</view>
