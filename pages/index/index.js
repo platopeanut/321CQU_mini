@@ -63,7 +63,7 @@ Page({
         let today_info = index_info.today_info
         let curriculum_info = index_info.curriculum_info
         this.setData({
-            today_info: `${today_info.year}年${today_info.month}月${today_info.day}日 第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
+            today_info: `第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
             curriculum_info: curriculum_info?curriculum_info:'今日无课'
         })
     },

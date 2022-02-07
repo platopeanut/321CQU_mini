@@ -20,6 +20,7 @@ Page({
         selectTermState: false,
         longPressState: false,
         term_list: [],
+        curr_term: '',
     },
     getCurrWeekList() {
         let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
@@ -115,12 +116,12 @@ Page({
         let that = this
         if (!this.data.currSchoolTermInfo) {
             this.setData({
-                currSchoolTermInfo: wx.getStorageSync('schoolTermInfo'),
                 curr_year: new Date().getFullYear(),
                 year: new Date().getFullYear(),
                 month: new Date().getMonth(),
                 curr_month: new Date().getMonth(),
                 today: new Date().getDay(),
+                curr_term: wx.getStorageSync('curr_term'),
             })
             if (wx.getStorageSync('nextSchoolTermInfo')) {
                 this.setData({
@@ -131,12 +132,32 @@ Page({
                     term_list: [wx.getStorageSync('schoolTermInfo')],
                 })
             }
-            this.setData({
-                week_list: that.getCurrWeekList(),
-                table: that.UIprocess(wx.getStorageSync('curriculum'), wx.getStorageSync('lesson_list')),
-                week: that.getCurrWeek(),
-                curr_week: that.getCurrWeek(),
-            })
+            if (!this.data.curr_term || this.data.term_list[0].Term === this.data.curr_term) {
+                this.setData({
+                    currSchoolTermInfo: wx.getStorageSync('schoolTermInfo'),
+                })
+                this.setData({
+                    week_list: that.getCurrWeekList(),
+                    table: that.UIprocess(wx.getStorageSync('curriculum'), wx.getStorageSync('lesson_list')),
+                    week: that.getCurrWeek(),
+                    curr_week: that.getCurrWeek(),
+                })
+            } else if (this.data.term_list[1].Term === this.data.curr_term){
+                this.setData({
+                    currSchoolTermInfo: wx.getStorageSync('nextSchoolTermInfo'),
+                })
+                this.setData({
+                    week_list: that.getCurrWeekList(),
+                    table: that.UIprocess(wx.getStorageSync('nextCurriculum'), wx.getStorageSync('nextLesson_list')),
+                    week: that.getCurrWeek(),
+                    curr_week: that.getCurrWeek(),
+                })
+            } else {
+                wx.showToast({
+                    title: '学期选择异常',
+                    icon: 'none'
+                })
+            }
         }
     },
 
@@ -188,6 +209,8 @@ Page({
             week_list: that.getCurrWeekList(),
             week: that.getCurrWeek(),
         })
+        console.log(item.Term)
+        wx.setStorageSync('curr_term', item.Term)
         if (item.Term === wx.getStorageSync('nextSchoolTermInfo').Term) {
             that.setData({
                 table: that.UIprocess(wx.getStorageSync('nextCurriculum'), wx.getStorageSync('nextLesson_list')),

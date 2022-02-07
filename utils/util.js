@@ -2,6 +2,21 @@
  *  常用方法
  */
 
+const time_table = [
+    '08:30~09:15',
+    '09:25~10:10',
+    '10:30~11:15',
+    '11:25~12:10',
+    '13:30~14:15',
+    '14:25~15:10',
+    '15:20~16:05',
+    '16:25~17:10',
+    '17:20~18:05',
+    '19:00~19:45',
+    '19:55~20:40',
+    '20:50~21:35',
+]
+
 
 // 获取当前日期
 function getDate() {
@@ -224,10 +239,12 @@ function get_index_info() {
     let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
     let distance = daysDistance2(StartDate, CurrDate)
     let week
-    if (distance>0 ) week = parseInt(distance/7+1)
-    else week = parseInt(distance/7)
+    if (distance >= 0) week = parseInt(distance / 7 + 1)
+    else {
+        if (distance % 7 === 0) week = parseInt(distance / 7) + 1
+        else week = parseInt(distance / 7)
+    }
     let curriculum = wx.getStorageSync('curriculum')
-    console.log(wx.getStorageSync('curriculum'))
     let _today = new Date().getDay() - 1
     if (curriculum[week] === undefined || curriculum[week][_today === -1?6:_today] === undefined)
         curriculum_info = '今日无课'
@@ -239,19 +256,56 @@ function get_index_info() {
         }
         if (!_flag) curriculum_info = '今日无课'
         else {
+            let _time = new Date()
+            let e = get_lesson_index({
+                hour: _time.getHours(),
+                minute: _time.getMinutes()
+            })
             console.log(_list)
+            let index = e[0]
+            for (let i = index; i < _list.length; i ++) {
+                if (_list[i] !== null) {
+                    index = i
+                    curriculum_info = `${e[1]}\n${_list[index].CourseName}\n${_list[index].RoomName}`
+                    break
+                }
+            }
         }
     }
     return {
         today_info: {
-            year: curr_date.year,
-            month: curr_date.month,
-            day: curr_date.day,
             week: week,
             today: new Date().getDay()
         },
         curriculum_info: curriculum_info
     }
+}
+
+// 行课时间与课程节数转换
+/**
+ *  -1 表示当天课程已经结束
+ */
+function get_lesson_index(time) {
+    let time_list = [
+        [9, 15],
+        [10, 10],
+        [11, 15],
+        [12, 10],
+        [14, 15],
+        [15, 10],
+        [16, 5],
+        [17, 10],
+        [18, 5],
+        [19, 45],
+        [20, 40],
+        [21, 35]
+    ]
+    for (let i = 0; i < time_list.length; i++) {
+        if (compareTime(time, {hour: time_list[i][0], minute: time_list[i][1]}) <= 0) {
+            return [i + 1, time_table[i]]
+        }
+    }
+    return -1
 }
 
 
@@ -271,4 +325,5 @@ module.exports = {
     getLessonList,
     shuffle,
     get_index_info,
+    get_lesson_index,
 }
