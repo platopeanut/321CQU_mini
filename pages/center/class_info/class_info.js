@@ -16,9 +16,13 @@ Page({
 
     onShow: function () {
         let that = this
+        let curr_way = wx.getStorageSync('class_info_curr_way')
+        let curr_hint = that.data.hint_list[0]
+        if (curr_way === '') curr_way = '搜课程'
+        if (curr_way === '搜老师') curr_hint = that.data.hint_list[1]
         this.setData({
-            curr_way: that.data.way_list[0],
-            curr_hint: that.data.hint_list[0]
+            curr_way: curr_way,
+            curr_hint: curr_hint
         })
     },
 
@@ -48,6 +52,7 @@ Page({
                 break
             }
         }
+        wx.setStorageSync('class_info_curr_way', curr_way)
         this.setData({
             curr_way: curr_way,
             curr_hint: curr_hint
