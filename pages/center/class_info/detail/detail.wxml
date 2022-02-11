@@ -16,17 +16,43 @@
         </view>
     </view>
 
-    <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{teacher_list}}" wx:key>
+    <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{teacher_dict}}" wx:key>
         <view class="cu-item" bindtap="selectItem" data-index="{{index}}">
             <view class="content">
-                <text class="text-black">{{item.name}}</text>
+                <text class="text-black">{{index}}</text>
             </view>
-            <view class="action cuIcon-{{teacher_state_list[index]?'fold':'unfold'}}"></view>
+            <view class="action cuIcon-{{item['state']?'fold':'unfold'}}"></view>
         </view>
-        <view wx:if="{{teacher_state_list[index]}}" class="cu-list menu sm-border">
-            <view class="cu-item" wx:for="{{item.info}}">
+        <view wx:if="{{item['state']}}" class="cu-list menu sm-border">
+            <view class="cu-item" wx:for="{{item['info']}}">
                 <view class="content">
-                    <text>{{item.year}}</text>
+                    <text class="text-bold text-black">{{item.year}}</text>
+                    <view style="font-size: small;color: gray;">
+                        <view style="display:flex;">
+                            <view style="display: inline-block;">
+                                最高分: {{item.max}}
+                            </view>
+                            <view style="margin:auto;margin-right: 10rpx;display: inline-block;">
+                                最低分: {{item.min}}
+                            </view>
+                        </view>
+                        <view style="display:flex;">
+                            <view style="display: inline-block;">
+                                平均分: {{item.average}}
+                            </view>
+                            <view style="margin:auto;margin-right: 10rpx;display: inline-block;">
+                                参考人数: {{item.num}}
+                            </view>
+                        </view>
+                        <view>
+                            <text class="text-gray text-bold">分数段分布:</text>
+                            <view class="bg-white">
+                                <view class="cu-progress radius active">
+                                    <view wx:for="{{item.distributed}}" class="bg-{{list[index]['name']}}" style="width:{{item}}%;" wx:if="{{item>0}}">{{item}}%</view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
                 </view>
             </view>
         </view>

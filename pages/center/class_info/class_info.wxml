@@ -1,4 +1,4 @@
-<view style="background-color: white;">
+<view>
 
     <view class="nav">
         <scroll-view scroll-x class="bg-white nav text-center">
@@ -21,6 +21,35 @@
 
 <!--    查询结果-->
     <view>
+        <view wx:if="{{curr_way === '搜课程'}}" class="cu-list menu sm-border card-menu margin-top" wx:for="{{lesson_list}}" wx:key>
+            <view class="cu-item" bindtap="selectClassItem" data-item="{{item}}">
+                <view class="content">
+                    <text class="text-black text-bold">{{item.Cname}}</text>
+                </view>
+                <view class="action">
+                    <text class="text-gray">{{item.Cid}}</text>
+                </view>
+            </view>
+        </view>
+
+        <view wx:if="{{curr_way === '搜老师'}}" class="cu-list menu sm-border card-menu margin-top" wx:for="{{teacher_dict}}" wx:key>
+            <view class="cu-item" bindtap="selectTeacherItem" data-index="{{index}}">
+                <view class="content">
+                    <text class="text-black text-bold">{{index}}</text>
+                </view>
+                <view class="action cuIcon-{{item['state']?'fold':'unfold'}}"></view>
+            </view>
+            <view wx:if="{{item['state']}}" class="cu-list menu sm-border">
+                <view class="cu-item" wx:for="{{item.class_list}}" bindtap="selectClassItem" data-item="{{item}}">
+                    <view class="content">
+                        <text class="text-black">{{item.Cname}}</text>
+                    </view>
+                    <view class="action">
+                        <text class="text-gray">{{item.Cid}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
 
         <view wx:if="{{no_result_state}}">
             <view class="solids-bottom padding-xs flex align-center">

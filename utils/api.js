@@ -400,6 +400,53 @@ function ad_times(code) {
   })
 }
 
+// 根据教师名称查询课程信息
+function query_class_info_by_teacher_name(teacher_name) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_course_list',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'TeacherName': teacher_name,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 根据课程名称查询课程信息
+function query_class_info_by_class_name(class_name) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_course_list',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'CourseName': class_name,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 根据Cid查询课程详细信息
+function query_class_detail(Cid) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_course_detail',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'Cid': Cid,
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
 
 
 module.exports = {
@@ -426,4 +473,7 @@ module.exports = {
   getSchoolNextTermInfo,
   ad_look,
   ad_times,
+  query_class_info_by_class_name,
+  query_class_info_by_teacher_name,
+  query_class_detail,
 }
