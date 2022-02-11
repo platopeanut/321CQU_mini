@@ -1,16 +1,38 @@
-<view>
+<view style="background-color: white;">
 
+    <view class="nav">
+        <scroll-view scroll-x class="bg-white nav text-center">
+            <view class="cu-item {{item === curr_way?'text-blue cur':'text-black'}}" wx:for="{{way_list}}" wx:key="index" bindtap="selectWay" data-id="{{item}}">
+                {{item}}
+            </view>
+        </scroll-view>
+    </view>
+
+    <view class="cu-bar bg-white search">
+        <view class="search-form round">
+            <text class="cuIcon-search"></text>
+            <input type="text" placeholder="{{curr_hint}}" confirm-type="search" bindinput="queryInfo"></input>
+        </view>
+    </view>
+
+    <view class="padding flex flex-direction">
+        <button class="cu-btn bg-blue lg" bindtap="query">查询</button>
+    </view>
+
+<!--    查询结果-->
     <view>
-        <view class="solids-bottom padding-xs flex align-center">
-            <view class="flex-sub text-center">
-                <view class="solid-bottom text-xsl padding">
-                    <text class=" cuIcon-warnfill text-gray"></text>
-                </view>
-                <view class="padding">
-                    <text class="text-gray" style="font-size: large;">敬请期待</text>
+
+        <view wx:if="{{no_result_state}}">
+            <view class="solids-bottom padding-xs flex align-center">
+                <view class="flex-sub text-center">
+                    <view class="solid-bottom text-xsl padding">
+                        <text class=" cuIcon-infofill text-gray"></text>
+                    </view>
+                    <view class="padding">
+                        <text class="text-gray" style="font-size: large;">没有查询到相关信息</text>
+                    </view>
                 </view>
             </view>
         </view>
     </view>
-
 </view>

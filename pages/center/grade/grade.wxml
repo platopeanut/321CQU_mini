@@ -1,7 +1,7 @@
 <view>
     <view class="nav">
     <scroll-view scroll-x class="bg-white nav text-center">
-    <view class="cu-item {{item == curr_term?'text-blue cur':'text-black'}}" wx:for="{{term_list}}" wx:key="index" bindtap="selectTerm" data-id="{{item}}">
+    <view class="cu-item {{item === curr_term?'text-blue cur':'text-black'}}" wx:for="{{term_list}}" wx:key="index" bindtap="selectTerm" data-id="{{item}}">
     {{item}}
     </view>
     </scroll-view>

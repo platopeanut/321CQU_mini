@@ -140,6 +140,10 @@ Page({
                                 }
                                 wx.setStorageSync('grade_info', grade_info)
                                 that.user_grade_config_process()
+                                wx.showToast({
+                                    title: '查询成功',
+                                    icon: 'none'
+                                })
                             } else {
                                 util.showError(res)
                             }
@@ -206,6 +210,10 @@ Page({
                         }
                         wx.setStorageSync('grade_info', grade_info)
                         that.user_grade_config_process()
+                        wx.showToast({
+                            title: '查询成功',
+                            icon: 'none'
+                        })
                     } else {
                         util.showError(res)
                     }

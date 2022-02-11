@@ -1,6 +1,14 @@
 <view>
 
-    <view class="solids-bottom padding-xs flex align-center" style="background-color: white;">
+    <view style="height: 400rpx;width: 750rpx;">
+        <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="3000" duration="500">
+            <swiper-item wx:for="{{swiperList}}" wx:key bindlongpress="saveImg" data-url="{{item.url}}">
+                <image src="{{item.url}}" mode="aspectFill"></image>
+            </swiper-item>
+        </swiper>
+    </view>
+
+    <view class="solids-bottom padding-xs flex align-center" style="background-color: white;" bindtap="jumpToCurriculum">
         <view class="flex-sub text-center">
         <view class="solid-bottom text-xl padding">
             <text text-gray text-bold>

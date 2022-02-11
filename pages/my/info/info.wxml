@@ -1,4 +1,4 @@
-<view>
+<view style="background-color: white;">
 
 <!-- 信息填写 -->
 <form catchsubmit="saveInfo">
@@ -28,9 +28,10 @@
   <input name="nickname" placeholder="请设置你的昵称" value="{{stuInfo.nickname}}"></input>
   </view>
   
-  <view>
-      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
+  <view class="padding flex flex-direction">
+    <button class="cu-btn bg-green lg" formType="submit">绑定</button>
   </view>
+
   </form>
 
 
@@ -70,8 +71,8 @@
     </radio-group>
   </view>
 
-  <view>
-      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">绑定</button>
+  <view class="padding flex flex-direction">
+    <button class="cu-btn bg-green lg" formType="submit">绑定</button>
   </view>
 
 

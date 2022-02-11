@@ -1,0 +1,41 @@
+<view>
+    <view class="padding solid-bottom margin-top">
+        <view class="flex-sub text-center">
+            <view class="solid-bottom text-xl padding">
+                <text class="text-black text-bold">{{class_name}}</text>
+                <view><text class="text-gray" style="font-size: medium;font-weight: normal;">{{class_id}}</text></view>
+            </view>
+            <view>
+                <view class="padding-sm" wx:for="{{list}}" wx:key style="display: inline-block;">
+                    <view class="text-center text-shadow text-{{item.name}}">
+                        <text class="cuIcon-ellipse text-xxl"></text>
+                        <text class="text-gray" style="margin-left: 10rpx;">{{item.title}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{teacher_list}}" wx:key>
+        <view class="cu-item" bindtap="selectItem" data-index="{{index}}">
+            <view class="content">
+                <text class="text-black">{{item.name}}</text>
+            </view>
+            <view class="action cuIcon-{{teacher_state_list[index]?'fold':'unfold'}}"></view>
+        </view>
+        <view wx:if="{{teacher_state_list[index]}}" class="cu-list menu sm-border">
+            <view class="cu-item" wx:for="{{item.info}}">
+                <view class="content">
+                    <text>{{item.year}}</text>
+                </view>
+            </view>
+        </view>
+
+    </view>
+<!--    老师列表-->
+<!--                老师名称
+                    年份（降序）
+                    平均分，最高分，最低分
+                    分数段分布
+-->
+</view>

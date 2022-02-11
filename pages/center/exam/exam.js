@@ -39,10 +39,11 @@ Page({
             return
         }
         let that = this
+        wx.showLoading()
         api.getExamSchedule(stu_id, uid, uid_pwd).then(res => {
+            wx.hideLoading()
             if (res.statusCode === 200) {
                 if (res.data.Statue === 1) {
-                    console.log(res)
                     if (res.data.Exams.length === 0) {
                         wx.showToast({
                             title: '暂无考试安排',
@@ -94,9 +95,7 @@ Page({
     },
 
     onPullDownRefresh: function() {
-        wx.showLoading()
         this.updateData()
         wx.stopPullDownRefresh()
-        wx.hideLoading()
     }
 })

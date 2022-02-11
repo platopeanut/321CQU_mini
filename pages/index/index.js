@@ -6,6 +6,13 @@ Page({
         today_info: '',
         curriculum_info: '',
         gridCol: 2,
+        swiperList: [{
+            id: 0,
+            url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'
+          }, {
+            id: 1,
+            url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84001.jpg',
+          }],
         iconList: [
             {
                 title: '志愿者时长',
@@ -71,7 +78,11 @@ Page({
     onShareAppMessage: function () {
 
     },
-
+    jumpToCurriculum: function () {
+        wx.navigateTo({
+            url: '../center/curriculum/curriculum'
+        })
+    },
     router: function (e) {
         let path = e.currentTarget.dataset.path
         wx.navigateTo({
@@ -100,4 +111,35 @@ Page({
             }
         })
     },
+
+    saveImg: function (e) {
+        wx.downloadFile({
+            url: e.target.dataset.url,     //仅为示例，并非真实的资源
+            success: function (res) {
+                // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
+                if (res.statusCode === 200) {
+                    wx.saveImageToPhotosAlbum({
+                        filePath: res.tempFilePath,
+                        success(res) {
+                            wx.showToast({
+                                title: '已保存',
+                                icon: 'none'
+                            })
+                        },
+                        fail(res) {
+                            wx.showToast({
+                                title: '保存失败',
+                                icon: 'none'
+                            })
+                        }
+                    })
+                } else {
+                    wx.showToast({
+                        title: '网络错误',
+                        icon: 'none'
+                    })
+                }
+            }
+        })
+    }
 })

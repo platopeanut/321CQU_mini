@@ -15,7 +15,12 @@ const time_table = [
     '19:00~19:45',
     '19:55~20:40',
     '20:50~21:35',
+    '21:45~22:30',
 ]
+
+function get_time_from_index(index) {
+    return time_table[index].split('~')
+}
 
 
 // 获取当前日期
@@ -153,9 +158,9 @@ function score2point(score, calculation_rule) {
     }
 }
   
-function showError(res) {
+function showError(res, prefix='') {
     wx.showToast({
-        title: `[error:${res.data.ErrorCode}] ${res.data.ErrorInfo}`,
+        title: `[${prefix}][error:${res.data.ErrorCode}] ${res.data.ErrorInfo}`,
         icon: 'none'
     })
 }
@@ -326,4 +331,5 @@ module.exports = {
     shuffle,
     get_index_info,
     get_lesson_index,
+    get_time_from_index,
 }
