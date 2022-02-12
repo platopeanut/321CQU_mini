@@ -2,6 +2,11 @@ function cut_str(str, a, b) {
     return str.slice(a, b) + '...'
 }
 
+function toString(e) {
+    return JSON.stringify(e)
+}
+
 module.exports = {
-    cut_str: cut_str
+    cut_str: cut_str,
+    toString: toString,
 }

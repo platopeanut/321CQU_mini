@@ -21,6 +21,7 @@ Page({
         longPressState: false,
         term_list: [],
         curr_term: '',
+        currSelfItem: {},
     },
     getCurrWeekList() {
         let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
@@ -81,6 +82,7 @@ Page({
         this.setData({
             detailState: false,
             selectTermState: false,
+            longPressState: false,
         })
     },
     UIprocess(data, lesson_list) {
@@ -119,7 +121,7 @@ Page({
 
     onShow: function() {
         let that = this
-        if (!this.data.currSchoolTermInfo) {
+        if (!this.data.currSchoolTermInfo || !this.data.table) {
             this.setData({
                 curr_year: new Date().getFullYear(),
                 year: new Date().getFullYear(),
@@ -140,6 +142,7 @@ Page({
             if (!this.data.curr_term || this.data.term_list[0].Term === this.data.curr_term) {
                 this.setData({
                     currSchoolTermInfo: wx.getStorageSync('schoolTermInfo'),
+                    curr_term: this.data.term_list[0].Term
                 })
                 this.setData({
                     week_list: that.getCurrWeekList(),
@@ -358,17 +361,35 @@ Page({
         })
     },
 
-    set_new_item: function (e) {
-        wx.vibrateShort({
-            type: 'heavy'
-        })
-        console.log(e)
-        wx.showToast({
-            title: `[${e.mark.row_index}行 ${e.mark.col_index}列]功能待完善`,
-            icon: 'none'
-        })
-        this.setData({
-            longPressState: true
-        })
-    },
+    // set_new_item: function (e) {
+    //     console.log(this.data.table[this.data.week])
+    //     let item = {
+    //         self: true,
+    //         UILength: 2,
+    //         color: 'green',
+    //         content: 'test_content',
+    //         title: 'test_title',
+    //         WeekDayFormat: '五',
+    //         PeriodFormat: '2-3',
+    //         TeachingWeekFormat: '1-3'
+    //     }
+    //     let table = this.data.table
+    //     let row = e.mark.row_index
+    //     let col = e.mark.col_index
+    //     table[this.data.week][col][row] = item
+    //     this.setData({
+    //         table: table,
+    //         currSelfItem: item
+    //     })
+    //     wx.vibrateShort({
+    //         type: 'heavy'
+    //     })
+    //     wx.showToast({
+    //         title: `[${e.mark.row_index}行 ${e.mark.col_index}列]功能待完善`,
+    //         icon: 'none'
+    //     })
+    //     this.setData({
+    //         longPressState: true
+    //     })
+    // },
 })
