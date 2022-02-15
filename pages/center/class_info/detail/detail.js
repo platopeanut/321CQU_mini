@@ -45,6 +45,63 @@ Page({
         })
     },
 
+    compute_level: function (item, year) {
+        let distributed = []
+        let level_list = [95, 85, 75, 65, 50]
+        let average = ''
+        let max = ''
+        let min = ''
+        let _all = 0
+        let _num = 0
+        for (let i = level_list.length - 1; i >= 0; i--) {
+            distributed.push(item[i + 3])
+            _all += item[i + 3] * level_list[i]
+            _num += item[i + 3]
+        }
+        for (let i = 0; i < distributed.length; i++) {
+            distributed[i] /= _num
+            distributed[i] *= 100
+            distributed[i] = distributed[i].toFixed(0)
+        }
+        average = (_all / item[2]).toFixed(2)
+        // 区分两级制和五级制
+        if (item[3] === 0 && item[5] === 0 && item[6] === 0) {
+            // 两级制
+            if (item[4] === 0 && item[7] !== 0) {
+                max = min = '不合格'
+            } else if (item[4] !== 0 && item[7] === 0) {
+                max = min = '合格'
+            } else if (item[4] !== 0 && item[7] !== 0) {
+                max = '合格'
+                min = '不合格'
+            }
+        } else {
+            // 五级制
+            let text_list = ['优', '良', '中', '及格', '不及格']
+            for (let i = 0; i < 5; i++) {
+                if (item[i + 3] > 0) {
+                    max = text_list[i]
+                    break
+                }
+            }
+            for (let i = 4; i >= 0; i--) {
+                if (item[i + 3] > 0) {
+                    min = text_list[i]
+                    break
+                }
+            }
+        }
+        return {
+            year: year,
+            average: average,
+            num: item[2],
+            max: max,
+            min: min,
+            distributed: distributed
+        }
+    },
+
+
     query: function () {
         let that = this
         wx.showLoading()
@@ -53,47 +110,67 @@ Page({
             if (res.statusCode === 200) {
                 if (res.data.Statue === 1) {
                     let CourseScore = res.data.CourseScore
-                    console.log(CourseScore)
+                    let IsHierarchy = res.data.IsHierarchy
+                    console.log(res.data)
                     let teacher_dict = {}
                     for (const year in CourseScore) {
-                        for (const item of CourseScore[year]) {
-                            if (item[0] === '') continue
-                            let distributed = []
-                            let _all = 0
-                            for (let i = item.length - 1; i >= 6; i--) {
-                                distributed.push(item[i])
-                                _all += item[i]
+                        // 分数制
+                        if (IsHierarchy[year] === 0) {
+                            for (const item of CourseScore[year]) {
+                                if (item[0] === '') continue
+                                let distributed = []
+                                let _all = 0
+                                for (let i = item.length - 1; i >= 6; i--) {
+                                    distributed.push(item[i])
+                                    _all += item[i]
+                                }
+                                for (let i = 0; i < distributed.length; i++) {
+                                    distributed[i] /= _all
+                                    distributed[i] *= 100
+                                    distributed[i] = distributed[i].toFixed(0)
+                                }
+                                if (teacher_dict[item[0]]) {
+                                    teacher_dict[item[0]]['info'].push({
+                                        year: year,
+                                        average: item[2]?item[2].toFixed(2):'null',
+                                        num: item[3],
+                                        max: item[4],
+                                        min: item[5],
+                                        distributed: distributed
+                                    })
+                                } else {
+                                    teacher_dict[item[0]] = {}
+                                    teacher_dict[item[0]]['state'] = false
+                                    teacher_dict[item[0]]['info'] = [{
+                                        year: year,
+                                        average: item[2]?item[2].toFixed(2):'null',
+                                        num: item[3],
+                                        max: item[4],
+                                        min: item[5],
+                                        distributed: distributed
+                                    }]
+                                }
                             }
-                            for (let i = 0; i < distributed.length; i++) {
-                                distributed[i] /= _all
-                                distributed[i] *= 100
-                                distributed[i] = distributed[i].toFixed(0)
+                        }
+                        else if (IsHierarchy[year] === 1) {
+                            // 等级制
+                            for (const item of CourseScore[year]) {
+                                if (item[0] === '') continue
+                                let result = that.compute_level(item, year)
+                                if (teacher_dict[item[0]]) {
+                                    teacher_dict[item[0]]['info'].push(result)
+                                } else {
+                                    teacher_dict[item[0]] = {}
+                                    teacher_dict[item[0]]['state'] = false
+                                    teacher_dict[item[0]]['info'] = [result]
+                                }
                             }
-                            if (teacher_dict[item[0]]) {
-                                teacher_dict[item[0]]['info'].push({
-                                    year: year,
-                                    average: item[2]?item[2].toFixed(2):'null',
-                                    num: item[3],
-                                    max: item[4],
-                                    min: item[5],
-                                    distributed: distributed
-                                    //     Average(Course.Term)	float	课程平均成绩
-                                    // Num(Course.Term)	int	已知成绩人数
-                                    // Max(Course.Term)	String	最优成绩
-                                    // Min(Course.Term)
-                                })
-                            } else {
-                                teacher_dict[item[0]] = {}
-                                teacher_dict[item[0]]['state'] = false
-                                teacher_dict[item[0]]['info'] = [{
-                                    year: year,
-                                    average: item[2]?item[2].toFixed(2):'null',
-                                    num: item[3],
-                                    max: item[4],
-                                    min: item[5],
-                                    distributed: distributed
-                                }]
-                            }
+                        }
+                        else {
+                            wx.showToast({
+                                title: 'Hierarchy Error!',
+                                icon: 'none'
+                            })
                         }
                     }
                     console.log(teacher_dict)

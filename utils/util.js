@@ -238,7 +238,6 @@ function shuffle(arr){
 // 送给首页的信息
 function get_index_info() {
     let curriculum_info = ''
-    let curr_date = getDate()
     let StartDate = wx.getStorageSync('schoolTermInfo').StartDate
     let _curr_date = getDate()
     let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
@@ -262,17 +261,20 @@ function get_index_info() {
         if (!_flag) curriculum_info = '今日无课'
         else {
             let _time = new Date()
-            let e = get_lesson_index({
+            let index = get_lesson_index({
                 hour: _time.getHours(),
                 minute: _time.getMinutes()
             })
-            console.log(_list)
-            let index = e[0]
-            for (let i = index; i < _list.length; i ++) {
-                if (_list[i] !== null) {
-                    index = i
-                    curriculum_info = `${e[1]}\n${_list[index].CourseName}\n${_list[index].RoomName}`
-                    break
+            if (index === -1) {
+                curriculum_info = '今日无课'
+            } else {
+                for (let i = index; i < _list.length; i ++) {
+                    if (_list[i] !== null) {
+                        index = i
+                        let time_li = get_time_from_index(index)
+                        curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index].CourseName}\n${_list[index].RoomName}`
+                        break
+                    }
                 }
             }
         }
@@ -307,7 +309,7 @@ function get_lesson_index(time) {
     ]
     for (let i = 0; i < time_list.length; i++) {
         if (compareTime(time, {hour: time_list[i][0], minute: time_list[i][1]}) <= 0) {
-            return [i + 1, time_table[i]]
+            return i
         }
     }
     return -1
@@ -330,6 +332,5 @@ module.exports = {
     getLessonList,
     shuffle,
     get_index_info,
-    get_lesson_index,
     get_time_from_index,
 }

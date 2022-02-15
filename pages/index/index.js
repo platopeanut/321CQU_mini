@@ -8,10 +8,10 @@ Page({
         gridCol: 2,
         swiperList: [{
             id: 0,
-            url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg'
+            url: 'https://new.inews.gtimg.com/tnews/0f418b96/ae3d/0f418b96-ae3d-4e66-921b-9dc00527ac50.jpg'
           }, {
             id: 1,
-            url: 'https://ossweb-img.qq.com/images/lol/web201310/skin/big84001.jpg',
+            url: 'https://shareapp.cyol.com/cmsfile/yidong/images/1909/17/2253352400106420.jpg',
           }],
         iconList: [
             {

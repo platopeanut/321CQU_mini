@@ -10,6 +10,7 @@ Page({
         curr_hint: null,
         user_input: '',
         no_result_state: false,
+        first_open_state: true,
         lesson_list: [],
         teacher_dict: {},
     },
@@ -84,6 +85,9 @@ Page({
             })
             return
         }
+        this.setData({
+            first_open_state: false
+        })
         if (this.data.curr_way === '搜课程') {
             wx.showLoading()
             api.query_class_info_by_class_name(this.data.user_input).then(res => {

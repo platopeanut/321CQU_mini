@@ -1,6 +1,6 @@
-<view>
+<view style="background-color: white;">
 
-    <view style="height: 400rpx;width: 750rpx;">
+    <view style="height: 400rpx;width: 750rpx;padding: 20rpx;border-bottom: 5rpx solid rgb(240, 240, 240);">
         <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="3000" duration="500">
             <swiper-item wx:for="{{swiperList}}" wx:key bindlongpress="saveImg" data-url="{{item.url}}">
                 <image src="{{item.url}}" mode="aspectFill"></image>
