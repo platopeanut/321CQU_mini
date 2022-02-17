@@ -305,7 +305,8 @@ function get_lesson_index(time) {
         [18, 5],
         [19, 45],
         [20, 40],
-        [21, 35]
+        [21, 35],
+        [22, 30],
     ]
     for (let i = 0; i < time_list.length; i++) {
         if (compareTime(time, {hour: time_list[i][0], minute: time_list[i][1]}) <= 0) {
@@ -333,4 +334,5 @@ module.exports = {
     shuffle,
     get_index_info,
     get_time_from_index,
+    get_lesson_index
 }

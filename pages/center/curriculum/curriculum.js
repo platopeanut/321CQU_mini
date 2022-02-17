@@ -22,7 +22,52 @@ Page({
         term_list: [],
         curr_term: '',
         currSelfItem: {},
+        time_height: 0,
     },
+
+
+    get_time_height() {
+        let _time = new Date()
+        // let _time = {
+        //     getHours() {
+        //         return 15
+        //     },
+        //     getMinutes() {
+        //         return 0
+        //     }
+        // }
+        if (util.compareTime({
+            hour: _time.getHours(),
+            minute: _time.getMinutes()
+        }, {hour:8, minute:30}) <=0) return 1;
+        else if (util.compareTime({
+            hour: _time.getHours(),
+            minute: _time.getMinutes()
+        }, {hour:22, minute:30}) >=0) return 1690 - 1;
+
+        let index = util.get_lesson_index({
+            hour: _time.getHours(),
+            minute: _time.getMinutes()
+        })
+        let zone = util.get_time_from_index(index)[0].split(':')
+        // time2 - time1
+        function time_sub(time1, time2) {
+            return (time2.hour - time1.hour) * 60 + (time2.minute - time1.minute)
+        }
+        let _time_sub = time_sub({
+            hour: parseInt(zone[0]),
+            minute: parseInt(zone[1])
+        }, {
+            hour: _time.getHours(),
+            minute: _time.getMinutes()
+        })
+        if (_time_sub < 0) _time_sub = 0
+        // console.log(index)
+        // console.log(_time_sub)
+        // console.log(zone)
+        return index * 130 + _time_sub*130/45
+    },
+
     getCurrWeekList() {
         let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
         let day_list = []
@@ -65,11 +110,9 @@ Page({
     },
 
     getDetailLessonInfo(e) {
-        console.log(e)
         let item = e.currentTarget.dataset.item
         item.InstructorName = item.InstructorName.replace('-[主讲];', ' ')
         let time_list = item.PeriodFormat.split('-')
-        console.log(time_list)
         let start_time = util.get_time_from_index(time_list[0] - 1)[0]
         let end_time = util.get_time_from_index(time_list[1] - 1)[1]
         item.TeachingTime = start_time + '~' + end_time
@@ -121,6 +164,9 @@ Page({
 
     onShow: function() {
         let that = this
+        this.setData({
+            time_height: that.get_time_height()
+        })
         if (!this.data.currSchoolTermInfo || !this.data.table) {
             this.setData({
                 curr_year: new Date().getFullYear(),

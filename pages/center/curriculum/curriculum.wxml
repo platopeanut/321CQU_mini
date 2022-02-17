@@ -3,41 +3,53 @@
   <wxs src="./tool.wxs" module="tool"></wxs>
 <!-- 头部 -->
 <view class="shadow bg-white" style="height: 100rpx;">
-<view class="top">
-<view class="left" style="font-weight: bold;">{{(month+1)<10?'0'+(month+1):month+1}}\n月</view>
-<view class="item" wx:for="{{week_list}}">
-  <view style="font-weight: bold;">{{item[0]}}</view>
-  <view>{{item[1]<10?'0'+item[1]:item[1]}}日</view>
-</view>
-</view>
-</view>
-
-
-<view class="box">
-  <view class="left">
-  <view wx:for="{{13}}" class="index">{{index+1}}</view>
+  <view class="top">
+  <view class="left" style="font-weight: bold;">{{(month+1)<10?'0'+(month+1):month+1}}\n月</view>
+  <view class="item" wx:for="{{week_list}}">
+    <view style="font-weight: bold;">{{item[0]}}</view>
+    <view>{{item[1]<10?'0'+item[1]:item[1]}}日</view>
   </view>
-  <view wx:for="{{table[week]?table[week]:7}}" class="day_item" mark:col_index="{{index}}" style="background-color: {{(index+1 === today||today===0&&index===6)?week===curr_week?'rgb(201, 227, 254);':'white':'white'}}" wx:key>
-    <view wx:for="{{item!==index?item:0}}" wx:key>
-      <view wx:if="{{item&&item.self === undefined}}" bindtap="getDetailLessonInfo" data-item="{{item}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
-        <view style="color: white;text-align: center;">
-          {{item.RoomName}}\n{{item.CourseName.length<18?item.CourseName:tool.cut_str(item.CourseName,0,16)}}
-        </view>  
-      </view>
-      <view wx:elif="{{item.self}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
-        <view style="color: white;text-align: center;">
-          {{item.content.length<18?item.content:tool.cut_str(item.content,0,16)}}
+  </view>
+</view>
+
+<view class="layers">
+<!-- 课表层-->
+  <view class="layer1">
+    <view class="left">
+      <view wx:for="{{13}}" class="index">{{index+1}}</view>
+    </view>
+    <view wx:for="{{table[week]?table[week]:7}}" class="day_item" mark:col_index="{{index}}" style="background-color: {{(index+1 === today||today===0&&index===6)?week===curr_week?'rgb(201, 227, 254);':'white':'white'}}" wx:key>
+      <view wx:for="{{item!==index?item:0}}" wx:key>
+        <view wx:if="{{item&&item.self === undefined}}" bindtap="getDetailLessonInfo" data-item="{{item}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+          <view style="color: white;text-align: center;">
+            {{item.RoomName}}\n{{item.CourseName.length<18?item.CourseName:tool.cut_str(item.CourseName,0,16)}}
+          </view>
         </view>
-      </view>
-      <view wx:else style="height: 130rpx;" bindlongpress="set_new_item" mark:row_index="{{index}}">
+        <view wx:elif="{{item.self}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+          <view style="color: white;text-align: center;">
+            {{item.content.length<18?item.content:tool.cut_str(item.content,0,16)}}
+          </view>
+        </view>
+        <view wx:else style="height: 130rpx;" bindlongpress="set_new_item" mark:row_index="{{index}}">
+        </view>
       </view>
     </view>
   </view>
+<!-- 自定义层-->
+<!--  <view class="layer2">-->
+<!--    <view style="width:50rpx;height:100%;display:inline-block;background-color:rgba(255,255,255,0);">-->
+<!--    </view>-->
+<!--    <view wx:for="{{7}}" class="day_item" style="border: 1px solid black;"></view>-->
+<!--  </view>-->
+<!-- 实时红线层-->
+  <view class="layer3">
+    <view style="width:50rpx;height:100%;display:inline-block;background-color:rgba(255,255,255,0);">
+    </view>
+    <view wx:for="{{7}}" class="day_item">
+      <view wx:if="{{(index+1 === today||today===0&&index===6) && week===curr_week}}" style="width:100%;height:{{time_height}}rpx;border-bottom:5rpx solid red;pointer-event: auto;"></view>
+    </view>
+  </view>
 </view>
-
-
-<!-- 占位 -->
-<view style="height: 100rpx;"></view>
 
 
 <!-- 底部栏 -->
@@ -61,7 +73,7 @@
 </view>
 
 <!--  课程信息详情-->
-  <view class="cu-modal {{detailState?'show':''}}" bindtap="hideModal">
+<view class="cu-modal {{detailState?'show':''}}" bindtap="hideModal">
     <view class="cu-dialog" catchtap>
       <scroll-view scroll-y>
         <view class="cu-list menu text-left solid-top">
