@@ -101,9 +101,22 @@
             </view>
         </radio-group>
         <view class="cu-list menu text-left solid-top">
+            <view class="cu-item" wx:if="{{course_conflict_warning}}">
+                <view class="content">
+                    <text class="text-grey">疑似存在重修课程与对应初修课程同时被选中</text>
+                </view>
+            </view>
+            <view class="cu-item" wx:if="{{course_conflict_warning}}">
+                <view class="content">
+                    <text class="text-grey">冲突课程号</text>
+                </view>
+                <view class="action">
+                    <text class="text-black">{{course_conflict_warning_course_code}}</text>
+                </view>
+            </view>
             <view class="cu-item">
                 <view class="content">
-                    <text class="text-grey">平均绩点:</text>
+                    <text class="text-grey">平均绩点({{calculation_rule==='four'?'四分制':'五分制'}}):</text>
                 </view>
                 <view class="action" style="position: absolute; right: 50rpx;">
                     <text class="text-green" style="font-weight:bold;">{{avg_point}}</text>

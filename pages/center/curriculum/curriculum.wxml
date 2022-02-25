@@ -46,7 +46,7 @@
     <view style="width:50rpx;height:100%;display:inline-block;background-color:rgba(255,255,255,0);">
     </view>
     <view wx:for="{{7}}" class="day_item">
-      <view wx:if="{{(index+1 === today||today===0&&index===6) && week===curr_week}}" style="width:100%;height:{{time_height}}rpx;border-bottom:5rpx solid red;pointer-event: auto;"></view>
+      <view wx:if="{{(index+1 === today||today===0&&index===6) && week===curr_week}}" style="width:100%;height:{{time_height}}rpx;border-bottom:5rpx solid red;"></view>
     </view>
   </view>
 </view>

@@ -8,10 +8,10 @@ Page({
         gridCol: 2,
         swiperList: [{
             id: 0,
-            url: 'https://new.inews.gtimg.com/tnews/0f418b96/ae3d/0f418b96-ae3d-4e66-921b-9dc00527ac50.jpg'
+            url: 'http://gbpxzx.cqu.edu.cn/__local/6/7C/BA/86AD94FBF64C3280998656A2715_C1E8CEAA_1E200.jpg'
           }, {
             id: 1,
-            url: 'https://shareapp.cyol.com/cmsfile/yidong/images/1909/17/2253352400106420.jpg',
+            url: 'http://gbpxzx.cqu.edu.cn/__local/A/94/01/83D6E355EF21C4241E2C856D103_923BABFE_3136E.jpg',
           }],
         iconList: [
             {

@@ -20,7 +20,10 @@ Page({
         user_grade_config: wx.getStorageSync('user_grade_config')?wx.getStorageSync('user_grade_config'):{},
         more_analysis_config_first: [],
         more_analysis_config_second: [],
+        course_conflict_warning: false,
+        course_conflict_warning_course_code: '',
     },
+
     user_grade_config_process: function () {
         let grade_list = this.data.grade_list
         let user_grade_config =this.data.user_grade_config
@@ -118,12 +121,14 @@ Page({
                                         // 过滤四六级和未评教,缓登
                                         if (grade_list[term_name][i].CourseCredit===-1||!grade_list[term_name][i].EffectiveScoreShow || grade_list[term_name][i].CourseName === '大学英语(国家四级)' || grade_list[term_name][i].CourseName === '大学英语(国家六级)')
                                             continue
-                                        grade_list[term_name][i]['select'] = true  // 每一项成绩用户是否选择，默认不选择
+                                        grade_list[term_name][i]['select'] = true  // 每一项成绩用户是否选择，默认选择
                                         grade_list[term_name][i]['gid'] = gid   // 每一项成绩id号
                                         gid ++
 
                                     }
                                 }
+                                // 默认选中重修，不选对应的初修
+                                // ???
                                 that.setData({
                                     grade_list: grade_list,
                                     term_list: term_list
@@ -255,14 +260,15 @@ Page({
         let that = this
         if (this.data.curr_mode) {
             this.setData({
-                modalState: true
+                modalState: true,
+                course_conflict_warning: false,
+                course_conflict_warning_course_code: ''
             })
             let grade_list = this.data.grade_list
             let term_list = this.data.term_list
             // 用户自定义配置
             // this.user_grade_config_process()
             wx.setStorageSync('user_grade_config', this.data.user_grade_config)
-
             let point_list = []
             let credit_list = []
             for (let i = 0; i < term_list.length; i++) {
@@ -275,6 +281,12 @@ Page({
                     if (!item.select) continue
                     let curr_credit = item.CourseCredit
                     let curr_point = util.score2point(item.EffectiveScoreShow, this.data.calculation_rule)
+                    // 考虑重修
+                    if (item.StudyNature!==undefined && item.StudyNature === '重修') {
+                        if (curr_point >= 1.0) {
+                            curr_point = 1.0
+                        }
+                    }
                     if (!curr_credit || !curr_point) continue
                     credit += parseFloat(curr_credit)
                     point += parseFloat(curr_credit) * curr_point
@@ -284,6 +296,30 @@ Page({
                 point_list.push(point)
                 credit_list.push(credit)
             }
+            // 检测重修课程与对应初修课程是否同时被选中
+            if (that.data.identity === '本科生') {
+                for (const term of term_list) {
+                    for (const item of grade_list[term]) {
+                        if (!item.select) continue
+                        if (item.StudyNature === '重修') {
+                            for (const curr_term of term_list) {
+                                for (const curr_item of grade_list[curr_term]) {
+                                    if (!curr_item.select) continue
+                                    if (curr_item.CourseCode === item.CourseCode && curr_item.StudyNature === '初修') {
+                                        that.setData({
+                                            course_conflict_warning: true,
+                                            course_conflict_warning_course_code: curr_item.CourseCode
+                                        })
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
             let avg_point = 0
             let credit_sum = 0
             for (let i = 0; i < point_list.length; i++) {

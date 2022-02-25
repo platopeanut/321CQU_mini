@@ -28,14 +28,6 @@ Page({
 
     get_time_height() {
         let _time = new Date()
-        // let _time = {
-        //     getHours() {
-        //         return 15
-        //     },
-        //     getMinutes() {
-        //         return 0
-        //     }
-        // }
         if (util.compareTime({
             hour: _time.getHours(),
             minute: _time.getMinutes()
