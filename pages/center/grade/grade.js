@@ -22,6 +22,7 @@ Page({
         more_analysis_config_second: [],
         course_conflict_warning: false,
         course_conflict_warning_course_code: '',
+        official_grade: '',
     },
 
     user_grade_config_process: function () {
@@ -107,6 +108,26 @@ Page({
 
         wx.showLoading()
         if (this.data.identity === '本科生') {
+            // 查询绩点和排名
+            wx.showLoading()
+            api.get_gpa_and_rank(that.data.uid, that.data.uid_pwd).then(res => {
+                wx.hideLoading()
+                if (res.statusCode === 200) {
+                    if (res.data.Statue === 1) {
+                        wx.setStorageSync('official_grade', res.data.GpaRanking)
+                        that.setData({
+                            official_grade: res.data.GpaRanking
+                        })
+                    } else {
+                        util.showError(res)
+                    }
+                } else {
+                    wx.showToast({
+                        title: `网络错误[${res.statusCode}]`,
+                        icon: 'error'
+                    })
+                }
+            })
             wx.login({
                 success: function(res) {
                     api.getGrade(that.data.stu_id, that.data.uid, that.data.uid_pwd, res.code).then(res => {
@@ -242,7 +263,8 @@ Page({
         this.setData({
             grade_list: grade_info.grade_list,
             term_list: grade_info.term_list,
-            curr_term: grade_info.curr_term
+            curr_term: grade_info.curr_term,
+            official_grade: wx.getStorageSync('official_grade')
         })
         if (grade_info === '') {
             wx.showToast({

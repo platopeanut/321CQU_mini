@@ -10,7 +10,47 @@ Page({
             uid: wx.getStorageSync('uid'),
             uid_pwd: wx.getStorageSync('uid_pwd'),
             identity: wx.getStorageSync('identity'), // 研究生还是本科生
+            _dormitory: [],
+            dormitory_index: [],
+            room: null,
         },
+    },
+
+    onShow: function() {
+        let room = wx.getStorageSync('room')
+        if (room === '') room = {
+            'campus': '选择校区',
+            'building': '选择楼栋',
+            'room_id': ''
+        }
+        this.setData({
+            _dormitory: [util.get_campus_list(), util.get_dormitory()],
+            dormitory_index: [0,0],
+            room: room
+        })
+    },
+
+
+    bindMultiPickerChange: function (e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        let room = {
+            'campus': this.data._dormitory[0][e.detail.value[0]],
+            'building': this.data._dormitory[1][e.detail.value[1]],
+            'room_id': ''
+        }
+        this.setData({
+            room: room
+        })
+    },
+    bindMultiPickerColumnChange: function (e) {
+        if (e.detail.column === 0) {
+            let zone = this.data._dormitory[0][e.detail.value]
+            let li = util.get_dormitory(zone)
+            this.setData({
+                _dormitory: [util.get_campus_list(), li],
+                dormitory_index: [e.detail.value, 0]
+            })
+        }
     },
 
     saveInfo(e) {
@@ -19,6 +59,15 @@ Page({
         let stu_id = e.detail.value.stu_id
         let email = e.detail.value.email
         let nickname = e.detail.value.nickname
+        let room_id = e.detail.value.room_id
+
+        // 宿舍
+        let room = this.data.room
+        room['room_id'] = room_id
+        wx.setStorageSync('room', room)
+        this.setData({
+            room: room
+        })
 
         // 设置昵称
         if (nickname !== "") {

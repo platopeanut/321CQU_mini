@@ -16,6 +16,8 @@ Page({
         showMode: 0, // 显示模式，0为每周，1为整个学期
         detailState: false,
         currDetailLesson: null,
+        extraDetailLesson: [],
+        // extraDetailLesson_index: 0,
         currSchoolTermInfo: null,
         selectTermState: false,
         longPressState: false,
@@ -23,7 +25,19 @@ Page({
         curr_term: '',
         currSelfItem: {},
         time_height: 0,
+
+        curriculum_extra: wx.getStorageSync('curriculum_extra'),
+        nextCurriculum_extra: wx.getStorageSync('nextCurriculum_extra'),
+
     },
+
+    // change_conflict_course: function (e) {
+    //     console.log(e)
+    //     if (e.detail.current === 0) return
+    //     this.setData({
+    //         extraDetailLesson_index: e.detail.current
+    //     })
+    // },
 
 
     get_time_height() {
@@ -102,12 +116,30 @@ Page({
     },
 
     getDetailLessonInfo(e) {
+        let that = this
         let item = e.currentTarget.dataset.item
-        item.InstructorName = item.InstructorName.replace('-[主讲];', ' ')
-        let time_list = item.PeriodFormat.split('-')
-        let start_time = util.get_time_from_index(time_list[0] - 1)[0]
-        let end_time = util.get_time_from_index(time_list[1] - 1)[1]
-        item.TeachingTime = start_time + '~' + end_time
+        let index = e.currentTarget.dataset.index
+        function teaching_time_helper(n) {
+            n.InstructorName = n.InstructorName.replace('-[主讲];', ' ')
+            let time_list = n.PeriodFormat.split('-')
+            let start_time = util.get_time_from_index(time_list[0] - 1)[0]
+            let end_time = util.get_time_from_index(time_list[1] - 1)[1]
+            n.TeachingTime = start_time + '~' + end_time
+            return n
+        }
+        item = teaching_time_helper(item)
+        // 冲突课程
+        if (item.more) {
+            let extraDetailLesson = [item]
+            for (const class_item of that.data.curriculum_extra['conflict']) {
+                if (class_item.week === that.data.week && class_item.day === item.WeekDayFormat && class_item.period===index) {
+                    extraDetailLesson.push(teaching_time_helper(class_item.item))
+                }
+            }
+            that.setData({
+                extraDetailLesson: extraDetailLesson
+            })
+        }
         this.setData({
             detailState: true,
             currDetailLesson: item
@@ -118,6 +150,7 @@ Page({
             detailState: false,
             selectTermState: false,
             longPressState: false,
+            extraDetailLesson: [],
         })
     },
     UIprocess(data, lesson_list) {
@@ -255,7 +288,6 @@ Page({
             week_list: that.getCurrWeekList(),
             week: that.getCurrWeek(),
         })
-        console.log(item.Term)
         wx.setStorageSync('curr_term', item.Term)
         if (item.Term === wx.getStorageSync('nextSchoolTermInfo').Term) {
             that.setData({
@@ -297,10 +329,16 @@ Page({
                         wx.hideLoading()
                         if (res.statusCode === 200) {
                             if (res.data.Statue === 1) {
-                                let table = util.parseLesson(res.data.Courses)
+                                let result = util.parseLesson(res.data.Courses)
+                                let table = result[0]
+                                let table_extra = result[1]
                                 let lesson_list = util.getLessonList(res.data.Courses)
                                 wx.setStorageSync('curriculum', table)
                                 wx.setStorageSync('lesson_list', lesson_list)
+                                wx.setStorageSync('curriculum_extra', table_extra)
+
+
+
                                 // 3.获取下学期学校信息
                                 wx.showLoading()
                                 api.getSchoolNextTermInfo(uid, uid_pwd).then(res => {
@@ -311,6 +349,7 @@ Page({
                                                 wx.setStorageSync('nextSchoolTermInfo', '')
                                                 wx.setStorageSync('nextCurriculum', '')
                                                 wx.setStorageSync('nextLesson_list', '')
+                                                wx.setStorageSync('nextCurriculum_extra', '')
                                                 that.onShow()
                                                 wx.showToast({
                                                     title: '当前学期加载成功\n暂无预览学期信息',
@@ -337,12 +376,16 @@ Page({
                                                                 })
                                                                 wx.setStorageSync('nextCurriculum', '')
                                                                 wx.setStorageSync('nextLesson_list', '')
+                                                                wx.setStorageSync('nextCurriculum_extra', '')
                                                                 return
                                                             }
-                                                            let table = util.parseLesson(res.data.Courses)
+                                                            let result = util.parseLesson(res.data.Courses)
+                                                            let table = result[0]
+                                                            let table_extra = result[1]
                                                             let lesson_list = util.getLessonList(res.data.Courses)
                                                             wx.setStorageSync('nextCurriculum', table)
                                                             wx.setStorageSync('nextLesson_list', lesson_list)
+                                                            wx.setStorageSync('nextCurriculum_extra', table_extra)
                                                             that.onShow()
                                                             wx.showToast({
                                                                 title: '当前学期加载成功\n预览学期加载成功',
@@ -363,6 +406,7 @@ Page({
                                             wx.setStorageSync('nextSchoolTermInfo', '')
                                             wx.setStorageSync('nextCurriculum', '')
                                             wx.setStorageSync('nextLesson_list', '')
+                                            wx.setStorageSync('nextCurriculum_extra', '')
                                             that.onShow()
                                             util.showError(res)
                                         }
@@ -370,6 +414,7 @@ Page({
                                         wx.setStorageSync('nextSchoolTermInfo', '')
                                         wx.setStorageSync('nextCurriculum', '')
                                         wx.setStorageSync('nextLesson_list', '')
+                                        wx.setStorageSync('nextCurriculum_extra', '')
                                         that.onShow()
                                         wx.showToast({
                                             title: '网络错误' + res.statusCode,

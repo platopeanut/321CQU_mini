@@ -10,7 +10,7 @@ Page({
   onShow: function () {
     let that = this
     api.getAboutUs().then(res => {
-      if (res.data.Statue == 1) {
+      if (res.data.Statue === 1) {
         that.setData({
           content_list: res.data.Content
         })

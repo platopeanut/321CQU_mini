@@ -1,6 +1,6 @@
 <!--主体-->
-<view class="cu-card" >
-<view class="cu-item shadow" style="border-bottom: 1rpx solid rgb(201, 227, 254);">
+<view class="cu-card no-card" >
+<view class="cu-item shadow">
 <view class="cu-list menu-avatar">
   <view class="cu-item">
     <view class="cu-avatar round lg" style="background-image:url({{feedback_data.UserImg}});"></view>

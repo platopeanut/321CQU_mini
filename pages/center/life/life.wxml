@@ -1,0 +1,34 @@
+<view>
+    <view class="cu-list menu sm-border card-menu margin-top">
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-pay text-cyan"></text>
+                <text class="text-black text-bold">水电费余额</text>
+            </view>
+            <view class="action">
+                <text class="text-black text-price text-xxl">{{fees_info['Amount']}}</text>
+            </view>
+        </view>
+        <view class="cu-list menu sm-border">
+            <view class="cu-item">
+                <view class="content">
+                    <text class="cuIcon-lightfill text-yellow"></text>
+                    <text class="text-black">电费补贴余额</text>
+                </view>
+                <view class="action">
+                    <text class="text-black text-price text-xxl">{{fees_info['Eamount']}}</text>
+                </view>
+            </view>
+
+            <view class="cu-item">
+                <view class="content">
+                    <text class="cuIcon-upstage text-blue"></text>
+                    <text class="text-black">水费补贴余额</text>
+                </view>
+                <view class="action">
+                    <text class="text-black text-price text-xxl">{{fees_info['Wamount']}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

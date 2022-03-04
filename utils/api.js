@@ -448,6 +448,41 @@ function query_class_detail(Cid) {
   })
 }
 
+// 查询gpa和排名
+function get_gpa_and_rank(uid, uid_pwd) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/student/get_gpa_ranking',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 查询水电费
+function get_fees(uid, uid_pwd, is_hu_xi, room) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_fees',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd,
+        'IsHuXi': is_hu_xi,
+        'Room': room
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
 
 module.exports = {
   test,
@@ -476,4 +511,6 @@ module.exports = {
   query_class_info_by_class_name,
   query_class_info_by_teacher_name,
   query_class_detail,
+  get_gpa_and_rank,
+  get_fees,
 }

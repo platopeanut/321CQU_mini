@@ -13,6 +13,7 @@
     "pages/center/curriculum/curriculum",
     "pages/center/grade/grade",
     "pages/center/exam/exam",
+    "pages/center/life/life",
     "pages/center/class_info/class_info",
     "pages/center/class_info/detail/detail"
   ],

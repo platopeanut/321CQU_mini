@@ -116,10 +116,42 @@
             </view>
             <view class="cu-item">
                 <view class="content">
-                    <text class="text-grey">平均绩点({{calculation_rule==='four'?'四分制':'五分制'}}):</text>
+                    <text class="text-grey">平均绩点({{calculation_rule==='four'?'四分制':'五分制'}})</text>
                 </view>
                 <view class="action" style="position: absolute; right: 50rpx;">
                     <text class="text-green" style="font-weight:bold;">{{avg_point}}</text>
+                </view>
+            </view>
+            <view class="cu-item" wx:if="{{official_grade['gpa']}}">
+                <view class="content">
+                    <text class="text-grey">综合绩点</text>
+                </view>
+                <view class="action" style="position: absolute; right: 50rpx;">
+                    <text class="text-green">{{official_grade['gpa']}}</text>
+                </view>
+            </view>
+            <view class="cu-item" wx:if="{{official_grade['majorRanking']}}">
+                <view class="content">
+                    <text class="text-grey">专业排名</text>
+                </view>
+                <view class="action" style="position: absolute; right: 50rpx;">
+                    <text class="text-green">{{official_grade['majorRanking']}}</text>
+                </view>
+            </view>
+            <view class="cu-item" wx:if="{{official_grade['gradeRanking']}}">
+                <view class="content">
+                    <text class="text-grey">年级排名</text>
+                </view>
+                <view class="action" style="position: absolute; right: 50rpx;">
+                    <text class="text-green">{{official_grade['gradeRanking']}}</text>
+                </view>
+            </view>
+            <view class="cu-item" wx:if="{{official_grade['classRanking']}}">
+                <view class="content">
+                    <text class="text-grey">年级排名</text>
+                </view>
+                <view class="action" style="position: absolute; right: 50rpx;">
+                    <text class="text-green">{{official_grade['classRanking']}}</text>
                 </view>
             </view>
         </view>

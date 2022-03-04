@@ -8,10 +8,10 @@ Page({
         gridCol: 2,
         swiperList: [{
             id: 0,
-            url: 'http://gbpxzx.cqu.edu.cn/__local/6/7C/BA/86AD94FBF64C3280998656A2715_C1E8CEAA_1E200.jpg'
+            url: 'http://gbpxzx.cqu.edu.cn/__local/0/18/75/C474505E6FF65D03DD8716A2496_D609F844_4EA8A.jpg'
           }, {
             id: 1,
-            url: 'http://gbpxzx.cqu.edu.cn/__local/A/94/01/83D6E355EF21C4241E2C856D103_923BABFE_3136E.jpg',
+            url: 'http://gbpxzx.cqu.edu.cn/__local/1/C4/57/47D1111C085D0FA365CADBB7694_2441C4C0_285E2.jpg',
           }],
         iconList: [
             {
@@ -55,6 +55,12 @@ Page({
                 path: 'class_info',
                 color: 'purple',
                 icon: 'list'
+            },
+            {
+                title: '生活',
+                path: 'life',
+                color: 'yellow',
+                icon: 'baby'
             },
             {
                 title: '支持我们',

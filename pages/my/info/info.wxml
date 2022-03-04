@@ -1,6 +1,6 @@
 <view style="background-color: white;">
 
-<!-- 信息填写 -->
+  <!-- 信息填写 -->
 <form catchsubmit="saveInfo">
   <view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action">
@@ -26,6 +26,17 @@
   <view class="cu-form-group">
   <view class="title">昵称</view>
   <input name="nickname" placeholder="请设置你的昵称" value="{{stuInfo.nickname}}"></input>
+  </view>
+
+  <view class="cu-form-group">
+    <view class="title">宿舍</view>
+    <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{dormitory_index}}" range="{{_dormitory}}">
+      <view>
+        {{room['campus']}} {{room['building']}}
+      </view>
+    </picker>
+<!--  <view class="title">宿舍</view>-->
+    <input name="room_id" placeholder="宿舍号" value="{{room['room_id']}}"></input>
   </view>
   
   <view class="padding flex flex-direction">

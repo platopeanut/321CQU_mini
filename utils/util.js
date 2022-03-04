@@ -2,6 +2,41 @@
  *  常用方法
  */
 
+const dormitory = {
+    'A区': ['选择楼栋','一舍学生宿舍','二舍学生宿舍','三舍学生宿舍','四舍学生宿舍','五舍学生宿舍','六舍学生宿舍','七舍学生宿舍','八舍学生宿舍','九舍学生宿舍','十舍学生宿舍','十一舍学生宿舍','十二舍学生宿舍','A栋宿舍','C栋宿舍','D栋宿舍'],
+    'B区': ['选择楼栋','一舍学生宿舍','二舍学生宿舍','三舍学生宿舍','四舍学生宿舍','五舍学生宿舍','六舍学生宿舍','七舍学生宿舍','八舍学生宿舍','九舍学生宿舍','十舍学生宿舍','十一舍学生宿舍','十二舍学生宿舍'],
+    'C区': ['选择楼栋','一号学生宿舍','二号学生宿舍','三号学生宿舍','四号学生宿舍','五号学生宿舍'],
+    '虎溪梅园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢'],
+    '虎溪竹园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢'],
+    '虎溪松园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢'],
+    '虎溪兰园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢', '八幢'],
+}
+
+function get_dormitory (zone= '选择校区') {
+    if (zone === '选择校区') return ['选择楼栋']
+    else return dormitory[zone]
+}
+function get_campus_list() {
+    return ['选择校区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
+    // return ['选择校区', 'A区','B区','C区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
+}
+const dormitory_code = {
+    'A区': 'A',
+    'B区': 'B',
+    'C区': 'C',
+    '虎溪梅园': 'A',
+    '虎溪竹园': 'B',
+    '虎溪松园': 'C',
+    '虎溪兰园': 'D',
+}
+
+function get_dormitory_code(room) {
+    let code = dormitory_code[room['campus']]
+    code += dormitory[room['campus']].indexOf(room['building'])
+    code += room['room_id']
+    return code
+}
+
 const time_table = [
     '08:30~09:15',
     '09:25~10:10',
@@ -197,6 +232,10 @@ function parseWeekDayFormat(str) {
 }
 function parseLesson(data) {
     let book = {}
+    let book_extra_info = {
+        'special': [],                  // 解决小学期/实训课程
+        'conflict': []                  // 解决冲突课程
+    }
     for (const item of data) {
         for (const week_index of parseFormat2List(item.TeachingWeekFormat)) {
             if(!book[week_index]) {
@@ -205,13 +244,26 @@ function parseLesson(data) {
                     book[week_index][i] = new Array(13)
                 }
             }
-            if (!item.WeekDayFormat || !item.PeriodFormat) continue
+            if (!item.WeekDayFormat || !item.PeriodFormat) {
+                // book_extra_info['special'].push(item)
+                continue
+            }
             for (const index of parseFormat2List(item.PeriodFormat)) {
-                book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1] = item
+                if (!book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1]) {
+                    book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1] = item
+                } else {
+                    book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1].more = true
+                    book_extra_info['conflict'].push({
+                        'week': week_index,
+                        'day': item.WeekDayFormat,
+                        'period': index - 1,
+                        'item': item
+                    })
+                }
             }
         }
     }
-    return book
+    return [book, book_extra_info]
 }
 
 function getLessonList(data) {
@@ -334,5 +386,11 @@ module.exports = {
     shuffle,
     get_index_info,
     get_time_from_index,
-    get_lesson_index
+    get_lesson_index,
+    dormitory,
+    get_dormitory,
+    get_campus_list,
+    get_dormitory_code,
+    parseFormat2List,
+    parseWeekDayFormat,
 }
