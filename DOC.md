@@ -44,29 +44,105 @@
 - 常用颜色
 - 提示风格
 
+## Name Promise
+> 小程序命名规范
+
+- 函数名称
+  - 采用驼峰命名法
+  - 第一个单词首字母小写，其余单词首字母大写
+  - 例如：`getUserInfo`
+- 变量名称
+  - 字母全部小写，单词之间使用下划线分隔
+  - 例如：`stu_name`
+- 缓存名称
+  - 首字母大写的驼峰命名法
+  - 例如：`SchoolInfo`
+- this命名
+  - 当`this`发生冲突时，将`Page`对象的`this`命名为`that`
+  - ~~~javascript
+    let that = this
+    ~~~
+
 ## Cache Promise
 > 小程序本地缓存规范
 
-- my.js
-  - ad_count: 用户观看广告次数 number
-  - userInfo
-  - has_bind
-- info.js
-  - room
-  - stu_name
-  - stu_id
-  - email
-  - uid
-  - uid_pwd
-  - identity
-  - nickname
-- class_info.js
-  - class_info_curr_way
-- 
+- 所有缓存使用同步缓存
+  ~~~javascript
+  // 写入缓存
+  wx.setStorageSync('key', value)
+  // 读取缓存
+  value = wx.getStorageSync('key')
+  ~~~
+> 目前小程序缓存架构较为混乱，等我以后重新调整，下面暂时只列出一些必要的缓存
+
+### 关键缓存
+- 学生信息
+  - room：宿舍编号
+  - stu_name：学生姓名
+  - stu_id：学生学号
+  - email：邮箱
+  - uid：统一身份账号
+  - uid_pwd：统一身份密码
+  - identity：学生身份（取值为`本科生`/`研究生`）
+  - nickname：昵称
+
 
 
 ## Request Promise
 > 小程序网络请求规范
 
-### template
+- 所有网络请求需写在`utils/api.js`中
+
+### request template
 > 网络请求模板
+
+- 所有网络请求通过POST传输
+- 网络请求时必须指定Key
+
+~~~javascript
+function api_name(api_parameters) {
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + 'api_path',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'api_parameters': api_parameters
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+// 同时需要在module.exports中导出该函数
+module.exports = {
+    api_name
+}
+~~~
+
+### response template
+> 网络响应模板
+
+- 所有网络请求使用异步请求
+- 相应数据保存在`res.data`中
+
+~~~javascript
+wx.showLoading()
+api.api_name(api_parameters).then(res => {
+  wx.hideLoading()
+  if (res.statusCode === 200) {
+    if (res.data.Statue === 1) {
+      // TODO...
+    } else {
+      util.showError(res)
+    }
+  } else {
+    wx.showToast({
+      title: `网络错误[${res.statusCode}]`,
+      icon: 'error'
+    })
+  }
+})
+
+~~~
