@@ -148,7 +148,7 @@
             </view>
             <view class="cu-item" wx:if="{{official_grade['classRanking']}}">
                 <view class="content">
-                    <text class="text-grey">年级排名</text>
+                    <text class="text-grey">班级排名</text>
                 </view>
                 <view class="action" style="position: absolute; right: 50rpx;">
                     <text class="text-green">{{official_grade['classRanking']}}</text>

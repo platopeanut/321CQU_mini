@@ -8,10 +8,11 @@ Page({
         gridCol: 2,
         swiperList: [{
             id: 0,
-            url: 'http://gbpxzx.cqu.edu.cn/__local/0/18/75/C474505E6FF65D03DD8716A2496_D609F844_4EA8A.jpg'
+            url: 'https://tenfei04.cfp.cn/creative/vcg/nowarter800/new/VCG211192938398.jpg',
           }, {
             id: 1,
-            url: 'http://gbpxzx.cqu.edu.cn/__local/1/C4/57/47D1111C085D0FA365CADBB7694_2441C4C0_285E2.jpg',
+            url: 'https://alifei05.cfp.cn/creative/vcg/nowater800/new/VCG211271808405.jpg'
+            ,
           }],
         iconList: [
             {

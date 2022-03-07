@@ -14,6 +14,7 @@
     "pages/center/grade/grade",
     "pages/center/exam/exam",
     "pages/center/life/life",
+    "pages/center/life/consumplist/consumplist",
     "pages/center/class_info/class_info",
     "pages/center/class_info/detail/detail"
   ],
@@ -41,6 +42,5 @@
     ]
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "sitemapLocation": "sitemap.json"
 }

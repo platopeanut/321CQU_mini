@@ -1,11 +1,11 @@
-const api = require('../../../utils/api')
-const util = require('../../../utils/util')
+const api = require('../../../../utils/api')
+const util = require('../../../../utils/util')
 
 Page({
 
     data: {
-        fees_info: null,
-        card_fee: 0
+        card_fee : wx.getStorageSync('card_fee'),
+        bill_list : [],
     },
 
     updateData: function () {
@@ -14,8 +14,7 @@ Page({
         let uid_pwd = wx.getStorageSync('uid_pwd')
         let stu_id= wx.getStorageSync('stu_id')
         let identity= wx.getStorageSync('identity')
-        let room=wx.getStorageSync('room')
-
+        console.log("loading")
         if (identity === '') {
             wx.showToast({
                 title: '请先绑定学号，统一身份信息',
@@ -41,61 +40,28 @@ Page({
             }
         }
 
-        if (room === '' || room['campus'] === '选择校区' || !room['campus'] || room['building'] === '选择楼栋' || !room['building'] || room['room_id'] === '' || !room['room_id']) {
-            wx.showToast({
-                title: '请完善宿舍信息',
-                icon: 'none'
-            })
-            
-        }
-        let is_hu_xi = room['campus'].startsWith("虎溪")
-        let room_code
-        if(is_hu_xi){
-            room_code = util.get_dormitory_code(room)
-        }
-        else room_code = util.get_dormitory_code_inABC(room)
-    
-        console.log(room_code)
-        console.log(is_hu_xi)
-
-        wx.showLoading()
-        api.get_fees(uid, uid_pwd, is_hu_xi, room_code).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    wx.setStorageSync('fees_info', res.data.FeesInfo)
-                  
-                    that.setData({
-                        fees_info: res.data.FeesInfo
-                    })
-                    wx.showToast({
-                        title: '水电费查询成功',
-                        icon: 'none'
-                    })
-                } else {
-                    util.showError(res)
-                }
-            } else {
-                wx.showToast({
-                    title: `网络错误[${res.statusCode}]`,
-                    icon: 'error'
-                })
-            }
-        })
-     
-//一卡通
-            
+//一卡通信息
         wx.showLoading()
         api.getSchoolCardInfo(uid, uid_pwd).then(res => {
             wx.hideLoading()
             if (res.statusCode === 200) {
                 if (res.data.Statue === 1) {
                     wx.setStorageSync('card_fee', res.data.Amount)
+                    let bills = res.data.Bills
+                    for (let i = 0; i < bills.length; i++) {
+                        bills[i]['Time'] = bills[i]['Time'].substring(5,16)
+                        console.log(bills[i]['Time'])
+                    }
+                    console.log(bills)
                     that.setData({
-                        card_fee: res.data.Amount
+                        card_fee: res.data.Amount,
+                        bill_list: bills,
+                     
                     })
+                    
+                    wx.setStorageSync('bill_list',that.data.bill_list)
                     wx.showToast({
-                        title: '一卡通查询成功',
+                        title: '账单通查询成功',
                         icon: 'none'
                     })
                 } else {
@@ -112,21 +78,18 @@ Page({
 
 
     onShow: function () {
-        let fees_info = wx.getStorageSync('fees_info')
         let card_fee = wx.getStorageSync('card_fee')
-        console.log(card_fee)
-        console.log(fees_info)
-        this.setData({
-            fees_info: fees_info,
-            card_fee: card_fee
-        })
-        console.log(fees_info)
-        if (fees_info === '' || card_fee === '') {
+        let bill_list = wx.getStorageSync('bill_list')
+        if (card_fee === '' || bill_list === '') {
             wx.showToast({
                 title: '下拉刷新更新数据',
                 icon: 'none'
             })
         }
+        this.setData({
+            card_fee: card_fee,
+            bill_list: bill_list,
+        })
     },
 
     onPullDownRefresh: function() {

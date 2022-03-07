@@ -1,0 +1,5 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "一卡通消费清单",
+  "enablePullDownRefresh": true
+}

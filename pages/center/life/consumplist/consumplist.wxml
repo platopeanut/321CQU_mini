@@ -1,0 +1,44 @@
+<!--pages/center/life/consumplist.wxml-->
+<view class="cu-list menu sm-border card-menu margin-top">
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-moneybag text-yellow "> </text>
+                <text class="text-black"> 一卡通余额</text>
+            </view>    
+                <view class="action">
+                    <text class="text-black text-price text-xxl">{{card_fee}}</text>
+                </view>        
+           
+        </view>
+</view>
+<view class="cu-list menu sm-border ">
+        <view class="cu-item">
+            <view class="content">
+              <text class="cuIcon-list lg test-green"></text>
+              <text class="text-black"> 账户清单</text>
+            </view>    
+            <view class="action">
+              <text class="text-light ">仅显示最近十五条</text>
+            </view>        
+           
+        </view>
+</view>
+<view class="cu-item shadow" wx:for="{{bill_list}}" wx:key="index">
+<view class="cu-timeline">
+
+   
+        <view class="cu-time">{{item['Time']}}</view>
+      <view class="cu-item cur cuIcon-pay text-blue text-bold">
+        <view class="content bg-gray shadow-blur">
+          <view >{{item['Type']}}
+          <text wx:if="{{item['Money'] > 0}}" class="text-green"> {{item['Money']}}</text>
+          <text wx:else class="text-red"> {{item['Money']}}</text>
+          </view>  
+         <view>
+          <view wx:if="{{item['Location']}}">消费地点：{{item['Location']}}</view>
+         </view> 
+        </view>
+      </view>
+      
+</view>
+</view>

@@ -1,34 +1,116 @@
+
+<wxs module="filters" src="../../../utils/tool.wxs"></wxs>
 <view>
+    <view class="cu-bar bg-white solid-bottom margin-top">
+				<view class="action">
+					<text class="cuIcon-title text-blue text-bold"></text> 
+                    <text class="text-bold">水电费</text>
+				</view>
+				
+	</view>
+    <view wx:if="{{fees_info['Eamount']}}">
     <view class="cu-list menu sm-border card-menu margin-top">
+
         <view class="cu-item">
             <view class="content">
                 <text class="cuIcon-pay text-cyan"></text>
-                <text class="text-black text-bold">水电费余额</text>
+                <text class="text-black">余额</text>
             </view>
             <view class="action">
-                <text class="text-black text-price text-xxl">{{fees_info['Amount']}}</text>
+                <text class="text-black text-price text-xxl">{{filters.toFix2(fees_info['Amount'])}}</text>
             </view>
         </view>
-        <view class="cu-list menu sm-border">
-            <view class="cu-item">
-                <view class="content">
-                    <text class="cuIcon-lightfill text-yellow"></text>
-                    <text class="text-black">电费补贴余额</text>
-                </view>
-                <view class="action">
-                    <text class="text-black text-price text-xxl">{{fees_info['Eamount']}}</text>
-                </view>
+      
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-lightfill text-yellow"></text>
+                <text class="text-black">电费补贴余额</text>
             </view>
+            <view class="action">
+                <text class="text-black text-price text-xxl">{{filters.toFix2(fees_info['Eamount'])}}</text>
+            </view>
+        </view>
 
-            <view class="cu-item">
-                <view class="content">
-                    <text class="cuIcon-upstage text-blue"></text>
-                    <text class="text-black">水费补贴余额</text>
-                </view>
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-upstage text-blue"></text>
+                <text class="text-black">水费补贴余额</text>
+            </view>
+            <view class="action">
+                <text class="text-black text-price text-xxl">{{filters.toFix2(fees_info['Wamount'])}}</text>
+            </view>
+        </view>
+      </view>
+    </view>
+      <!-- 老校区 -->
+    <view wx:if="{{!fees_info['Eamount']}}">
+      <view class="cu-list menu sm-border card-menu margin-top">
+
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-pay text-cyan"></text>
+                <text class="text-black">余额</text>
+            </view>
+            <view class="action">
+                <text class="text-black text-price text-xxl">{{filters.toFix2(fees_info['Amount'])}}</text>
+            </view>
+        </view>
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-lightfill text-yellow"></text>
+                <text class="text-black">补贴余额</text>
+            </view>
+            <view class="action">
+                <text class="text-black text-price text-xxl">{{filters.toFix2(fees_info['Subsidies'])}}</text>
+            </view>
+        </view>
+
+        
+      </view>
+    </view>
+
+
+
+    <view class="cu-bar bg-white solid-bottom margin-top">
+        <view class="action">
+            <text class="cuIcon-title text-blue text-bold"></text> 
+            <text class="text-bold">一卡通</text>
+        </view>
+        
+	</view>
+
+    <view class="cu-list menu sm-border card-menu margin-top">
+        <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-moneybag text-yellow "> </text>
+                <text class="text-black"> 一卡通余额</text>
+            </view>    
+                <view class="action">
+                    <text class="text-black text-price text-xxl">{{card_fee}}</text>
+                </view>        
+           
+        </view>
+
+        <!-- <view class="cu-item">
+            <view class="content">
+                <text class="cuIcon-vipcard lg text-red"> </text>
+                <text class="text-black"> 电子钱包余额</text>
+            </view>    
                 <view class="action">
                     <text class="text-black text-price text-xxl">{{fees_info['Wamount']}}</text>
-                </view>
-            </view>
+                </view>        
+           
+        </view> -->
+
+        <view class="cu-item arrow">
+            <navigator class="content" url="./consumplist/consumplist" hover-class="none">
+                <text class="cuIcon-list lg text-black "></text>
+                <text class="text-black">一卡通消费清单</text>
+            </navigator>
         </view>
+
     </view>
+
+
 </view>
+

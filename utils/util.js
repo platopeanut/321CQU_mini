@@ -11,14 +11,14 @@ const dormitory = {
     '虎溪松园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢'],
     '虎溪兰园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢', '八幢'],
 }
-
 function get_dormitory (zone= '选择校区') {
     if (zone === '选择校区') return ['选择楼栋']
     else return dormitory[zone]
 }
+
 function get_campus_list() {
-    return ['选择校区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
-    // return ['选择校区', 'A区','B区','C区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
+    //return ['选择校区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
+    return ['选择校区', 'A区','B区','C区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
 }
 const dormitory_code = {
     'A区': 'A',
@@ -36,6 +36,31 @@ function get_dormitory_code(room) {
     code += room['room_id']
     return code
 }
+//老校区查寝室水电费规范码 
+function get_dormitory_code_inABC(room){
+    let code = dormitory_code[room['campus']]  
+    // n —— 宿舍号
+    if( code === 'A'){
+        let n = dormitory[room['campus']].indexOf(room['building'])
+        if( n > 12 ){
+            if( n-12 === 1) code += 'A'
+            else if( n-12 ===2) code += 'C'
+            else code += 'D'
+        }
+        else code += n
+    }
+    else code += dormitory[room['campus']].indexOf(room['building'])
+    code += 'S'
+    //"-"改为'F'
+    let num = room['room_id']
+    for (let i = 0; i < num.length; i++) {
+        if (num[i] === '-')  code += 'F'
+        else code += num[i]
+    }
+
+    return code  
+}
+
 
 const time_table = [
     '08:30~09:15',
@@ -391,6 +416,8 @@ module.exports = {
     get_dormitory,
     get_campus_list,
     get_dormitory_code,
+    get_dormitory_code_inABC,
     parseFormat2List,
     parseWeekDayFormat,
+
 }

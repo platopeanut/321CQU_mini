@@ -466,7 +466,7 @@ function get_gpa_and_rank(uid, uid_pwd) {
 }
 
 // 查询水电费
-function get_fees(uid, uid_pwd, is_hu_xi, room) {
+function get_fees(uid, uid_pwd, is_hu_xi, room_code) {
   return new Promise((resolve,reject) => {
     wx.request({
       url: url + '/school_info/get_fees',
@@ -476,7 +476,24 @@ function get_fees(uid, uid_pwd, is_hu_xi, room) {
         'UserName': uid,
         'Password': uid_pwd,
         'IsHuXi': is_hu_xi,
-        'Room': room
+        'Room': room_code
+      },
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+//查询一卡通相关信息：
+function getSchoolCardInfo(uid, uid_pwd){
+  return new Promise((resolve,reject) => {
+    wx.request({
+      url: url + '/school_info/get_card',
+      method: 'POST',
+      data: {
+        'Key': Password,
+        'UserName': uid,
+        'Password': uid_pwd,
       },
       success: resolve,
       fail: reject
@@ -513,4 +530,5 @@ module.exports = {
   query_class_detail,
   get_gpa_and_rank,
   get_fees,
+  getSchoolCardInfo,
 }
