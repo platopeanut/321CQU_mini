@@ -1,0 +1,66 @@
+<view>
+    <view wx:if="{{!edit_mode}}">
+        <view class="padding bg-white" bindtap="handleUserOperations">
+            <text class="text-black text-bold">说明:</text>
+            <view class="text-left" style="margin-top: 5rpx;">1.点击该区域可进行创建，云存储服务</view>
+            <view class="text-left" style="margin-top: 5rpx;">2.小程序提供对您的自定义课程云存储功能，并严格保护用户数据隐私</view>
+            <view class="text-left" style="margin-top: 5rpx;">3.云数据同步到本地时会对本地自定义数据进行覆盖，请注意备份</view>
+        </view>
+        <view class="cu-card case">
+            <view class="cu-item shadow" wx:for="{{SelfSchedule}}" wx:key="index">
+                <view class="cu-list menu">
+                    <view class="cu-item" bindtap="selectScheduleItem" data-index="{{index}}" data-item="{{item}}" style="background-color:white;">
+                        <view class="content">
+                            <text class="cuIcon-title text-green"></text>
+                            <text class="text-black"><text style="font-weight: bold;">{{item.CourseName}}</text></text>
+                        </view>
+                    </view>
+                    <view class="cu-item">
+                        <view class="content">
+                            <text class="cuIcon-title text-brown"></text><text class="text-black">第{{item.TeachingWeekFormat}}周</text><text class="cuIcon-title text-orange"></text><text>星期{{item.WeekDayFormat}}</text><text class="cuIcon-title text-cyan"></text><text>第{{item.PeriodFormat}}节</text>
+                        </view>
+                    </view>
+                    <view class="cu-item">
+                        <view class="content">
+                            <text class="text-gray">
+                                {{item.Content}}
+                            </text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view wx:else>
+        <form catchsubmit="formSubmit" catchreset="formCancel">
+            <view class="cu-form-group margin-top">
+                <view class="title">名称</view>
+                <input name="CourseName" placeholder="用于课表页面显示" value="{{curr_schedule['CourseName']}}"></input>
+            </view>
+            <view class="cu-form-group">
+                <view class="title">周次</view>
+                <input name="TeachingWeekFormat" placeholder="例如：2-7,9" value="{{curr_schedule['TeachingWeekFormat']}}"></input>
+            </view>
+            <view class="cu-form-group">
+                <view class="title">星期</view>
+                <input name="WeekDayFormat" placeholder="一二三四五六日" value="{{curr_schedule['WeekDayFormat']}}"></input>
+            </view>
+            <view class="cu-form-group">
+                <view class="title">时段</view>
+                <input name="PeriodFormat" placeholder="例如：1-2,6" value="{{curr_schedule['PeriodFormat']}}"></input>
+            </view>
+            <view class="cu-form-group">
+                <view class="title">说明</view>
+                <input name="Content" placeholder="附加说明(不超过50字)" value="{{curr_schedule['Content']}}"></input>
+            </view>
+            <view class="flex">
+                <view class="flex-sub">
+                    <button class="bg-white" style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">创建</button>
+                </view>
+                <view class="flex-sub">
+                    <button class="bg-white" style="margin: 30rpx 0;width: 100%;" formType="reset">取消</button>
+                </view>
+            </view>
+        </form>
+    </view>
+</view>

@@ -1,3 +1,4 @@
+const curriculum_tool = require("../pages/center/curriculum/curriculum_tool");
 /**
  *  常用方法
  */
@@ -60,6 +61,19 @@ function get_dormitory_code_inABC(room){
 
     return code  
 }
+
+// 计算当前是第几周
+function getCurrWeek(StartDate) {
+    let _curr_date = getDate()
+    let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
+    let distance = daysDistance2(StartDate, CurrDate)
+    if (distance >= 0 ) return parseInt(distance / 7 + 1)
+    else {
+        if (distance % 7 === 0) return parseInt(distance / 7) + 1
+        else return parseInt(distance / 7)
+    }
+}
+
 
 
 const time_table = [
@@ -225,78 +239,10 @@ function showError(res, prefix='') {
     })
 }
 
-function parseFormat2List(str) {
-    let result = []
-    let list = str.split(',')
-    for (let i = 0; i < list.length; i++) {
-        let item = list[i].split('-')
-        if (item.length === 1) {
-            result.push(parseInt(item[0]))
-            continue
-        }
-        let left = parseInt(item[0])
-        let right = parseInt(item[1])
-        for (let j = left; j <= right; j++) {
-            result.push(j)
-        }
-    }
-    return result
-}
-
 function parseFormat2Lesson(str) {
     let list = str.split('-')
     if (list.length === 1) return [list[0], 1]
     return [parseInt(list[0]), parseInt(list[1]) - parseInt(list[0]) + 1]
-}
-
-function parseWeekDayFormat(str) {
-    let week_list = ['一', '二', '三', '四', '五', '六', '日']
-    for (let i = 0; i < week_list.length; i++) {
-        if (week_list[i] === str) return i
-    }
-}
-function parseLesson(data) {
-    let book = {}
-    let book_extra_info = {
-        'special': [],                  // 解决小学期/实训课程
-        'conflict': []                  // 解决冲突课程
-    }
-    for (const item of data) {
-        for (const week_index of parseFormat2List(item.TeachingWeekFormat)) {
-            if(!book[week_index]) {
-                book[week_index] = new Array(7)
-                for (let i = 0; i < 7; i++) {
-                    book[week_index][i] = new Array(13)
-                }
-            }
-            if (!item.WeekDayFormat || !item.PeriodFormat) {
-                // book_extra_info['special'].push(item)
-                continue
-            }
-            for (const index of parseFormat2List(item.PeriodFormat)) {
-                if (!book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1]) {
-                    book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1] = item
-                } else {
-                    book[week_index][parseWeekDayFormat(item.WeekDayFormat)][index-1].more = true
-                    book_extra_info['conflict'].push({
-                        'week': week_index,
-                        'day': item.WeekDayFormat,
-                        'period': index - 1,
-                        'item': item
-                    })
-                }
-            }
-        }
-    }
-    return [book, book_extra_info]
-}
-
-function getLessonList(data) {
-    let lesson_list = []
-    for (const item of data) {
-        if(!lesson_list.includes(item.CourseCode)) lesson_list.push(item.CourseCode)
-    }
-    return lesson_list
 }
 
 function shuffle(arr){
@@ -314,23 +260,37 @@ function shuffle(arr){
 
 // 送给首页的信息
 function get_index_info() {
-    let curriculum_info = ''
-    let StartDate = wx.getStorageSync('schoolTermInfo').StartDate
-    let _curr_date = getDate()
-    let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
-    let distance = daysDistance2(StartDate, CurrDate)
-    let week
-    if (distance >= 0) week = parseInt(distance / 7 + 1)
-    else {
-        if (distance % 7 === 0) week = parseInt(distance / 7) + 1
-        else week = parseInt(distance / 7)
+    let Curriculum = wx.getStorageSync('Curriculum')
+    if (Curriculum === '') {
+        return {
+            today_info: {
+                week: 'unknown',
+                today: new Date().getDay()
+            },
+            curriculum_info: '请先刷新课表数据'
+        }
     }
-    let curriculum = wx.getStorageSync('curriculum')
+    let CurrTerm = Curriculum['CurrTerm']
+    let CurrTable = Curriculum[CurrTerm]['Table']
+    let CurrTermInfo = Curriculum[CurrTerm]['TermInfo']
+    let SelfSchedule = Curriculum['SelfSchedule']
+    if (!SelfSchedule) SelfSchedule = []
+    let Priority = Curriculum['Priority']
+    if (!Priority) Priority = []
+
+    let week = getCurrWeek(CurrTermInfo.StartDate)
+    CurrTable = curriculum_tool.filterCourses(CurrTable)
+    let curriculum = curriculum_tool.createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
+    curriculum_tool.adaptPriority(curriculum, Priority)
+
+
+    let curriculum_info = ''
     let _today = new Date().getDay() - 1
-    if (curriculum[week] === undefined || curriculum[week][_today === -1?6:_today] === undefined)
+    if (_today === -1) _today = 6
+    if (curriculum[week] === undefined || curriculum[week][_today] === undefined)
         curriculum_info = '今日无课'
     else {
-        let _list = curriculum[week][_today === -1?6:_today]
+        let _list = curriculum[week][_today]
         let _flag = false
         for (const item of _list) {
             if (item) _flag = true
@@ -346,10 +306,12 @@ function get_index_info() {
                 curriculum_info = '今日无课'
             } else {
                 for (let i = index; i < _list.length; i ++) {
-                    if (_list[i] !== null) {
+                    if (_list[i]) {
                         index = i
                         let time_li = get_time_from_index(index)
-                        curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index].CourseName}\n${_list[index].RoomName}`
+                        if (_list[index][0]['Self'])
+                            curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index][0].CourseName}`
+                        else curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index][0].CourseName}\n${_list[index][0].RoomName}`
                         break
                     }
                 }
@@ -395,6 +357,7 @@ function get_lesson_index(time) {
 
 
 module.exports = {
+    dormitory,
     getDate,
     parseFromStr,
     compareDate,
@@ -403,21 +366,15 @@ module.exports = {
     compareTime,
     parseTime,
     daysDistance,
-    daysDistance2,
     score2point,
     showError,
-    parseLesson,
-    getLessonList,
     shuffle,
     get_index_info,
     get_time_from_index,
     get_lesson_index,
-    dormitory,
     get_dormitory,
     get_campus_list,
     get_dormitory_code,
     get_dormitory_code_inABC,
-    parseFormat2List,
-    parseWeekDayFormat,
-
+    getCurrWeek,
 }

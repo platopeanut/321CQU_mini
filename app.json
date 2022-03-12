@@ -11,12 +11,14 @@
     "pages/my/about/about",
     "pages/my/info/info",
     "pages/center/curriculum/curriculum",
+    "pages/center/curriculum/config/config",
     "pages/center/grade/grade",
     "pages/center/exam/exam",
     "pages/center/life/life",
     "pages/center/life/consumplist/consumplist",
     "pages/center/class_info/class_info",
-    "pages/center/class_info/detail/detail"
+    "pages/center/class_info/detail/detail",
+    "pages/center/square/square"
   ],
   "window": {
     "backgroundTextStyle": "light",

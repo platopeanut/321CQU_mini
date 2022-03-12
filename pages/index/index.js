@@ -6,21 +6,13 @@ Page({
         today_info: '',
         curriculum_info: '',
         gridCol: 2,
-        swiperList: [{
-            id: 0,
-            url: 'https://tenfei04.cfp.cn/creative/vcg/nowarter800/new/VCG211192938398.jpg',
-          }, {
-            id: 1,
-            url: 'https://alifei05.cfp.cn/creative/vcg/nowater800/new/VCG211271808405.jpg'
-            ,
-          }],
-        iconList: [
+        swiperList: [
+            {url:false},
             {
-                title: '志愿者时长',
-                path: 'volunteer',
-                color: 'pink',
-                icon: 'newsfill'
-            },
+            url: 'http://www.zhulegend.com/media/test/CQULibrary.jpg'
+            }
+        ],
+        iconList: [
             {
                 title: '反馈',
                 path: 'feedback',
@@ -28,10 +20,16 @@ Page({
                 icon: 'comment'
             },
             {
-                title: '任务管理',
-                path: 'task',
-                color: 'blue',
-                icon: 'deliver'
+                title: '支持我们',
+                path: 'sponsor',
+                color: 'brown',
+                icon: 'sponsor'
+            },
+            {
+                title: '志愿者时长',
+                path: 'volunteer',
+                color: 'pink',
+                icon: 'newsfill'
             },
             {
                 title: '课表',
@@ -64,10 +62,16 @@ Page({
                 icon: 'baby'
             },
             {
-                title: '支持我们',
-                path: 'sponsor',
-                color: 'brown',
-                icon: 'sponsor'
+                title: '信息广场',
+                path: 'square',
+                color: 'red',
+                icon: 'wefill'
+            },
+            {
+                title: '任务管理',
+                path: 'task',
+                color: 'blue',
+                icon: 'deliver'
             },
         ],
     },
@@ -82,14 +86,12 @@ Page({
         })
     },
 
-    onShareAppMessage: function () {
-
-    },
     jumpToCurriculum: function () {
         wx.navigateTo({
             url: '../center/curriculum/curriculum'
         })
     },
+
     router: function (e) {
         let path = e.currentTarget.dataset.path
         wx.navigateTo({
@@ -119,34 +121,34 @@ Page({
         })
     },
 
-    saveImg: function (e) {
-        wx.downloadFile({
-            url: e.target.dataset.url,     //仅为示例，并非真实的资源
-            success: function (res) {
-                // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
-                if (res.statusCode === 200) {
-                    wx.saveImageToPhotosAlbum({
-                        filePath: res.tempFilePath,
-                        success(res) {
-                            wx.showToast({
-                                title: '已保存',
-                                icon: 'none'
-                            })
-                        },
-                        fail(res) {
-                            wx.showToast({
-                                title: '保存失败',
-                                icon: 'none'
-                            })
-                        }
-                    })
-                } else {
-                    wx.showToast({
-                        title: '网络错误',
-                        icon: 'none'
-                    })
-                }
-            }
-        })
-    }
+    // saveImg: function (e) {
+    //     wx.downloadFile({
+    //         url: e.target.dataset.url,     //仅为示例，并非真实的资源
+    //         success: function (res) {
+    //             // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
+    //             if (res.statusCode === 200) {
+    //                 wx.saveImageToPhotosAlbum({
+    //                     filePath: res.tempFilePath,
+    //                     success(res) {
+    //                         wx.showToast({
+    //                             title: '已保存',
+    //                             icon: 'none'
+    //                         })
+    //                     },
+    //                     fail(res) {
+    //                         wx.showToast({
+    //                             title: '保存失败',
+    //                             icon: 'none'
+    //                         })
+    //                     }
+    //                 })
+    //             } else {
+    //                 wx.showToast({
+    //                     title: '网络错误',
+    //                     icon: 'none'
+    //                 })
+    //             }
+    //         }
+    //     })
+    // }
 })

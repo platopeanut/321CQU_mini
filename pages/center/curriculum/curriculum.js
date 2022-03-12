@@ -1,46 +1,58 @@
 const api = require('../../../utils/api')
 const util = require('../../../utils/util')
-const {parseLesson} = require("../../../utils/util");
+const curriculum_tool = require('./curriculum_tool')
+const {getSchoolNextTermInfo} = require("../../../utils/api");
 
 Page({
     data: {
+        time_height: 0,
+        //用户选择
         curr_year: -1,
+        curr_month: -1,
+        curr_week: -1,
+        //标准时间
         year: -1,
         month: -1,  // 月份
-        curr_month: -1,
+        week: -1,   // 第几周
+        today: -1,   // 今天周几
+
         week_list: null,    // 顶部
         table: null,    // 主体课表
-        week: -1,   // 第几周
-        curr_week: -1,
-        today: -1,   // 今天周几
+
+        currDetailLessons: null,
+
         showMode: 0, // 显示模式，0为每周，1为整个学期
         detailState: false,
-        currDetailLesson: null,
-        extraDetailLesson: [],
-        // extraDetailLesson_index: 0,
-        currSchoolTermInfo: null,
         selectTermState: false,
         longPressState: false,
+
+        CurrTermInfo: null,
+        CurrTerm: null,
         term_list: [],
-        curr_term: '',
-        currSelfItem: {},
-        time_height: 0,
-
-        curriculum_extra: wx.getStorageSync('curriculum_extra'),
-        nextCurriculum_extra: wx.getStorageSync('nextCurriculum_extra'),
-
     },
 
-    // change_conflict_course: function (e) {
-    //     console.log(e)
-    //     if (e.detail.current === 0) return
-    //     this.setData({
-    //         extraDetailLesson_index: e.detail.current
-    //     })
-    // },
+    onShow: function() {
+        let that = this
+        this.setData({
+            time_height: that.getTimeHeight()
+        })
+        // !this.data.CurrTermInfo || !this.data.table
+        this.setData({
+            curr_year: new Date().getFullYear(),
+            year: new Date().getFullYear(),
+            curr_month: new Date().getMonth(),
+            month: new Date().getMonth(),
+            today: new Date().getDay(),
+            week_list: that.getCurrWeekList(),
+        })
+        this.buildTable()
+        this.setData({
+            curr_week: util.getCurrWeek(that.data.CurrTermInfo.StartDate),
+            week: util.getCurrWeek(that.data.CurrTermInfo.StartDate),
+        })
+    },
 
-
-    get_time_height() {
+    getTimeHeight() {
         let _time = new Date()
         if (util.compareTime({
             hour: _time.getHours(),
@@ -68,9 +80,6 @@ Page({
             minute: _time.getMinutes()
         })
         if (_time_sub < 0) _time_sub = 0
-        // console.log(index)
-        // console.log(_time_sub)
-        // console.log(zone)
         return index * 130 + _time_sub*130/45
     },
 
@@ -115,132 +124,7 @@ Page({
         return week_list
     },
 
-    getDetailLessonInfo(e) {
-        let that = this
-        let item = e.currentTarget.dataset.item
-        let index = e.currentTarget.dataset.index
-        function teaching_time_helper(n) {
-            n.InstructorName = n.InstructorName.replace('-[主讲];', ' ')
-            let time_list = n.PeriodFormat.split('-')
-            let start_time = util.get_time_from_index(time_list[0] - 1)[0]
-            let end_time = util.get_time_from_index(time_list[1] - 1)[1]
-            n.TeachingTime = start_time + '~' + end_time
-            return n
-        }
-        item = teaching_time_helper(item)
-        // 冲突课程
-        if (item.more) {
-            let extraDetailLesson = [item]
-            for (const class_item of that.data.curriculum_extra['conflict']) {
-                if (class_item.week === that.data.week && class_item.day === item.WeekDayFormat && class_item.period===index) {
-                    extraDetailLesson.push(teaching_time_helper(class_item.item))
-                }
-            }
-            that.setData({
-                extraDetailLesson: extraDetailLesson
-            })
-        }
-        this.setData({
-            detailState: true,
-            currDetailLesson: item
-        })
-    },
-    hideModal() {
-        this.setData({
-            detailState: false,
-            selectTermState: false,
-            longPressState: false,
-            extraDetailLesson: [],
-        })
-    },
-    UIprocess(data, lesson_list) {
-        let color_list = getApp().globalData.color_list
-        for (const key in data) {
-            let week = data[key]
-            for (let i = 0; i < 7; i++) {
-                for (let j = 0; j < week[i].length; j++) {
-                    if (week[i][j]) {
-                        let k = j
-                        for (; k < week[i].length; k++) {
-                            if (!week[i][k] || week[i][j].ClassNbr !== week[i][k].ClassNbr) break
-                        }
-                        week[i].splice(j+1, k-j-1)
-                        week[i][j]['UILength'] = k-j
-                        week[i][j]['color'] = color_list[lesson_list.indexOf(week[i][j].CourseCode)]
-                    }
-                }
-            }
-        }
-        return data
-    },
-
-    // 计算当前是第几周
-    getCurrWeek() {
-        let StartDate = this.data.currSchoolTermInfo.StartDate
-        let _curr_date = util.getDate()
-        let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
-        let distance = util.daysDistance2(StartDate, CurrDate)
-        if (distance >= 0 ) return parseInt(distance / 7 + 1)
-        else {
-            if (distance % 7 === 0) return parseInt(distance / 7) + 1
-            else return parseInt(distance / 7)
-        }
-    },
-
-    onShow: function() {
-        let that = this
-        this.setData({
-            time_height: that.get_time_height()
-        })
-        if (!this.data.currSchoolTermInfo || !this.data.table) {
-            this.setData({
-                curr_year: new Date().getFullYear(),
-                year: new Date().getFullYear(),
-                month: new Date().getMonth(),
-                curr_month: new Date().getMonth(),
-                today: new Date().getDay(),
-                curr_term: wx.getStorageSync('curr_term'),
-            })
-            if (wx.getStorageSync('nextSchoolTermInfo')) {
-                this.setData({
-                    term_list: [wx.getStorageSync('schoolTermInfo'), wx.getStorageSync('nextSchoolTermInfo')],
-                })
-            } else {
-                this.setData({
-                    term_list: [wx.getStorageSync('schoolTermInfo')],
-                })
-            }
-            if (!this.data.curr_term || this.data.term_list[0].Term === this.data.curr_term) {
-                this.setData({
-                    currSchoolTermInfo: wx.getStorageSync('schoolTermInfo'),
-                    curr_term: this.data.term_list[0].Term
-                })
-                this.setData({
-                    week_list: that.getCurrWeekList(),
-                    table: that.UIprocess(wx.getStorageSync('curriculum'), wx.getStorageSync('lesson_list')),
-                    week: that.getCurrWeek(),
-                    curr_week: that.getCurrWeek(),
-                })
-            } else if (this.data.term_list[1].Term === this.data.curr_term){
-                this.setData({
-                    currSchoolTermInfo: wx.getStorageSync('nextSchoolTermInfo'),
-                })
-                this.setData({
-                    week_list: that.getCurrWeekList(),
-                    table: that.UIprocess(wx.getStorageSync('nextCurriculum'), wx.getStorageSync('nextLesson_list')),
-                    week: that.getCurrWeek(),
-                    curr_week: that.getCurrWeek(),
-                })
-            } else {
-                wx.showToast({
-                    title: '学期选择异常',
-                    icon: 'none'
-                })
-            }
-        }
-    },
-
-    next_week() {
+    nextWeek() {
         let that = this
         if (that.data.today === 0) that.data.today = 7
         let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today - 1][1])
@@ -250,7 +134,7 @@ Page({
         })
     },
 
-    pre_week() {
+    preWeek() {
         let that = this
         if (that.data.today === 0) that.data.today = 7
         let date = new Date(this.data.year, this.data.month, this.data.week_list[that.data.today - 1][1])
@@ -260,6 +144,34 @@ Page({
         })
     },
 
+    hideModal() {
+        this.setData({
+            detailState: false,
+            selectTermState: false,
+            longPressState: false,
+        })
+    },
+
+    getDetailLessonInfo(e) {
+        let that = this
+        let item_list = e.currentTarget.dataset.item
+        function teaching_time_helper(n, self=false) {
+            if (!self) n.InstructorName = n.InstructorName.replace('-[主讲];', ' ')
+            let time_list = n.PeriodFormat.split('-')
+            if (time_list.length === 1) time_list.push(time_list[0])
+            let start_time = util.get_time_from_index(time_list[0] - 1)[0]
+            let end_time = util.get_time_from_index(time_list[1] - 1)[1]
+            n.TeachingTime = start_time + '~' + end_time
+            return n
+        }
+        for (let i = 0; i < item_list.length; i++) {
+            item_list[i] = teaching_time_helper(item_list[i], item_list[i].Self)
+        }
+        this.setData({
+            detailState: true,
+            currDetailLessons: item_list
+        })
+    },
     switchModelTo1() {
         this.setData({
             showMode: 1
@@ -277,27 +189,15 @@ Page({
     },
     selectTerm2: function (e) {
         let item = e.currentTarget.dataset.item
-        let that = this
-        this.setData({
-            currSchoolTermInfo : item,
-        })
-        this.setData({
-            year: that.data.curr_year,
-            month: that.data.curr_month,
-            curr_week: that.getCurrWeek(),
-            week_list: that.getCurrWeekList(),
-            week: that.getCurrWeek(),
-        })
-        wx.setStorageSync('curr_term', item.Term)
-        if (item.Term === wx.getStorageSync('nextSchoolTermInfo').Term) {
-            that.setData({
-                table: that.UIprocess(wx.getStorageSync('nextCurriculum'), wx.getStorageSync('nextLesson_list')),
-            })
-        } else if (item.Term === wx.getStorageSync('schoolTermInfo').Term) {
-            that.setData({
-                table: that.UIprocess(wx.getStorageSync('curriculum'), wx.getStorageSync('lesson_list')),
-            })
+        let Curriculum = wx.getStorageSync('Curriculum')
+        for (const Term in Curriculum) {
+            if (Curriculum[Term]['TermInfo']['Term'] === item) {
+                Curriculum['CurrTerm'] = Term
+                wx.setStorageSync('Curriculum', Curriculum)
+                break
+            }
         }
+        this.onShow()
     },
     updateData: function() {
         let that = this
@@ -311,168 +211,256 @@ Page({
             })
             return
         }
+        let Curriculum = wx.getStorageSync('Curriculum')
+        if (Curriculum === '') Curriculum = {
+            'Curr': {'TermInfo': null, 'Table': null,},
+            'Next': {'TermInfo': null, 'Table': null,}
+        }
         // 1.获取当前学期学校信息
-        wx.showLoading()
         api.getSchoolTermInfo(uid, uid_pwd).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    let schoolTermInfo = {
-                        EndDate: res.data.EndDate,
-                        StartDate: res.data.StartDate,
-                        Term: res.data.Term
-                    }
-                    wx.setStorageSync('schoolTermInfo', schoolTermInfo)
-                    // 2.获取当前学期课表
-                    wx.showLoading()
-                    api.getCurriculum(stu_id, uid, uid_pwd).then(res => {
-                        wx.hideLoading()
-                        if (res.statusCode === 200) {
-                            if (res.data.Statue === 1) {
-                                let result = util.parseLesson(res.data.Courses)
-                                let table = result[0]
-                                let table_extra = result[1]
-                                let lesson_list = util.getLessonList(res.data.Courses)
-                                wx.setStorageSync('curriculum', table)
-                                wx.setStorageSync('lesson_list', lesson_list)
-                                wx.setStorageSync('curriculum_extra', table_extra)
+            Curriculum['Curr']['TermInfo'] = {
+                StartDate: res.StartDate,
+                EndDate: res.EndDate,
+                Term: res.Term
+            }
+            return api.getCurriculum(stu_id, uid, uid_pwd)
+        }, err => {
+            Curriculum['Curr'] = {'TermInfo': null, 'Table': null}
+            return new Promise(()=>{})
+        }).then(res => {
+            Curriculum['Curr']['Table'] = res.Courses
+            return api.getSchoolNextTermInfo(uid, uid_pwd)
+        }, err => {
+            Curriculum['Curr']['Table'] = null
+            return new Promise(()=>{})
+        }).then(res => {
+            Curriculum['Next']['TermInfo'] = {
+                StartDate: res.StartDate,
+                EndDate: res.EndDate,
+                Term: res.Term
+            }
+            return api.getNextCurriculum(stu_id, uid, uid_pwd)
+        }, err => {
+            Curriculum['Next'] = {'TermInfo': null, 'Table': null}
+            return new Promise(()=>{})
+        }).then(res => {
+            Curriculum['Next']['Table'] = res.Courses
+            wx.showToast({
+                title: '当前学期课表信息加载完毕\n下一学期课表信息加载完毕',
+                icon: 'none'
+            })
+        }, err => {
+            Curriculum['Next']['Table'] = null
+        }).finally(() => {
+            Curriculum['CurrTerm'] = 'Curr'
+            wx.setStorageSync('Curriculum', Curriculum)
+            that.onShow()
+        })
+        // api.getSchoolTermInfo(uid, uid_pwd).then(res => {
+        //     wx.hideLoading()
+        //     if (res.statusCode === 200) {
+        //         if (res.data.Statue === 1) {
+        //             console.log(res.data)
+        //             let schoolTermInfo = {
+        //                 EndDate: res.data.EndDate,
+        //                 StartDate: res.data.StartDate,
+        //                 Term: res.data.Term
+        //             }
+        //             wx.setStorageSync('schoolTermInfo', schoolTermInfo)
+        //             // 2.获取当前学期课表
+        //             wx.showLoading()
+        //             api.getCurriculum(stu_id, uid, uid_pwd).then(res => {
+        //                 wx.hideLoading()
+        //                 if (res.statusCode === 200) {
+        //                     if (res.data.Statue === 1) {
+        //                         console.log(res.data)
+        //                         let result = util.parseLesson(res.data.Courses)
+        //                         let table = result[0]
+        //                         let table_extra = result[1]
+        //                         let lesson_list = util.getLessonList(res.data.Courses)
+        //                         wx.setStorageSync('curriculum', table)
+        //                         wx.setStorageSync('lesson_list', lesson_list)
+        //                         wx.setStorageSync('curriculum_extra', table_extra)
+        //
+        //
+        //
+        //                         // 3.获取下学期学校信息
+        //                         wx.showLoading()
+        //                         api.getSchoolNextTermInfo(uid, uid_pwd).then(res => {
+        //                             wx.hideLoading()
+        //                             if (res.statusCode === 200) {
+        //                                 if (res.data.Statue === 1) {
+        //                                     if (res.data.EndDate === undefined || res.data.StartDate === undefined || res.data.Term === undefined) {
+        //                                         wx.setStorageSync('nextSchoolTermInfo', '')
+        //                                         wx.setStorageSync('nextCurriculum', '')
+        //                                         wx.setStorageSync('nextLesson_list', '')
+        //                                         wx.setStorageSync('nextCurriculum_extra', '')
+        //                                         that.onShow()
+        //                                         wx.showToast({
+        //                                             title: '当前学期加载成功\n暂无预览学期信息',
+        //                                             icon: 'none'
+        //                                         })
+        //                                     } else {
+        //                                         let schoolTermInfo = {
+        //                                             EndDate: res.data.EndDate,
+        //                                             StartDate: res.data.StartDate,
+        //                                             Term: res.data.Term
+        //                                         }
+        //                                         wx.setStorageSync('nextSchoolTermInfo', schoolTermInfo)
+        //                                         // 4.获取下学期课表
+        //                                         wx.showLoading()
+        //                                         api.getNextCurriculum(stu_id, uid, uid_pwd).then(res => {
+        //                                             wx.hideLoading()
+        //                                             if (res.statusCode === 200) {
+        //                                                 if (res.data.Statue === 1) {
+        //                                                     // 无课表信息适配
+        //                                                     if (res.data.Courses.length === 0) {
+        //                                                         wx.showToast({
+        //                                                             title: '暂无下学期课表信息',
+        //                                                             icon: 'none'
+        //                                                         })
+        //                                                         wx.setStorageSync('nextCurriculum', '')
+        //                                                         wx.setStorageSync('nextLesson_list', '')
+        //                                                         wx.setStorageSync('nextCurriculum_extra', '')
+        //                                                         return
+        //                                                     }
+        //                                                     let result = util.parseLesson(res.data.Courses)
+        //                                                     let table = result[0]
+        //                                                     let table_extra = result[1]
+        //                                                     let lesson_list = util.getLessonList(res.data.Courses)
+        //                                                     wx.setStorageSync('nextCurriculum', table)
+        //                                                     wx.setStorageSync('nextLesson_list', lesson_list)
+        //                                                     wx.setStorageSync('nextCurriculum_extra', table_extra)
+        //                                                     that.onShow()
+        //                                                     wx.showToast({
+        //                                                         title: '当前学期加载成功\n预览学期加载成功',
+        //                                                         icon: 'none'
+        //                                                     })
+        //                                                 } else {
+        //                                                     util.showError(res, '获取下学期课表')
+        //                                                 }
+        //                                             } else {
+        //                                                 wx.showToast({
+        //                                                     title: '网络错误' + res.statusCode,
+        //                                                     icon: 'none'
+        //                                                 })
+        //                                             }
+        //                                         })
+        //                                     }
+        //                                 } else {
+        //                                     wx.setStorageSync('nextSchoolTermInfo', '')
+        //                                     wx.setStorageSync('nextCurriculum', '')
+        //                                     wx.setStorageSync('nextLesson_list', '')
+        //                                     wx.setStorageSync('nextCurriculum_extra', '')
+        //                                     that.onShow()
+        //                                     util.showError(res)
+        //                                 }
+        //                             } else {
+        //                                 wx.setStorageSync('nextSchoolTermInfo', '')
+        //                                 wx.setStorageSync('nextCurriculum', '')
+        //                                 wx.setStorageSync('nextLesson_list', '')
+        //                                 wx.setStorageSync('nextCurriculum_extra', '')
+        //                                 that.onShow()
+        //                                 wx.showToast({
+        //                                     title: '网络错误' + res.statusCode,
+        //                                     icon: 'none'
+        //                                 })
+        //                             }
+        //                         })
+        //                     } else {
+        //                         util.showError(res, '获取当前学期课表')
+        //                     }
+        //                 } else {
+        //                     wx.showToast({
+        //                         title: '网络错误' + res.statusCode,
+        //                         icon: 'none'
+        //                     })
+        //                 }
+        //             })
+        //         } else {
+        //             util.showError(res, '获取当前学校学期信息')
+        //         }
+        //     } else {
+        //         wx.showToast({
+        //             title: '网络错误' + res.statusCode,
+        //             icon: 'none'
+        //         })
+        //     }
+        // })
+    },
 
+    buildTable: function () {
+        let Curriculum = wx.getStorageSync('Curriculum')
+        let term_list = []
+        if (Curriculum['Curr']['TermInfo']) term_list.push(Curriculum['Curr']['TermInfo']['Term'])
+        if (Curriculum['Next']['TermInfo']) term_list.push(Curriculum['Next']['TermInfo']['Term'])
+        let CurrTerm = Curriculum['CurrTerm']
+        let CurrTermInfo = Curriculum[CurrTerm]['TermInfo']
+        let CurrTable = Curriculum[CurrTerm]['Table']
+        let SelfSchedule = Curriculum['SelfSchedule']
+        if (!SelfSchedule) SelfSchedule = []
+        let Priority = Curriculum['Priority']
+        if (!Priority) Priority = []
+        CurrTable = curriculum_tool.filterCourses(CurrTable)
+        curriculum_tool.selectColor(CurrTable, SelfSchedule)
+        let table = curriculum_tool.createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
+        curriculum_tool.adaptPriority(table, Priority)
+        table = curriculum_tool.UIProcess(table)
+        this.setData({
+            table: table,
+            CurrTermInfo: CurrTermInfo,
+            CurrTerm: CurrTerm,
+            term_list: term_list,
+        })
+    },
 
+    setPriority: function (e) {
+        let that = this
+        let idx = e.currentTarget.dataset.index
+        let CourseCode = this.data.currDetailLessons[idx]['CourseCode']
 
-                                // 3.获取下学期学校信息
-                                wx.showLoading()
-                                api.getSchoolNextTermInfo(uid, uid_pwd).then(res => {
-                                    wx.hideLoading()
-                                    if (res.statusCode === 200) {
-                                        if (res.data.Statue === 1) {
-                                            if (res.data.EndDate === undefined || res.data.StartDate === undefined || res.data.Term === undefined) {
-                                                wx.setStorageSync('nextSchoolTermInfo', '')
-                                                wx.setStorageSync('nextCurriculum', '')
-                                                wx.setStorageSync('nextLesson_list', '')
-                                                wx.setStorageSync('nextCurriculum_extra', '')
-                                                that.onShow()
-                                                wx.showToast({
-                                                    title: '当前学期加载成功\n暂无预览学期信息',
-                                                    icon: 'none'
-                                                })
-                                            } else {
-                                                let schoolTermInfo = {
-                                                    EndDate: res.data.EndDate,
-                                                    StartDate: res.data.StartDate,
-                                                    Term: res.data.Term
-                                                }
-                                                wx.setStorageSync('nextSchoolTermInfo', schoolTermInfo)
-                                                // 4.获取下学期课表
-                                                wx.showLoading()
-                                                api.getNextCurriculum(stu_id, uid, uid_pwd).then(res => {
-                                                    wx.hideLoading()
-                                                    if (res.statusCode === 200) {
-                                                        if (res.data.Statue === 1) {
-                                                            // 无课表信息适配
-                                                            if (res.data.Courses.length === 0) {
-                                                                wx.showToast({
-                                                                    title: '暂无下学期课表信息',
-                                                                    icon: 'none'
-                                                                })
-                                                                wx.setStorageSync('nextCurriculum', '')
-                                                                wx.setStorageSync('nextLesson_list', '')
-                                                                wx.setStorageSync('nextCurriculum_extra', '')
-                                                                return
-                                                            }
-                                                            let result = util.parseLesson(res.data.Courses)
-                                                            let table = result[0]
-                                                            let table_extra = result[1]
-                                                            let lesson_list = util.getLessonList(res.data.Courses)
-                                                            wx.setStorageSync('nextCurriculum', table)
-                                                            wx.setStorageSync('nextLesson_list', lesson_list)
-                                                            wx.setStorageSync('nextCurriculum_extra', table_extra)
-                                                            that.onShow()
-                                                            wx.showToast({
-                                                                title: '当前学期加载成功\n预览学期加载成功',
-                                                                icon: 'none'
-                                                            })
-                                                        } else {
-                                                            util.showError(res, '获取下学期课表')
-                                                        }
-                                                    } else {
-                                                        wx.showToast({
-                                                            title: '网络错误' + res.statusCode,
-                                                            icon: 'none'
-                                                        })
-                                                    }
-                                                })
-                                            }
-                                        } else {
-                                            wx.setStorageSync('nextSchoolTermInfo', '')
-                                            wx.setStorageSync('nextCurriculum', '')
-                                            wx.setStorageSync('nextLesson_list', '')
-                                            wx.setStorageSync('nextCurriculum_extra', '')
-                                            that.onShow()
-                                            util.showError(res)
-                                        }
-                                    } else {
-                                        wx.setStorageSync('nextSchoolTermInfo', '')
-                                        wx.setStorageSync('nextCurriculum', '')
-                                        wx.setStorageSync('nextLesson_list', '')
-                                        wx.setStorageSync('nextCurriculum_extra', '')
-                                        that.onShow()
-                                        wx.showToast({
-                                            title: '网络错误' + res.statusCode,
-                                            icon: 'none'
-                                        })
-                                    }
-                                })
-                            } else {
-                                util.showError(res, '获取当前学期课表')
-                            }
-                        } else {
-                            wx.showToast({
-                                title: '网络错误' + res.statusCode,
-                                icon: 'none'
-                            })
+        wx.showActionSheet({
+            itemList: ['提高显示优先级'],
+            success: res => {
+                if (res.tapIndex === 0) {
+                    let Curriculum = wx.getStorageSync('Curriculum')
+                    let Priority = Curriculum['Priority']
+                    if (!Priority) Priority = []
+                    let i = 0
+                    for (; i < Priority.length; i++) {
+                        if (Priority[i] === CourseCode) {
+                            Priority.splice(i, 1)
+                            Priority.push(CourseCode)
+                            break
                         }
+                    }
+                    if (i === Priority.length) Priority.push(CourseCode)
+                    Curriculum['Priority'] = Priority
+                    wx.setStorageSync('Curriculum', Curriculum)
+                    wx.showToast({
+                        title: '设置成功',
+                        icon: 'none'
                     })
-                } else {
-                    util.showError(res, '获取当前学校学期信息')
+                    that.onShow()
                 }
-            } else {
-                wx.showToast({
-                    title: '网络错误' + res.statusCode,
-                    icon: 'none'
-                })
             }
         })
     },
 
-    // set_new_item: function (e) {
-    //     console.log(this.data.table[this.data.week])
-    //     let item = {
-    //         self: true,
-    //         UILength: 2,
-    //         color: 'green',
-    //         content: 'test_content',
-    //         title: 'test_title',
-    //         WeekDayFormat: '五',
-    //         PeriodFormat: '2-3',
-    //         TeachingWeekFormat: '1-3'
-    //     }
-    //     let table = this.data.table
-    //     let row = e.mark.row_index
-    //     let col = e.mark.col_index
-    //     table[this.data.week][col][row] = item
-    //     this.setData({
-    //         table: table,
-    //         currSelfItem: item
-    //     })
-    //     wx.vibrateShort({
-    //         type: 'heavy'
-    //     })
-    //     wx.showToast({
-    //         title: `[${e.mark.row_index}行 ${e.mark.col_index}列]功能待完善`,
-    //         icon: 'none'
-    //     })
-    //     this.setData({
-    //         longPressState: true
-    //     })
-    // },
+    longPressOperation: function () {
+        let that = this
+        wx.vibrateShort()
+        wx.showActionSheet({
+            itemList: ['课表配置','刷新课表'],
+            success: res => {
+                if (res.tapIndex === 0) {
+                    wx.navigateTo({
+                        url: './config/config'
+                    })
+                } else if (res.tapIndex === 1) {
+                    that.updateData()
+                }
+            }
+        })
+    }
 })

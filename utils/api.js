@@ -1,9 +1,43 @@
+const util = require("./util");
 /**
  *  321CQU API 接口
  */
 
 const url = 'https://www.zhulegend.com/321CQU'
 const Password = 'CQUz5321'
+
+function request(header, resolve, reject) {
+  wx.showLoading()
+  header['data']['Key'] = Password
+  wx.request({
+    url: url + header['url'],
+    method: 'POST',
+    data: header['data'],
+    success: res => {
+      wx.hideLoading()
+      if (res.statusCode === 200) {
+        if (res.data.Statue === 1) {
+          resolve(res.data)
+        } else {
+          util.showError(res)
+          reject(new Error())
+        }
+      } else {
+        wx.showToast({
+          title: '网络错误' + res.statusCode,
+          icon: 'none'
+        })
+      }
+    },
+    fail: res => {
+      wx.hideLoading()
+      wx.showToast({
+        title: '网络错误',
+        icon: 'none'
+      })
+    }
+  })
+}
 
 // 对应学号的姓名
 function getStuName(stu_id) {
@@ -89,8 +123,6 @@ function setNickname(stu_id, nickname, avatarUrl) {
   })
 }
 
-
-
 // 获取反馈信息
 function getFeedback(limit) {
   return new Promise((resolve,reject) => {
@@ -157,7 +189,6 @@ function send_feedback_comment(Sid, Content, FBid) {
     })
   })
 }
-
 
 // 本科生统一身份认证校验
 function checkUidInfo(stu_id, uid, uid_pwd, code) {
@@ -269,40 +300,59 @@ function test(data) {
 
 // 获取课表
 function getCurriculum(stu_id, uid, uid_pwd) {
+  let header = {
+    url: '/student/get_course',
+    data: {
+      'Sid': stu_id,
+      'UserName': uid,
+      'Password': uid_pwd
+    }
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/get_course',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
 
 // 下学期课表预览
 function getNextCurriculum(stu_id, uid, uid_pwd) {
+  let header = {
+    url: '/student/get_enrollment',
+    data: {
+      'Sid': stu_id,
+      'UserName': uid,
+      'Password': uid_pwd
+    }
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/get_enrollment',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
 
+// 备份到云端
+function pushSelfSchedule(code, events) {
+  let header = {
+    url: '/course_table/push_custom_event',
+    data: {
+      'Code': code,
+      'Events': events,
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+// 同步到本地
+function pullSelfSchedule(code) {
+  let header = {
+    url: '/course_table/pull_custom_event',
+    data: {
+      'Code': code,
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
 // 研究生统一身份认证校验
 function checkPGUidInfo(uid, uid_pwd) {
   return new Promise((resolve,reject) => {
@@ -339,36 +389,32 @@ function getPGGrade(uid, uid_pwd) {
 
 // 学校当前学期信息
 function getSchoolTermInfo(uid, uid_pwd) {
+  let header = {
+    url: '/school_info/get_curr_term',
+    data: {
+      'UserName': uid,
+      'Password': uid_pwd
+    }
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/school_info/get_curr_term',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
 // 学校下学期信息
 function getSchoolNextTermInfo(uid, uid_pwd) {
+  let header = {
+    url: '/school_info/get_next_term',
+    data: {
+      'UserName': uid,
+      'Password': uid_pwd
+    }
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/school_info/get_next_term',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
+
+
 // 增加一次广告观看次数
 function ad_look(code) {
   return new Promise((resolve,reject) => {
@@ -531,4 +577,6 @@ module.exports = {
   get_gpa_and_rank,
   get_fees,
   getSchoolCardInfo,
+  pullSelfSchedule,
+  pushSelfSchedule,
 }

@@ -2,8 +2,14 @@
 
     <view style="height: 400rpx;width: 750rpx;border-bottom: 0rpx solid rgb(240, 240, 240);">
         <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="3000" duration="500">
-            <swiper-item wx:for="{{swiperList}}" wx:key bindlongpress="saveImg" data-url="{{item.url}}">
-                <image src="{{item.url}}" mode="aspectFill"></image>
+            <swiper-item wx:for="{{swiperList}}" wx:key>
+                <image wx:if="{{item.url}}" src="{{item.url}}" mode="aspectFill"></image>
+                <view class="padding-lg bg-white radius shadow shadow-lg margin-top" wx:else>
+                    <text class="text-black text-bold" style="text-align: center;width: 100%;">v1.10.0版本公告:</text>
+                    <view class="text-left" style="margin-top: 5rpx;">1.支持<text class="text-red">自定义课表</text>，进入课表页面长按空白区域即可进入配置页面</view>
+                    <view class="text-left" style="margin-top: 5rpx;">2.支持自定义课表<text class="text-red">云存储</text>，进入课表配置界面即可查看详情</view>
+                    <view class="text-left" style="margin-top: 5rpx;">3.支持提高冲突课程优先级，点击冲突课程详情页面长按即可<text class="text-red">提升显示优先级</text></view>
+                </view>
             </swiper-item>
         </swiper>
     </view>

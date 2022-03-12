@@ -1,6 +1,6 @@
 <view>
 
-  <wxs src="./tool.wxs" module="tool"></wxs>
+<wxs src="./tool.wxs" module="tool"></wxs>
 <!-- 头部 -->
 <view class="shadow bg-white" style="height: 100rpx;">
   <view class="top">
@@ -13,36 +13,31 @@
 </view>
 
 <view class="layers">
-<!-- 课表层-->
+  <!-- 课表层-->
   <view class="layer1">
     <view class="left">
       <view wx:for="{{13}}" class="index">{{index+1}}</view>
     </view>
-    <view wx:for="{{table[week]?table[week]:7}}" class="day_item" mark:col_index="{{index}}" style="background-color: {{(index+1 === today||today===0&&index===6)?week===curr_week?'rgb(201, 227, 254);':'white':'white'}}" wx:key>
+    <view wx:for="{{table[week]?table[week]:7}}" class="day_item" bindlongpress="longPressOperation" style="background-color: {{(index+1 === today||today===0&&index===6)?week===curr_week?'rgb(201, 227, 254);':'white':'white'}}" wx:key>
       <view wx:for="{{item!==index?item:0}}" wx:key>
-        <view wx:if="{{item&&item.self === undefined}}" bindtap="getDetailLessonInfo" data-item="{{item}}" data-index="{{index}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
-          <view style="color: {{item.more?'black':'white'}};text-align: center;">
-              {{item.RoomName}}\n{{item.CourseName.length<18?item.CourseName:tool.cut_str(item.CourseName,0,16)}}
+        <view wx:if="{{item[0]&&item[0].Self === undefined}}" bindtap="getDetailLessonInfo" data-item="{{item}}" style="height: {{130*item[0].UILength}}rpx;display: flex;flex-direction: column;background-color: {{item[0].Color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+          <view wx:if="{{item.length>1}}" class="cuIcon-more" style="width:100%;color:rgb(251, 252, 254);"></view>
+          <view style="color:white;display:flex;height:100%;text-align: center;justify-content: center;align-items: center;">
+              {{item[0].RoomName}}\n{{item[0].CourseName.length<18?item[0].CourseName:tool.cut_str(item[0].CourseName,0,16)}}
           </view>
         </view>
-        <view wx:elif="{{item.self}}" style="height: {{130*item.UILength}}rpx;display: flex;justify-content: center;align-items: center;background-color: {{item.color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
-          <view style="color: {{item.more?'black':'white'}};text-align: center;">
-            {{item.content.length<18?item.content:tool.cut_str(item.content,0,16)}}
+        <view wx:elif="{{item[0].Self}}" bindtap="getDetailLessonInfo" data-item="{{item}}" style="height: {{130*item[0].UILength}}rpx;display: flex;flex-direction: column;background-color: {{item[0].Color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+          <view wx:if="{{item.length>1}}" class="cuIcon-more" style="width:100%;color:rgb(251, 252, 254);"></view>
+          <view style="color: white;display:flex;height:100%;text-align: center;justify-content: center;align-items: center;">
+            {{item[0].CourseName.length<18?item[0].CourseName:tool.cut_str(item[0].CourseName,0,16)}}
           </view>
         </view>
-        <view wx:else style="height: 130rpx;" bindlongpress="set_new_item" mark:row_index="{{index}}">
-        </view>
+        <view wx:else style="height: 130rpx;"></view>
       </view>
     </view>
   </view>
-<!-- 自定义层-->
-<!--  <view class="layer2">-->
-<!--    <view style="width:50rpx;height:100%;display:inline-block;background-color:rgba(255,255,255,0);">-->
-<!--    </view>-->
-<!--    <view wx:for="{{7}}" class="day_item" style="border: 1px solid black;"></view>-->
-<!--  </view>-->
-<!-- 实时红线层-->
-  <view class="layer3">
+  <!-- 实时红线层-->
+  <view class="layer2">
     <view style="width:50rpx;height:100%;display:inline-block;background-color:rgba(255,255,255,0);">
     </view>
     <view wx:for="{{7}}" class="day_item">
@@ -56,9 +51,9 @@
 <view class="bottom" wx:if="{{showMode === 0}}">
   <text class="cuIcon-refresh" bindtap="updateData"></text>
   <view style="width: 550rpx;display: inline-block;">
-    <view bindtap="pre_week" style="display: inline-block;width: 100rpx;"><text class="cuIcon-back"></text></view>
+    <view bindtap="preWeek" style="display: inline-block;width: 100rpx;"><text class="cuIcon-back"></text></view>
     <text class="mid">第{{week}}周</text>
-    <view bindtap="next_week" style="display: inline-block;width: 100rpx;">
+    <view bindtap="nextWeek" style="display: inline-block;width: 100rpx;">
       <text class="cuIcon-right"></text>
     </view>
   </view>
@@ -67,206 +62,238 @@
 <view class="bottom" wx:elif="{{showMode === 1}}">
   <text class="cuIcon-refresh" bindtap="updateData"></text>
   <view style="width: 550rpx;display: inline-block;" bindtap="selectTerm">
-    <text class="mid">{{currSchoolTermInfo.Term}}</text>
+    <text class="mid">{{CurrTermInfo.Term}}</text>
   </view>
   <text class="cuIcon-cascades" bindtap="switchModelTo0"></text>
 </view>
 
 <!--  课程信息详情-->
 <view class="cu-modal {{detailState?'show':''}}" bindtap="hideModal">
-  <view class="cu-dialog" catchtap wx:if="{{extraDetailLesson.length>0}}">
-    <swiper class="square-dot" indicator-dots="true" circular="true" indicator-color="#8799a3" indicator-active-color="#0081ff" style="height: 800rpx;" bindchange="change_conflict_course">
-      <swiper-item wx:for="{{extraDetailLesson}}">
-        <scroll-view scroll-y>
+  <view class="cu-dialog" catchtap wx:if="{{currDetailLessons.length>1}}">
+    <swiper class="square-dot" indicator-dots="true" circular="true" indicator-color="#8799a3" indicator-active-color="#0081ff" style="height: 800rpx;">
+      <swiper-item wx:for="{{currDetailLessons}}">
+        <scroll-view scroll-y wx:if="{{!currDetailLessons[index].Self}}" bindlongpress="setPriority" data-index="{{index}}">
           <view class="cu-list menu text-left solid-top">
             <view class="cu-item" style="text-align: center;">
               <view class="content">
-                <text class="text-black">{{item.CourseName}}</text>
+                <text class="text-black">{{currDetailLessons[index].CourseName}}</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">上课时段</text>
               </view>
               <view class="action">
-                <text class="text-black">周{{item.WeekDayFormat}}{{item.PeriodFormat}}节</text>
+                <text class="text-black">周{{currDetailLessons[index].WeekDayFormat}}{{currDetailLessons[index].PeriodFormat}}节</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">上课教室</text>
               </view>
               <view class="action">
-                <text class="text-black">{{item.RoomName}}</text>
+                <text class="text-black">{{currDetailLessons[index].RoomName}}</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">课程编号</text>
               </view>
               <view class="action">
-                <text class="text-black">{{item.CourseCode}}</text>
+                <text class="text-black">{{currDetailLessons[index].CourseCode}}</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">任课教师</text>
               </view>
               <view class="action">
-                <text class="text-black">{{item.InstructorName}}</text>
+                <text class="text-black">{{currDetailLessons[index].InstructorName}}</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">教学班号</text>
               </view>
               <view class="action">
-                <text class="text-black">{{item.ClassNbr}}</text>
+                <text class="text-black">{{currDetailLessons[index].ClassNbr}}</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">上课周次</text>
               </view>
               <view class="action">
-                <text class="text-black">{{item.TeachingWeekFormat}}</text>
+                <text class="text-black">{{currDetailLessons[index].TeachingWeekFormat}}</text>
               </view>
             </view>
-
             <view class="cu-item">
               <view class="content">
                 <text class="text-grey">上课时间</text>
               </view>
               <view class="action">
-                <text class="text-black">{{item.TeachingTime}}</text>
+                <text class="text-black">{{currDetailLessons[index].TeachingTime}}</text>
               </view>
             </view>
-
+          </view>
+        </scroll-view>
+        <scroll-view scroll-y wx:else bindlongpress="setPriority" data-index="{{index}}">
+          <view class="cu-list menu text-left solid-top">
+            <view class="cu-item" style="text-align: center;">
+              <view class="content">
+                <text class="text-black">{{currDetailLessons[index].CourseName}}</text>
+              </view>
+            </view>
+            <view class="cu-item">
+              <view class="content">
+                <text class="text-grey">时段</text>
+              </view>
+              <view class="action">
+                <text class="text-black">周{{currDetailLessons[index].WeekDayFormat}}{{currDetailLessons[index].PeriodFormat}}节</text>
+              </view>
+            </view>
+            <view class="cu-item">
+              <view class="content">
+                <text class="text-grey">周次</text>
+              </view>
+              <view class="action">
+                <text class="text-black">{{currDetailLessons[index].TeachingWeekFormat}}</text>
+              </view>
+            </view>
+            <view class="cu-item">
+              <view class="content">
+                <text class="text-grey">时间</text>
+              </view>
+              <view class="action">
+                <text class="text-black">{{currDetailLessons[index].TeachingTime}}</text>
+              </view>
+            </view>
+            <view class="cu-item" wx:if="{{currDetailLessons[index].Content}}">
+              <view class="content">
+                <text class="text-grey">说明</text>
+              </view>
+              <view class="action">
+                <text class="text-black">{{currDetailLessons[index].Content}}</text>
+              </view>
+            </view>
           </view>
         </scroll-view>
       </swiper-item>
     </swiper>
   </view>
   <view class="cu-dialog" wx:else catchtap>
-    <scroll-view scroll-y>
+    <scroll-view scroll-y wx:if="{{!currDetailLessons[0].Self}}">
       <view class="cu-list menu text-left solid-top">
         <view class="cu-item" style="text-align: center;">
           <view class="content">
-            <text class="text-black">{{currDetailLesson.CourseName}}</text>
+            <text class="text-black">{{currDetailLessons[0].CourseName}}</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">上课时段</text>
           </view>
           <view class="action">
-            <text class="text-black">周{{currDetailLesson.WeekDayFormat}}{{currDetailLesson.PeriodFormat}}节</text>
+            <text class="text-black">周{{currDetailLessons[0].WeekDayFormat}}{{currDetailLessons[0].PeriodFormat}}节</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">上课教室</text>
           </view>
           <view class="action">
-            <text class="text-black">{{currDetailLesson.RoomName}}</text>
+            <text class="text-black">{{currDetailLessons[0].RoomName}}</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">课程编号</text>
           </view>
           <view class="action">
-            <text class="text-black">{{currDetailLesson.CourseCode}}</text>
+            <text class="text-black">{{currDetailLessons[0].CourseCode}}</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">任课教师</text>
           </view>
           <view class="action">
-            <text class="text-black">{{currDetailLesson.InstructorName}}</text>
+            <text class="text-black">{{currDetailLessons[0].InstructorName}}</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">教学班号</text>
           </view>
           <view class="action">
-            <text class="text-black">{{currDetailLesson.ClassNbr}}</text>
+            <text class="text-black">{{currDetailLessons[0].ClassNbr}}</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">上课周次</text>
           </view>
           <view class="action">
-            <text class="text-black">{{currDetailLesson.TeachingWeekFormat}}</text>
+            <text class="text-black">{{currDetailLessons[0].TeachingWeekFormat}}</text>
           </view>
         </view>
-
         <view class="cu-item">
           <view class="content">
             <text class="text-grey">上课时间</text>
           </view>
           <view class="action">
-            <text class="text-black">{{currDetailLesson.TeachingTime}}</text>
+            <text class="text-black">{{currDetailLessons[0].TeachingTime}}</text>
           </view>
         </view>
-
+      </view>
+    </scroll-view>
+    <scroll-view scroll-y wx:else>
+      <view class="cu-list menu text-left solid-top">
+        <view class="cu-item" style="text-align: center;">
+          <view class="content">
+            <text class="text-black">{{currDetailLessons[0].CourseName}}</text>
+          </view>
+        </view>
+        <view class="cu-item">
+          <view class="content">
+            <text class="text-grey">时段</text>
+          </view>
+          <view class="action">
+            <text class="text-black">周{{currDetailLessons[0].WeekDayFormat}}{{currDetailLessons[0].PeriodFormat}}节</text>
+          </view>
+        </view>
+        <view class="cu-item">
+          <view class="content">
+            <text class="text-grey">周次</text>
+          </view>
+          <view class="action">
+            <text class="text-black">{{currDetailLessons[0].TeachingWeekFormat}}</text>
+          </view>
+        </view>
+        <view class="cu-item">
+          <view class="content">
+            <text class="text-grey">时间</text>
+          </view>
+          <view class="action">
+            <text class="text-black">{{currDetailLessons[0].TeachingTime}}</text>
+          </view>
+        </view>
+        <view class="cu-item" wx:if="{{currDetailLessons[0].Content}}">
+          <view class="content">
+            <text class="text-grey">说明</text>
+          </view>
+          <view class="action">
+            <text class="text-black">{{currDetailLessons[0].Content}}</text>
+          </view>
+        </view>
       </view>
     </scroll-view>
   </view>
 </view>
-<!--  自定义课程-->
-<!--  <view class="cu-modal {{longPressState?'show':''}}" bindtap="hideModal">-->
-<!--    <view class="cu-dialog" catchtap>-->
-<!--      <scroll-view scroll-y>-->
-<!--        <view class="cu-list menu text-left solid-top">-->
-<!--          <view class="cu-item" style="text-align: center;">-->
-<!--            <view class="content">-->
-<!--              <text class="text-black">{{currSelfItem.title}}</text>-->
-<!--            </view>-->
-<!--          </view>-->
-<!--          <view class="cu-item">-->
-<!--            <view class="content">-->
-<!--              <text class="text-black">{{currSelfItem.content}}</text>-->
-<!--            </view>-->
-<!--          </view>-->
-<!--          <view class="cu-item">-->
-<!--            <view class="content">-->
-<!--              <text class="text-grey">时间</text>-->
-<!--            </view>-->
-<!--            <view class="action">-->
-<!--              <text class="text-black">周{{currSelfItem.WeekDayFormat}} {{currSelfItem.PeriodFormat}}节</text>-->
-<!--            </view>-->
-<!--          </view>-->
-<!--          <view class="cu-item">-->
-<!--            <view class="content">-->
-<!--              <text class="text-grey">周次</text>-->
-<!--            </view>-->
-<!--            <view class="action">-->
-<!--              <text class="text-black">{{currSelfItem.TeachingWeekFormat}}</text>-->
-<!--            </view>-->
-<!--          </view>-->
 
-<!--        </view>-->
-<!--      </scroll-view>-->
-<!--    </view>-->
-<!--  </view>-->
+
 <!--  选择学期-->
-  <view class="cu-modal {{selectTermState?'show':''}}" bindtap="hideModal">
+<view class="cu-modal {{selectTermState?'show':''}}" bindtap="hideModal">
     <view class="cu-dialog" catchtap>
       <scroll-view scroll-y>
         <view class="cu-list menu text-left solid-top">
@@ -276,16 +303,15 @@
             </view>
           </view>
 
-          <view class="cu-item" wx:for="{{term_list}}" wx:if="{{item.Term!==''}}">
+          <view class="cu-item" wx:for="{{term_list}}" wx:if="{{item!==''}}">
             <view class="content" bindtap="selectTerm2" data-item="{{item}}">
-              <text class="text-blue" wx:if="{{currSchoolTermInfo.Term === item.Term}}">{{item.Term}}</text>
-              <text class="text-grey" wx:else>{{item.Term}}</text>
+              <text class="text-blue" wx:if="{{CurrTermInfo.Term === item}}">{{item}}</text>
+              <text class="text-grey" wx:else>{{item}}</text>
             </view>
           </view>
         </view>
       </scroll-view>
     </view>
   </view>
-
 </view>
 
