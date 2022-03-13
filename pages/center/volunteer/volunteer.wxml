@@ -1,22 +1,27 @@
-<form catchsubmit="formSubmit" catchreset="formReset">
-	<view class="cu-form-group margin-top">
-		<view class="title">学号</view>
-		<input name="stu_id" placeholder="请输入你的学号" value="{{stu_id}}"></input>
-	</view>
-	<view class="cu-form-group">
-		<view class="title">姓名</view>
-		<input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>
-	</view>
-  <view class="flex">
-    <view class="flex-sub">
-      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">查询</button>
+<!--<form catchsubmit="formSubmit" catchreset="formReset">-->
+<!--	<view class="cu-form-group margin-top">-->
+<!--		<view class="title">学号</view>-->
+<!--		<input name="stu_id" placeholder="请输入你的学号" value="{{stu_id}}"></input>-->
+<!--	</view>-->
+<!--	<view class="cu-form-group">-->
+<!--		<view class="title">姓名</view>-->
+<!--		<input name="stu_name" placeholder="请输入你的姓名" value="{{stu_name}}"></input>-->
+<!--	</view>-->
+<!--  <view class="flex">-->
+<!--    <view class="flex-sub">-->
+<!--      <button style="margin: 30rpx 0;width: 100%;" type="primary" formType="submit">查询</button>-->
+<!--    </view>-->
+<!--    <view class="flex-sub">-->
+<!--      <button style="margin: 30rpx 0;width: 100%;" formType="reset">重置</button>-->
+<!--    </view>-->
+<!--  </view>-->
+<!--</form>-->
+<view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action">
+        <text class="cuIcon-title text-orange text-bold"></text>
+        <text>亲爱的<text class="text-bold">{{stu_name?stu_name:'unknown'}}</text>同学</text>
     </view>
-    <view class="flex-sub">
-      <button style="margin: 30rpx 0;width: 100%;" formType="reset">重置</button>
-    </view>
-  </view>
-
-</form>
+</view>
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action">
     <text class="cuIcon-title text-blue"></text>查询结果

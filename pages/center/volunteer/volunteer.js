@@ -17,6 +17,12 @@ Page({
             stu_id: wx.getStorageSync('stu_id'),
             email: wx.getStorageSync('email'),
         })
+        if (this.data.stu_id === '' || this.data.stu_name === '') {
+            wx.showToast({
+                title: '下拉刷新获取数据',
+                icon: 'none'
+            })
+        }
     },
     // 解析志愿记录并存储
     loadAllRecords(data) {
@@ -131,24 +137,29 @@ Page({
             stu_id: stu_id,
             // email: email
         })
-
+        this.updateData()
+    },
+    updateData() {
+        let global = this
         // id和name不能为空
+        let stu_id = this.data.stu_id
+        let stu_name = this.data.stu_name
         if (stu_id === '' || stu_name === '') {
             wx.showToast({
-              title: '请填写完整！',
-              icon: 'error'
+                title: '请填写完整！',
+                icon: 'error'
             })
         } else {
             // 向服务器校验身份信息
             wx.showLoading({
-              title: '校验信息',
+                title: '校验信息',
             })
             api.getStuName(stu_id).then(res => {
                 wx.hideLoading()
                 if (res.statusCode !== 200) {
                     wx.showToast({
-                      title: `网络错误${res.statusCode}`,
-                      icon: 'error'
+                        title: `网络错误${res.statusCode}`,
+                        icon: 'error'
                     })
                 } else {
                     if(res.data.Statue === 0) {
@@ -158,7 +169,7 @@ Page({
                     let std_name = res.data.Sname
                     if (std_name === stu_name) {
                         wx.showLoading({
-                          title: '查询中',
+                            title: '查询中',
                         })
                         // 获取志愿时长记录
                         api.getVolunteerRecord(stu_id).then(res => {
@@ -193,11 +204,11 @@ Page({
                                 })
                             }
                         })
-                        
+
                     } else {
                         wx.showToast({
-                          title: '信息有误',
-                          icon: 'error'
+                            title: '信息有误',
+                            icon: 'error'
                         })
                     }
                 }
@@ -211,5 +222,9 @@ Page({
             stu_name: '',
             stu_id: '',
         });
+    },
+    onPullDownRefresh() {
+        this.updateData()
+        wx.stopPullDownRefresh()
     }
 })

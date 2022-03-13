@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "志愿者时长"
+  "navigationBarTitleText": "志愿者时长",
+  "enablePullDownRefresh": true
 }

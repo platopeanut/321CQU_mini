@@ -39,6 +39,36 @@ function request(header, resolve, reject) {
   })
 }
 
+
+// 本科生统一身份登录
+function loginUG(uid, uid_pwd) {
+  let header = {
+    url: '/user/login',
+    data: {
+      'UserName': uid,
+      'Password': uid_pwd
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+
+
+// 研究生统一身份登录
+function loginPG(uid, uid_pwd) {
+  let header = {
+    url: '/pg_student/is_match',
+    data: {
+      'UserName': uid,
+      'Password': uid_pwd
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+
 // 对应学号的姓名
 function getStuName(stu_id) {
   return new Promise((resolve,reject) => {
@@ -190,25 +220,25 @@ function send_feedback_comment(Sid, Content, FBid) {
   })
 }
 
-// 本科生统一身份认证校验
-function checkUidInfo(stu_id, uid, uid_pwd, code) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/user/login',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-        'UserName': uid,
-        'Password': uid_pwd,
-        'NeedAll': false,
-        'Code': code
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
+// // 本科生统一身份认证校验
+// function checkUidInfo(stu_id, uid, uid_pwd, code) {
+//   return new Promise((resolve,reject) => {
+//     wx.request({
+//       url: url + '/user/login',
+//       method: 'POST',
+//       data: {
+//         'Key': Password,
+//         'Sid': stu_id,
+//         'UserName': uid,
+//         'Password': uid_pwd,
+//         'NeedAll': false,
+//         'Code': code
+//       },
+//       success: resolve,
+//       fail: reject
+//     })
+//   })
+// }
 
 // 成绩查询
 function getGrade(stu_id, uid, uid_pwd, code) {
@@ -351,22 +381,6 @@ function pullSelfSchedule(code) {
   }
   return new Promise((resolve,reject) => {
     request(header, resolve, reject)
-  })
-}
-// 研究生统一身份认证校验
-function checkPGUidInfo(uid, uid_pwd) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/pg_student/is_match',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
   })
 }
 
@@ -556,7 +570,6 @@ module.exports = {
   setNickname,
   getFeedback,
   sendFeedback,
-  checkUidInfo,
   getGrade,
   getExamSchedule,
   getAboutUs,
@@ -565,7 +578,6 @@ module.exports = {
   get_feedback_comment,
   getCurriculum,
   getNextCurriculum,
-  checkPGUidInfo,
   getPGGrade,
   getSchoolTermInfo,
   getSchoolNextTermInfo,
@@ -579,4 +591,6 @@ module.exports = {
   getSchoolCardInfo,
   pullSelfSchedule,
   pushSelfSchedule,
+  loginUG,
+  loginPG,
 }
