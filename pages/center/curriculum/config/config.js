@@ -165,6 +165,13 @@ Page({
             return
         }
         // 合法性校验
+        if (CourseName.length > 25) {
+            wx.showToast({
+                title: '名称不能超过25个字',
+                icon: 'none'
+            })
+            return
+        }
         if (Content.length > 50) {
             wx.showToast({
                 title: '说明文字不能超过五十字',

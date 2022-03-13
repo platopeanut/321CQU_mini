@@ -94,6 +94,13 @@ Page({
 
     router: function (e) {
         let path = e.currentTarget.dataset.path
+        if (path === 'square') {
+            wx.showToast({
+                title: '敬请期待',
+                icon: 'none'
+            })
+            return
+        }
         wx.navigateTo({
             url: '../center/' + path + '/' + path,
             fail: function(res) {

@@ -5,8 +5,6 @@ let videoAd = null
 
 Page({
 
-    data: {
-    },
     adShow: function() {
         wx.showLoading()
         // 在页面onLoad回调事件中创建激励视频广告实例
@@ -25,8 +23,9 @@ Page({
                 })
             })
             videoAd.onClose(res => {
+                wx.hideLoading()
                 if (res && res.isEnded) {
-                    // 正常播放结束，可以下发游戏奖励
+                    // 正常播放结束，可以下发奖励
                     wx.login({
                         success: function(res) {
                             api.ad_look(res.code).then(res => {
@@ -109,8 +108,4 @@ Page({
             this.adShow()
         }
     },
-
-    onShareAppMessage: function () {
-
-    }
 })

@@ -146,7 +146,6 @@ function UIProcess(table) {
             }
         }
     }
-    console.log(table)
     return table
 }
 
