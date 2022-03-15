@@ -1,5 +1,5 @@
 <!-- 授权登录 -->
-<view wx:if="{{userInfo === ''}}">
+<view wx:if="{{UserInfo === ''}}">
   <view class='header'>
     <image mode='widthFix' src='../../res/icons/app.png'></image>
   </view>
@@ -14,16 +14,15 @@
   <view class="container">
   <view class="userinfo">
     <block>
-      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+      <image class="userinfo-avatar" src="{{UserInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickname">{{UserInfo.nickName}}</text>
     </block>
   </view>
-</view>
-
+  </view>
 
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
     <view class="cu-item arrow">
-      <view class="content" bindtap="editInfo">
+      <view class="content" bindtap="jumpToEditInfo">
         <text class="cuIcon-form text-yellow"></text>
         <text class="text-grey">绑定信息</text>
       </view>
@@ -41,12 +40,12 @@
       </view>
     </view>
     <view class="cu-item">
-      <view class="content" bindtap="update_ad_times">
+      <view class="content" bindtap="updateAdTimes">
         <text class="cuIcon-sponsor text-cyan"></text>
         <text class="text-grey">已观看广告次数</text>
       </view>
       <view class="action">
-        <text>{{ad_count}}</text>
+        <text>{{AdCount}}</text>
       </view>
     </view>
     <view class="cu-item arrow">
@@ -58,21 +57,18 @@
   </view>
   <view class="cu-tabbar-height"></view>
 
-  <!-- 首次绑定 -->
-  <view class="cu-modal {{has_bind?'':'show'}}">
+  <!-- 进入绑定信息页面提示 -->
+  <view class="cu-modal {{mode?'show':''}}">
   <view class="cu-dialog">
   <view class="cu-bar bg-white justify-end">
     <view class="content">用户信息隐私说明</view>
-    <view class="action" bindtap="hideModal">
-      <text class="cuIcon-close text-red"></text>
-    </view>
   </view>
   <view class="padding-xl">学号、姓名、统一认证账号、密码均为本地存储，有特殊功能需要存储于服务器时会单独通知，请放心使用。详细隐私协议可见321CQU小程序隐私保护指引
   </view>
   <view class="cu-bar bg-white justify-end">
     <view class="action">
-      <button class="cu-btn line-green text-green" bindtap="hideModal_cancel">取消</button>
-      <button class="cu-btn bg-green margin-left" bindtap="hideModal_sure">同意</button>
+      <button class="cu-btn line-green text-green" bindtap="hideModalCancel">取消</button>
+      <button class="cu-btn bg-green margin-left" bindtap="hideModalSure">同意</button>
     </view>
   </view>
   </view>

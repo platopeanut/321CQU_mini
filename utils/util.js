@@ -18,7 +18,6 @@ function get_dormitory (zone= '选择校区') {
 }
 
 function get_campus_list() {
-    //return ['选择校区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
     return ['选择校区', 'A区','B区','C区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
 }
 const dormitory_code = {

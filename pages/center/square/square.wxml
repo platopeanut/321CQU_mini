@@ -7,5 +7,6 @@
         </scroll-view>
     </view>
 
+    <button bindtap="sendTest"></button>
 
 </view>

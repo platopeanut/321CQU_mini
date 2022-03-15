@@ -10,11 +10,11 @@ Page({
 
     updateData: function () {
         let that = this
-        let uid = wx.getStorageSync('uid')
-        let uid_pwd = wx.getStorageSync('uid_pwd')
-        let stu_id= wx.getStorageSync('stu_id')
-        let identity= wx.getStorageSync('identity')
-        console.log("loading")
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let uid = StuInfo['uid']
+        let uid_pwd = StuInfo['uid_pwd']
+        let stu_id= StuInfo['stu_id']
+        let identity= StuInfo['identity']
         if (identity === '') {
             wx.showToast({
                 title: '请先绑定学号，统一身份信息',

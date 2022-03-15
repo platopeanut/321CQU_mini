@@ -61,12 +61,12 @@ Page({
                 color: 'yellow',
                 icon: 'baby'
             },
-            // {
-            //     title: '信息广场',
-            //     path: 'square',
-            //     color: 'red',
-            //     icon: 'wefill'
-            // },
+            {
+                title: '信息广场',
+                path: 'square',
+                color: 'red',
+                icon: 'wefill'
+            },
             {
                 title: '任务管理',
                 path: 'task',
@@ -106,19 +106,14 @@ Page({
     },
 
     onLoad: function() {
-        wx.getStorage({
-            key: 'has_used',
-            fail: function(res) {
-                wx.showModal({
-                    title: "使用说明",
-                    content: "1. 仅适用于重庆大学学生进行志愿者时长查询\n2.所有用户相关数据均在本地存储，我们未通过小程序收集用户个人数据\n3.有什么问题请在反馈中及时反馈"
-                })
-                wx.setStorage({
-                    key: 'has_used',
-                    value: true
-                })
-            }
-        })
+        let AppUse = wx.getStorageSync('AppUse')
+        if (AppUse === '') {
+            wx.showModal({
+                title: "使用说明",
+                content: "1. 仅适用于重庆大学学生进行志愿者时长查询\n2.所有用户相关数据均在本地存储，我们未通过小程序收集用户个人数据\n3.有什么问题请在反馈中及时反馈"
+            })
+            wx.setStorageSync('AppUse', true)
+        }
     },
 
     // saveImg: function (e) {

@@ -2,9 +2,9 @@ const api = require('../../../utils/api')
 const util = require('../../../utils/util')
 Page({
     data: {
-        stu_name: wx.getStorageSync('stu_name'),
-        stu_id: wx.getStorageSync('stu_id'),
-        email: wx.getStorageSync('email'),
+        stu_name: '',
+        stu_id: '',
+        email: '',
         result: [], 
         time_sum: 0,
         can_send: false,
@@ -12,18 +12,20 @@ Page({
         way: 'self',
     },
     onShow() {
+        let StuInfo = wx.getStorageSync('StuInfo')
         this.setData({
-            stu_name: wx.getStorageSync('stu_name'),
-            stu_id: wx.getStorageSync('stu_id'),
-            email: wx.getStorageSync('email'),
+            stu_name: StuInfo['stu_name'],
+            stu_id: StuInfo['stu_id'],
+            email: StuInfo['email'],
         })
         if (this.data.stu_id === '' || this.data.stu_name === '') {
             wx.showToast({
-                title: '下拉刷新获取数据',
+                title: '请完善统一身份认证信息',
                 icon: 'none'
             })
         }
     },
+
     // 解析志愿记录并存储
     loadAllRecords(data) {
         let tmpResult = []
@@ -125,20 +127,7 @@ Page({
             }
         })
     },
-    formSubmit(e) {
-        let global = this
-        let stu_name = e.detail.value.stu_name
-        let stu_id = e.detail.value.stu_id
-        // let email = e.detail.value.email
 
-        // 保存到页面
-        this.setData({
-            stu_name: stu_name,
-            stu_id: stu_id,
-            // email: email
-        })
-        this.updateData()
-    },
     updateData() {
         let global = this
         // id和name不能为空
@@ -215,16 +204,29 @@ Page({
             })
         }
     },
-    formReset(e) {
-        this.setData({
-            result: [],
-            time_sum: 0,
-            stu_name: '',
-            stu_id: '',
-        });
-    },
     onPullDownRefresh() {
         this.updateData()
         wx.stopPullDownRefresh()
-    }
+    },
+
+    // formSubmit(e) {
+    //     let global = this
+    //     let stu_name = e.detail.value.stu_name
+    //     let stu_id = e.detail.value.stu_id
+    //     // 保存到页面
+    //     this.setData({
+    //         stu_name: stu_name,
+    //         stu_id: stu_id,
+    //         // email: email
+    //     })
+    //     this.updateData()
+    // },
+    // formReset(e) {
+    //     this.setData({
+    //         result: [],
+    //         time_sum: 0,
+    //         stu_name: '',
+    //         stu_id: '',
+    //     });
+    // },
 })

@@ -50,6 +50,7 @@
 </view>
 
 <checkbox-group bindchange="selectWhich">
+  <view wx:if="{{result.length === 0}}" class="text-gray padding text-center">没有记录可以尝试下拉刷新</view>
   <view wx:for="{{result}}" class="bg-white padding-lr">
     <view class="solids-bottom padding-xs flex align-center">
         <view class="padding" style="color: orange;font-weight: bold;">
@@ -66,7 +67,6 @@
         </view>
     </view>
   </view>
-
 </checkbox-group>
 
 

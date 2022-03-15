@@ -28,9 +28,10 @@ Page({
     },
 
     updateData: function() {
-        let stu_id = wx.getStorageSync('stu_id')
-        let uid = wx.getStorageSync('uid')
-        let uid_pwd = wx.getStorageSync('uid_pwd')
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let stu_id = StuInfo['stu_id']
+        let uid = StuInfo['uid']
+        let uid_pwd = StuInfo['uid_pwd']
         if (stu_id === '' || uid === '' || uid_pwd === '') {
             wx.showToast({
               title: '请先绑定学号，统一身份认证账号及密码',

@@ -76,16 +76,19 @@
 > 目前小程序缓存架构较为混乱，等我以后重新调整，下面暂时只列出一些必要的缓存
 
 ### 关键缓存
-- 学生信息
-  - room：宿舍编号
+- StuInfo：学生信息
   - stu_name：学生姓名
   - stu_id：学生学号
-  - email：邮箱
   - uid：统一身份账号
   - uid_pwd：统一身份密码
   - identity：学生身份（取值为`本科生`/`研究生`）
+  - email：邮箱
   - nickname：昵称
-
+  - authority：管理员权限
+  - room：宿舍信息
+    - campus
+    - building
+    - room_id
 
 
 ## Request Promise
@@ -101,17 +104,14 @@
 
 ~~~javascript
 function api_name(api_parameters) {
+  let header = {
+    url: 'api_path',
+    data: {
+      'api_parameters': api_parameters
+    }
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + 'api_path',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'api_parameters': api_parameters
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
 
@@ -128,21 +128,12 @@ module.exports = {
 - 相应数据保存在`res.data`中
 
 ~~~javascript
-wx.showLoading()
 api.api_name(api_parameters).then(res => {
-  wx.hideLoading()
-  if (res.statusCode === 200) {
-    if (res.data.Statue === 1) {
-      // TODO...
-    } else {
-      util.showError(res)
-    }
-  } else {
-    wx.showToast({
-      title: `网络错误[${res.statusCode}]`,
-      icon: 'error'
-    })
-  }
+    // TODO
+}, err => {
+    // handle error
+}).finally({
+    // finally do
 })
 
 ~~~

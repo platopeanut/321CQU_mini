@@ -137,19 +137,16 @@ function sendVolunteer(stu_id, email, fid_list) {
 
 // 设置昵称，上传用户头像
 function setNickname(stu_id, nickname, avatarUrl) {
+  let header = {
+    url: '/user/set_info',
+    data: {
+      'Sid': stu_id,
+      'UserName': nickname,
+      'UserImg': avatarUrl,
+    }
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/user/set_info',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-        'UserName': nickname,
-        'UserImg': avatarUrl,
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
 
@@ -220,26 +217,6 @@ function send_feedback_comment(Sid, Content, FBid) {
   })
 }
 
-// // 本科生统一身份认证校验
-// function checkUidInfo(stu_id, uid, uid_pwd, code) {
-//   return new Promise((resolve,reject) => {
-//     wx.request({
-//       url: url + '/user/login',
-//       method: 'POST',
-//       data: {
-//         'Key': Password,
-//         'Sid': stu_id,
-//         'UserName': uid,
-//         'Password': uid_pwd,
-//         'NeedAll': false,
-//         'Code': code
-//       },
-//       success: resolve,
-//       fail: reject
-//     })
-//   })
-// }
-
 // 成绩查询
 function getGrade(stu_id, uid, uid_pwd, code) {
   return new Promise((resolve,reject) => {
@@ -280,16 +257,12 @@ function getExamSchedule(stu_id, uid, uid_pwd) {
 
 // 获取关于界面
 function getAboutUs() {
+  let header = {
+    url: '/about/about_us',
+    data: {}
+  }
   return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/about/about_us',
-      method: 'POST',
-      data: {
-        'Key': Password,
-      },
-      success: resolve,
-      fail: reject
-    })
+    request(header, resolve, reject)
   })
 }
 
@@ -428,36 +401,29 @@ function getSchoolNextTermInfo(uid, uid_pwd) {
   })
 }
 
-
 // 增加一次广告观看次数
-function ad_look(code) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/user/advertise/look',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Code': code,
-      },
-      success: resolve,
-      fail: reject
+function adLook(code) {
+    let header = {
+        url: '/user/advertise/look',
+        data: {
+          'Code': code
+        }
+    }
+    return new Promise((resolve,reject) => {
+        request(header, resolve, reject)
     })
-  })
 }
 
-function ad_times(code) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/user/advertise/times',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Code': code,
-      },
-      success: resolve,
-      fail: reject
+function adTimes(code) {
+    let header = {
+        url: '/user/advertise/times',
+        data: {
+          'Code': code
+        }
+    }
+    return new Promise((resolve,reject) => {
+        request(header, resolve, reject)
     })
-  })
 }
 
 // 根据教师名称查询课程信息
@@ -561,6 +527,80 @@ function getSchoolCardInfo(uid, uid_pwd){
   })
 }
 
+/**
+ *  信息广场
+ */
+// 获取帖子列表
+function getPostList(limit, type='all') {
+  let header = {
+    url: '/forum/get_post_list',
+    data: {
+      'Type': type,
+      'Limit': limit
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+// 获取帖子详情
+function getPostDetail(pid) {
+  let header = {
+    url: '/forum/get_post_detail',
+    data: {
+      'Pid': pid
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+// 发送帖子
+function sendPost(type, title, content, author) {
+  let header = {
+    url: '/forum/send_post',
+    data: {
+      'Title': title,
+      'Content': content,
+      'Type': type,
+      'Author': author
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+// 更新帖子
+function modifyPost(title, content, pid, sid) {
+  let header = {
+    url: '/forum/update_post',
+    data: {
+      'Title': title,
+      'Content': content,
+      'IsDelete': false,
+      'Pid': pid,
+      'Sid': sid,
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+// 删除帖子
+function deletePost(pid, sid) {
+  let header = {
+    url: '/forum/update_post',
+    data: {
+      'IsDelete': true,
+      'Pid': pid,
+      'Sid': sid,
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+
 module.exports = {
   test,
   getVolunteerTime,
@@ -581,8 +621,8 @@ module.exports = {
   getPGGrade,
   getSchoolTermInfo,
   getSchoolNextTermInfo,
-  ad_look,
-  ad_times,
+  adLook,
+  adTimes,
   query_class_info_by_class_name,
   query_class_info_by_teacher_name,
   query_class_detail,
@@ -593,4 +633,9 @@ module.exports = {
   pushSelfSchedule,
   loginUG,
   loginPG,
+  getPostList,
+  getPostDetail,
+  sendPost,
+  modifyPost,
+  deletePost,
 }

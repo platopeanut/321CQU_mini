@@ -30,15 +30,15 @@ Page({
     },
 
     send_comment: function() {
-        if (this.data.comment == '') {
+        if (this.data.comment === '') {
             wx.showToast({
               title: '消息不能为空',
               icon: 'error'
             })
             return
         }
-        let Sid = wx.getStorageSync('stu_id')
-        if (Sid == '') {
+        let Sid = wx.getStorageSync('StuInfo')['stu_id']
+        if (Sid === '' || Sid === undefined) {
             wx.showToast({
               title: '请绑定学号',
               icon: 'error'

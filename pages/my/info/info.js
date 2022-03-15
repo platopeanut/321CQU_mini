@@ -2,38 +2,44 @@ const api = require('../../../utils/api')
 const util = require('../../../utils/util')
 Page({
     data: {
-        stuInfo: {
-            stu_name: wx.getStorageSync('stu_name'),
-            stu_id: wx.getStorageSync('stu_id'),
-            email: wx.getStorageSync('email'),
-            nickname: wx.getStorageSync('nickname'),
-            uid: wx.getStorageSync('uid'),
-            uid_pwd: wx.getStorageSync('uid_pwd'),
-            identity: wx.getStorageSync('identity'), // 研究生还是本科生
-            _dormitory: [],
-            dormitory_index: [],
-            room: null,
-        },
-    },
-
-    onShow: function() {
-        let room = wx.getStorageSync('room')
-        if (room === '') room = {
+        StuInfo: {},
+        identity: '',
+        room: {
             'campus': '选择校区',
             'building': '选择楼栋',
             'room_id': ''
+        },
+
+        dormitory: [],
+        dormitory_index: [],
+    },
+
+    onShow: function() {
+        let StuInfo = wx.getStorageSync('StuInfo')
+        if (StuInfo !== '') {
+            this.setData({
+                StuInfo: StuInfo
+            })
+        }
+        if (StuInfo['identity']) {
+            this.setData({
+                identity: StuInfo['identity']
+            })
+        }
+        if (StuInfo['room']) {
+            this.setData({
+                room: StuInfo['room']
+            })
         }
         this.setData({
-            _dormitory: [util.get_campus_list(), util.get_dormitory()],
+            dormitory: [util.get_campus_list(), util.get_dormitory()],
             dormitory_index: [0,0],
-            room: room
         })
     },
     bindMultiPickerChange: function (e) {
-        console.log('picker发送选择改变，携带值为', e.detail.value)
         let room = {
-            'campus': this.data._dormitory[0][e.detail.value[0]],
-            'building': this.data._dormitory[1][e.detail.value[1]],
+            'campus': this.data.dormitory[0][e.detail.value[0]],
+            'building': this.data.dormitory[1][e.detail.value[1]],
             'room_id': ''
         }
         this.setData({
@@ -42,15 +48,14 @@ Page({
     },
     bindMultiPickerColumnChange: function (e) {
         if (e.detail.column === 0) {
-            let zone = this.data._dormitory[0][e.detail.value]
+            let zone = this.data.dormitory[0][e.detail.value]
             let li = util.get_dormitory(zone)
             this.setData({
-                _dormitory: [util.get_campus_list(), li],
+                dormitory: [util.get_campus_list(), li],
                 dormitory_index: [e.detail.value, 0]
             })
         }
     },
-
     saveUid(e) {
         let that = this
         let uid = e.detail.value.uid
@@ -63,18 +68,18 @@ Page({
             })
             return
         }
+        let StuInfo = {}
         if (identity === '本科生') {
             api.loginUG(uid, uid_pwd).then(res => {
-                console.log(res)
-                wx.setStorageSync('uid', uid)
-                wx.setStorageSync('uid_pwd', uid_pwd)
-                wx.setStorageSync('stu_id', res.Sid)
-                wx.setStorageSync('stu_name', res.Name)
-                wx.setStorageSync('identity', '本科生')
+                StuInfo['uid'] = uid
+                StuInfo['uid_pwd'] = uid_pwd
+                StuInfo['stu_id'] = res.Sid
+                StuInfo['stu_name'] = res.Name
+                StuInfo['identity'] = '本科生'
                 that.setData({
-                    uid: uid,
-                    uid_pwd: uid_pwd,
+                    StuInfo: StuInfo
                 })
+                wx.setStorageSync('StuInfo', StuInfo)
                 wx.showToast({
                     title: '绑定成功',
                     icon: 'none'
@@ -83,13 +88,13 @@ Page({
         }
         else if (identity === '研究生') {
             api.loginPG(uid, uid_pwd).then(res => {
-                wx.setStorageSync('uid', uid)
-                wx.setStorageSync('uid_pwd', uid_pwd)
-                wx.setStorageSync('identity', '研究生')
+                StuInfo['uid'] = uid
+                StuInfo['uid_pwd'] = uid_pwd
+                StuInfo['identity'] = '研究生'
                 that.setData({
-                    uid: uid,
-                    uid_pwd: uid_pwd,
+                    StuInfo: StuInfo
                 })
+                wx.setStorageSync('StuInfo', StuInfo)
                 wx.showToast({
                     title: '绑定成功',
                     icon: 'none'
@@ -103,9 +108,10 @@ Page({
         }
     },
     saveInfo(e) {
-        let that = this;
-        let stu_name = wx.getStorageSync('stu_name')
-        let stu_id = wx.getStorageSync('stu_id')
+        let that = this
+        let StuInfo = this.data.StuInfo
+        let stu_name = StuInfo['stu_name']
+        let stu_id = StuInfo['stu_id']
         if (stu_id === "" || stu_name === "") {
             wx.showToast({
                 title: '请先登录统一身份认证',
@@ -116,18 +122,22 @@ Page({
         let email = e.detail.value.email
         let nickname = e.detail.value.nickname
         let room_id = e.detail.value.room_id
-
+        // email
+        StuInfo['email'] = email
         // 宿舍
         let room = this.data.room
         room['room_id'] = room_id
-        wx.setStorageSync('room', room)
-        this.setData({
-            room: room
+        StuInfo['room'] = room
+
+        //页面加载
+        wx.setStorageSync('StuInfo', StuInfo)
+        that.setData({
+            StuInfo: StuInfo,
+            room: room,
         })
 
         // 设置昵称
         if (nickname !== "") {
-            // 设置昵称
             this.setNickname(stu_id, nickname)
         } else {
           wx.showToast({
@@ -135,54 +145,35 @@ Page({
             icon: 'success'
           })
         }
-        wx.setStorageSync('email', email)
-        //页面加载
-        that.setData({
-          stuInfo: {
-            stu_id: stu_id,
-            stu_name: stu_name,
-            email: email,
-            nickname: nickname,
-            uid: wx.getStorageSync('uid'),
-            uid_pwd: wx.getStorageSync('uid_pwd'),
-          }
-        })
     },
-    identity_choice: function (e) {
+    identityChoice: function (e) {
         this.setData({
             identity: e.detail.value
         })
     },
     setNickname(stu_id, nickname) {
-        let global = this
-        let avatarUrl = wx.getStorageSync('userInfo').avatarUrl
+        let that = this
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let avatarUrl = wx.getStorageSync('UserInfo').avatarUrl
         // avatarUrl不存在则需要重新授权
-        if (avatarUrl === "" || avatarUrl === undefined) {
+        if (avatarUrl === '') {
             wx.showToast({
-            title: '需要重新授权',
-            icon: 'error',
+                title: '需要重新授权',
+                icon: 'none',
             })
             return
         }
-        wx.showLoading()
         api.setNickname(stu_id, nickname, avatarUrl).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    wx.setStorageSync('nickname', nickname)
-                    wx.showToast({
-                    title: '绑定成功',
-                    icon: 'success'
-                    })
-                } else {
-                    util.showError(res)
-                }
-            } else {
-                wx.showToast({
-                    title: `网络错误[${res.statusCode}]`,
-                    icon: 'error'
-                })
-            }
+            StuInfo['nickname'] = nickname
+            StuInfo['authority'] = res.Authority
+            wx.setStorageSync('StuInfo', StuInfo)
+            that.setData({
+                StuInfo: StuInfo
+            })
+            wx.showToast({
+                title: '绑定成功',
+                icon: 'none'
+            })
         })
     }
 })

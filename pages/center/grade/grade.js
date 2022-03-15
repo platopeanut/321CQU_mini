@@ -4,9 +4,11 @@ const {getVolunteerRecord} = require("../../../utils/api");
 
 Page({
     data: {
-        uid: wx.getStorageSync('uid'),
-        uid_pwd: wx.getStorageSync('uid_pwd'),
-        stu_id: wx.getStorageSync('stu_id'),
+        uid: '',
+        uid_pwd: '',
+        stu_id: '',
+        identity: '',
+
         grade_list: [],
         term_list: [],
         curr_term: '',
@@ -15,7 +17,6 @@ Page({
         modalState: false,
         curr_mode: false,   // true为统计模式，false为普通模式
         more_state: false,
-        identity: wx.getStorageSync('identity'),
         calculation_rule: wx.getStorageSync('calculation_rule')?wx.getStorageSync('calculation_rule'):'four',
         user_grade_config: wx.getStorageSync('user_grade_config')?wx.getStorageSync('user_grade_config'):{},
         more_analysis_config_first: [],
@@ -75,12 +76,6 @@ Page({
     // 刷新成绩
     updateData: function() {
         let that = this
-        this.setData({
-            uid: wx.getStorageSync('uid'),
-            uid_pwd: wx.getStorageSync('uid_pwd'),
-            stu_id: wx.getStorageSync('stu_id'),
-            identity: wx.getStorageSync('identity'),
-        })
         if (this.data.identity === '') {
             wx.showToast({
                 title: '请先绑定学号，统一身份信息',
@@ -259,6 +254,13 @@ Page({
         }
     },
     onShow: function () {
+        let StuInfo = wx.getStorageSync('StuInfo')
+        this.setData({
+            uid: StuInfo['uid'],
+            uid_pwd: StuInfo['uid_pwd'],
+            stu_id: StuInfo['stu_id'],
+            identity: StuInfo['identity'],
+        })
         let grade_info = wx.getStorageSync('grade_info')
         this.setData({
             grade_list: grade_info.grade_list,

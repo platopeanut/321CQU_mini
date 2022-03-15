@@ -9,18 +9,16 @@
     </view>
     <view class="cu-form-group">
       <view class="title">账号</view>
-      <input name="uid" placeholder="请输入你的统一身份认证账号" value="{{stuInfo.uid}}">
+      <input name="uid" placeholder="请输入你的统一身份认证账号" value="{{StuInfo.uid}}">
       </input>
     </view>
-
     <view class="cu-form-group">
       <view class="title">密码</view>
-      <input name="uid_pwd" type="password" placeholder="请输入你的统一身份认证密码" value="{{stuInfo.uid_pwd}}">
+      <input name="uid_pwd" type="password" placeholder="请输入你的统一身份认证密码" value="{{StuInfo.uid_pwd}}">
       </input>
     </view>
-
-    <view wx:if="{{stuInfo.identity==='研究生'}}" class="cu-form-group">
-      <radio-group bindchange="identity_choice">
+    <view wx:if="{{identity==='研究生'}}" class="cu-form-group">
+      <radio-group bindchange="identityChoice">
         <text>本科生</text>
         <radio value="本科生"/>
         <text style="margin-left: 100rpx;">研究生</text>
@@ -28,7 +26,7 @@
       </radio-group>
     </view>
     <view  wx:else class="cu-form-group">
-      <radio-group bindchange="identity_choice">
+      <radio-group bindchange="identityChoice">
         <text>本科生</text>
         <radio value="本科生" checked="true"/>
         <text style="margin-left: 100rpx;">研究生</text>
@@ -39,9 +37,7 @@
     <view class="padding flex flex-direction">
       <button class="cu-btn bg-green lg" formType="submit">绑定</button>
     </view>
-
-
-  </form>
+</form>
   <!-- 信息填写 -->
 <form catchsubmit="saveInfo">
   <view class="cu-bar bg-white solid-bottom margin-top">
@@ -50,34 +46,23 @@
   </view>
   </view>
 
-<!--  <view class="cu-form-group">-->
-<!--  <view class="title">学号</view>-->
-<!--  <input name="stu_id" placeholder="请输入你的学号" value="{{stuInfo.stu_id}}"></input>-->
-<!--  </view>-->
-
-<!--  <view class="cu-form-group">-->
-<!--  <view class="title">姓名</view>-->
-<!--  <input name="stu_name" placeholder="请输入你的姓名" value="{{stuInfo.stu_name}}"></input>-->
-<!--  </view>-->
-
   <view class="cu-form-group">
   <view class="title">邮箱</view>
-  <input name="email" placeholder="请输入你的邮箱" value="{{stuInfo.email}}"></input>
+  <input name="email" placeholder="请输入你的邮箱" value="{{StuInfo.email}}"></input>
   </view>
 
   <view class="cu-form-group">
   <view class="title">昵称</view>
-  <input name="nickname" placeholder="请设置你的昵称" value="{{stuInfo.nickname}}"></input>
+  <input name="nickname" placeholder="请设置你的昵称" value="{{StuInfo.nickname}}"></input>
   </view>
 
   <view class="cu-form-group">
     <view class="title">宿舍</view>
-    <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{dormitory_index}}" range="{{_dormitory}}">
+    <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{dormitory_index}}" range="{{dormitory}}">
       <view>
         {{room['campus']}} {{room['building']}}
       </view>
     </picker>
-<!--  <view class="title">宿舍</view>-->
     <input name="room_id" placeholder="宿舍号" value="{{room['room_id']}}"></input>
   </view>
   

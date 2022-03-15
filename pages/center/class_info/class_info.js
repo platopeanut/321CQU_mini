@@ -29,7 +29,6 @@ Page({
 
     selectClassItem: function (e) {
         let curr_item = e.currentTarget.dataset.item
-        console.log(curr_item)
         wx.navigateTo({
             url: './detail/detail?Cid=' + curr_item.Cid + '&Cname=' + curr_item.Cname
         })
@@ -68,9 +67,10 @@ Page({
 
     query: function () {
         let that = this
-        let stu_id = wx.getStorageSync('stu_id')
-        let uid = wx.getStorageSync('uid')
-        let uid_pwd = wx.getStorageSync('uid_pwd')
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let stu_id = StuInfo['stu_id']
+        let uid = StuInfo['uid']
+        let uid_pwd = StuInfo['uid_pwd']
         if (stu_id === '' || uid === '' || uid_pwd === '') {
             wx.showToast({
                 title: '请绑定学号，统一身份账号及密码',
@@ -94,7 +94,6 @@ Page({
                 wx.hideLoading()
                 if (res.statusCode === 200) {
                     if (res.data.Statue === 1) {
-                        console.log(res.data.Courses)
                         if (res.data.Courses.length !== 0) {
                             let lesson_list = []
                             for (const item of res.data.Courses) {
@@ -130,7 +129,6 @@ Page({
                 wx.hideLoading()
                 if (res.statusCode === 200) {
                     if (res.data.Statue === 1) {
-                        console.log(res.data)
                         if (res.data.Courses.length !== 0) {
                             let teacher_dict = {}
                             for (const item of res.data.Courses) {

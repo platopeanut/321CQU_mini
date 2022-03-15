@@ -4,7 +4,7 @@ Page({
 
     data: {
         message: "",
-        stu_id: wx.getStorageSync('stu_id'),
+        stu_id: wx.getStorageSync('StuInfo')['stu_id'],
         length: 0
     },
 
@@ -16,7 +16,7 @@ Page({
     },
 
     sendFeedback() {
-        if (this.data.stu_id == "" || this.data.stu_id == undefined) {
+        if (this.data.stu_id === "" || this.data.stu_id === undefined) {
             wx.showToast({
               title: '请先绑定信息',
               icon: 'error'
@@ -24,13 +24,13 @@ Page({
             return
         }
         let global = this
-        if (this.data.message != '') {
+        if (this.data.message !== '') {
             // 发送反馈信息
             wx.showLoading()
             api.sendFeedback(this.data.stu_id, this.data.message).then(res => {
                 wx.hideLoading()
                 if (res.statusCode === 200) {
-                    if (res.data.Statue == 1) {
+                    if (res.data.Statue === 1) {
                         wx.showToast({
                             title: '感谢您的反馈',
                             icon: 'none'

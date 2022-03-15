@@ -27,27 +27,16 @@ Page({
                 if (res && res.isEnded) {
                     // 正常播放结束，可以下发奖励
                     wx.login({
-                        success: function(res) {
-                            api.ad_look(res.code).then(res => {
-                                if (res.statusCode === 200) {
-                                    if (res.data.Statue===1) {
-                                        wx.showToast({
-                                            title: '观看成功',
-                                            icon: 'none'
-                                        })
-                                    } else {
-                                        util.showError(res)
-                                    }
-                                } else {
-                                    wx.showToast({
-                                        title: `网络错误[${res.statusCode}]`,
-                                        icon: 'none'
-                                    })
-                                }
+                        success: res => {
+                            api.adLook(res.code).then(res => {
+                                wx.showToast({
+                                    title: '观看成功',
+                                    icon: 'none'
+                                })
+                            }).finally(() => {
                                 setTimeout(()=>{
                                     wx.navigateBack({ delta: 1 })
                                 }, 1000)
-
                             })
                         },
                         fail: function() {
@@ -91,7 +80,7 @@ Page({
     },
     onLoad: function () {
         let that = this
-        if (!wx.getStorageSync('ad_record')) {
+        if (!wx.getStorageSync('AdRecord')) {
             wx.showModal({
                 title: '支持我们',
                 content: '因为服务器和域名都需要费用，我们在开发小程序时也付出了大量的精力，因此在这里提供了一个可选的观看视频广告的模块，并在服务器记录观看次数，后续我们可能（但不保证）会依照观看次数给一定服务（但肯定不会有只有看了广告才能用的功能），感谢您的支持！',
@@ -99,7 +88,7 @@ Page({
                 confirmText:'不再提示',
                 success(res) {
                     if(res.confirm){
-                        wx.setStorageSync('ad_record', true)
+                        wx.setStorageSync('AdRecord', true)
                     }
                     that.adShow()
                 }
