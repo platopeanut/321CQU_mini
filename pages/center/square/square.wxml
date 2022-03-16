@@ -1,12 +1,50 @@
 <view>
-    <view class="nav">
-        <scroll-view scroll-x class="bg-white nav text-center">
-            <view class="cu-item {{index === curr_category?'text-blue cur':'text-black'}}" wx:for="{{category_list}}" wx:key="index" bindtap="selectTerm" data-id="{{index}}">
-                {{item}}
+    <view class="cu-list grid col-{{gridCol}} border">
+        <view class="cu-item" style="background:{{item.type === curr_type?'rgb(201, 227, 254)':'white'}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">
+            <view class="cuIcon-{{item.icon}} text-{{item.color}}">
             </view>
-        </scroll-view>
+            <text>{{item.title}}</text>
+        </view>
     </view>
 
-    <button bindtap="sendTest"></button>
+    <view wx:for="{{post_list}}">
+        <view class="cu-card">
+            <view class="cu-item shadow">
+                <view class="cu-list menu-avatar">
+                    <view class="cu-item">
+                        <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
+                        <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
+                        <view class="content flex-sub">
+                            <view>{{item.UserName?item.UserName:item.Author}}</view>
+                            <view class="text-gray text-sm flex justify-between">
+                                {{item.UpdateDate}}
+                            </view>
+                        </view>
+                        <view class="action">
+                            <view class="cu-capsule radius margin-right">
+                                <view class="cu-tag bg-cyan">{{item.Type}}</view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
 
+                <view class="text-content" style="margin: 20rpx;" data-item="{{item}}" bindtap="jumpToDetail">
+                    <text user-select>{{item.Content}}</text>
+                </view>
+
+                <view class="text-gray text-sm text-right padding">
+                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
+                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30
+                </view>
+            </view>
+        </view>
+    </view>
+
+
+    <movable-area bindtap="jumpToAddPost" class="movable-area">
+        <movable-view class="movable-view" direction="all">
+            <image src="../../../res/icons/plus.png"></image>
+        </movable-view>
+    </movable-area>
 </view>

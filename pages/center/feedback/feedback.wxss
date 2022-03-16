@@ -8,12 +8,6 @@
     right: 0;
     bottom: 0;
 }
-/* .movable-view { 
-    pointer-events:auto;
-    height: 50px;
-    width: 50px;
-    background: red;
-} */
 
 .movable-view { 
     pointer-events:auto;/*重设为auto,覆盖父属性设置*/ 

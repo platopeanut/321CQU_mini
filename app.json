@@ -18,7 +18,9 @@
     "pages/center/life/consumplist/consumplist",
     "pages/center/class_info/class_info",
     "pages/center/class_info/detail/detail",
-    "pages/center/square/square"
+    "pages/center/square/square",
+    "pages/center/square/detail/detail",
+    "pages/center/square/edit/edit"
   ],
   "window": {
     "backgroundTextStyle": "light",

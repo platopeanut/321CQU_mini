@@ -1,0 +1,18 @@
+<view>
+    <view class="cu-form-group margin-top">
+        <input maxlength="28" value="{{title}}" style="font-size: medium;" placeholder="文章标题（可选）" bindinput="bindInputTitle"></input>
+    </view>
+    <view style="width: 750rpx;margin-top: 10rpx;text-align: right;">
+        <text style="font-weight: bold; color: gray;margin-right: 20rpx;">{{title.length}}/28</text>
+    </view>
+    <view class="cu-form-group margin-top">
+        <textarea maxlength="1000" bindinput="bindInputContent" style="font-size: medium;height: 600rpx;" name="content" placeholder="有趣的灵魂终会相遇~" value="{{content}}"></textarea>
+    </view>
+    <view style="width: 750rpx;margin-top: 10rpx;text-align: right;">
+        <text style="font-weight: bold; color: gray;margin-right: 20rpx;">{{content.length}}/1000</text>
+    </view>
+
+    <view class="send">
+        <button bindtap="sendPost" style="margin: 30rpx 0;width: 100%;" type="primary">发送</button>
+    </view>
+</view>
