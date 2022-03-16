@@ -1,7 +1,7 @@
 <view style="background-color: white;">
 
-    <view style="height: 400rpx;width: 750rpx;border-bottom: 0rpx solid rgb(240, 240, 240);">
-        <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="3000" duration="500">
+    <view style="height: 400rpx;width: 750rpx;border-bottom: 0rpx solid rgb(143, 136, 136);">
+        <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
             <swiper-item wx:for="{{swiperList}}" wx:key>
                 <image wx:if="{{item.url}}" src="{{item.url}}" mode="aspectFill"></image>
                 <view class="padding-lg bg-white radius shadow shadow-lg margin-top" wx:else>
@@ -25,12 +25,17 @@
         </view>
     </view>
 
-    <view class="cu-list grid col-{{gridCol}} border">
-        <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">
-            <view class="cuIcon-{{item.icon}} text-{{item.color}}">
+    <view class="bg-img padding-bottom-xl " style="background-image:url('https://www.zhulegend.com/media/background.jpg');">
+    <view class=" padding" style="opacity: 0.8">
+        <view class="cu-list grid col-{{gridCol}} border">
+            <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">
+                <view class="cuIcon-{{item.icon}} text-{{item.color}}">
+                </view>
+                <view>{{item.title}}</view>
             </view>
-            <text>{{item.title}}</text>
         </view>
     </view>
+    </view>
+
 </view>
 

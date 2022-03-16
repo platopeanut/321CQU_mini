@@ -1,4 +1,10 @@
 <view>
+    <view class="cu-bar bg-white solid-bottom margin-top">
+        <view class="action">
+            <text class="cuIcon-title text-blue text-bold"></text>
+            <text class="text-bold">当前分区：{{type_name}}</text>
+        </view>
+    </view>
     <view class="cu-form-group margin-top">
         <input maxlength="28" value="{{title}}" style="font-size: medium;" placeholder="文章标题（可选）" bindinput="bindInputTitle"></input>
     </view>

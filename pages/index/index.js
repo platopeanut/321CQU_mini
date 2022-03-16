@@ -1,4 +1,5 @@
 const util = require('../../utils/util')
+const api = require('../../utils/api')
 
 Page({
 
@@ -6,12 +7,7 @@ Page({
         today_info: '',
         curriculum_info: '',
         gridCol: 2,
-        swiperList: [
-            {url:false},
-            {
-            url: 'http://www.zhulegend.com/media/test/CQULibrary.jpg'
-            }
-        ],
+        swiperList: [{url:false}],
         iconList: [
             {
                 title: '反馈',
@@ -74,15 +70,44 @@ Page({
                 icon: 'deliver'
             },
         ],
+        url: 'https://www.zhulegend.com',
     },
 
     onShow: function () {
+        // 加载首页课程信息
+        this.LoadCurriculumInfo()
+        // 加载首页轮播图片
+        this.LoadSwiperImg()
+    },
+
+    LoadSwiperImg: function () {
+        let that = this
+        let HomePage = wx.getStorageSync('HomePage')
+        api.getHomepageImgDate().then(res=>{
+            if (HomePage['LastUpdate'] !== res.LastUpdate) {
+                HomePage = {}
+                HomePage['LastUpdate'] = res.LastUpdate
+                HomePage['PictureUrls'] = res.PictureUrls
+                wx.setStorageSync('HomePage', HomePage)
+            }
+
+            let swiperList = that.data.swiperList
+            for (const url of HomePage['PictureUrls']) {
+                swiperList.push({url: that.data.url + url})
+            }
+            this.setData({
+                swiperList: swiperList
+            })
+        })
+    },
+
+    LoadCurriculumInfo: function () {
         let index_info = util.get_index_info()
         let today_info = index_info.today_info
         let curriculum_info = index_info.curriculum_info
         this.setData({
             today_info: `第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
-            curriculum_info: curriculum_info?curriculum_info:'今日无课'
+            curriculum_info: curriculum_info?curriculum_info:'今日无课',
         })
     },
 
@@ -96,7 +121,7 @@ Page({
         let path = e.currentTarget.dataset.path
         wx.navigateTo({
             url: '../center/' + path + '/' + path,
-            fail: function(res) {
+            fail: function() {
                 wx.showToast({
                     title: '跳转失败',
                     icon: 'none'

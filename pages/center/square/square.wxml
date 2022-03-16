@@ -1,15 +1,18 @@
 <view>
     <view class="cu-list grid col-{{gridCol}} border">
-        <view class="cu-item" style="background:{{item.type === curr_type?'rgb(201, 227, 254)':'white'}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">
+        <view class="cu-item {{item.type === curr_type?'text-bold':''}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">
             <view class="cuIcon-{{item.icon}} text-{{item.color}}">
             </view>
             <text>{{item.title}}</text>
         </view>
     </view>
 
-    <view wx:for="{{post_list}}">
-        <view class="cu-card">
+    <view wx:for="{{post_list[curr_type]}}">
+        <view class="cu-card" bindlongpress="longPressOperation" bindtap="jumpToDetail" data-item="{{item}}">
             <view class="cu-item shadow">
+                <view class="title" wx:if="{{item.Title}}">
+                    <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
+                </view>
                 <view class="cu-list menu-avatar">
                     <view class="cu-item">
                         <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
@@ -20,7 +23,7 @@
                                 {{item.UpdateDate}}
                             </view>
                         </view>
-                        <view class="action">
+                        <view class="action" wx:if="{{curr_type === 'all'}}">
                             <view class="cu-capsule radius margin-right">
                                 <view class="cu-tag bg-cyan">{{item.Type}}</view>
                             </view>
@@ -28,21 +31,20 @@
                     </view>
                 </view>
 
-                <view class="text-content" style="margin: 20rpx;" data-item="{{item}}" bindtap="jumpToDetail">
+                <view class="text-content" style="margin: 20rpx;">
                     <text user-select>{{item.Content}}</text>
                 </view>
 
                 <view class="text-gray text-sm text-right padding">
-                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10
-                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
-                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30
+<!--                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
+<!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
+<!--                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
                 </view>
             </view>
         </view>
     </view>
 
-
-    <movable-area bindtap="jumpToAddPost" class="movable-area">
+    <movable-area bindtap="jumpToAddPost" wx:if="{{curr_type !== 'all'}}" class="movable-area">
         <movable-view class="movable-view" direction="all">
             <image src="../../../res/icons/plus.png"></image>
         </movable-view>

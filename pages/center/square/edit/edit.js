@@ -1,16 +1,29 @@
 const api = require('../../../../utils/api')
-
+const square_util = require('../square_util')
 Page({
     data: {
         content: '',
         title: '',
         type: '',
+        type_name: '',
         stu_id: '',
+        mode: 0,    // 0为新建模式，1为修改模式
+        pid: '',    // 仅mode=1时生效
     },
 
     onLoad: function (e) {
+        if (e.content) {
+            this.setData({
+                mode: 1
+            })
+        }
+        let type_name = square_util.getNameByType(e.type)
         this.setData({
-            type: e.type
+            type: e.type,
+            type_name: type_name,
+            title: e.title,
+            content: e.content,
+            pid: e.pid
         })
         let StuInfo = wx.getStorageSync('StuInfo')
         if (StuInfo === '' || !StuInfo['stu_id']) {
@@ -52,16 +65,31 @@ Page({
             })
             return
         }
-        api.sendPost(this.data.type, this.data.title, this.data.content, this.data.stu_id).then(res => {
-            wx.showToast({
-                title: '发送成功',
-                icon: 'none'
+        if (this.data.mode === 0) {
+            console.log(this.data.content)
+            api.sendPost(this.data.type, this.data.title, this.data.content, this.data.stu_id).then(res => {
+                wx.showToast({
+                    title: '新建成功',
+                    icon: 'none'
+                })
+            }).finally(() => {
+                that.setData({
+                    title : '',
+                    content: '',
+                })
             })
-        }).finally(() => {
-            that.setData({
-                title : '',
-                content: '',
+        } else if (this.data.mode === 1) {
+            api.modifyPost(this.data.title, this.data.content, this.data.pid, this.data.stu_id).then(res => {
+                wx.showToast({
+                    title: '修改成功',
+                    icon: 'none'
+                })
+            }).finally(() => {
+                that.setData({
+                    title : '',
+                    content: '',
+                })
             })
-        })
+        }
     },
 })

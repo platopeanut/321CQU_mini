@@ -557,6 +557,7 @@ function getPostDetail(pid) {
 }
 // 发送帖子
 function sendPost(type, title, content, author) {
+  if (title === undefined) title = ''
   let header = {
     url: '/forum/send_post',
     data: {
@@ -591,9 +592,22 @@ function deletePost(pid, sid) {
   let header = {
     url: '/forum/update_post',
     data: {
+      'Title': '',
+      'Content': '',
       'IsDelete': true,
       'Pid': pid,
       'Sid': sid,
+    }
+  }
+  return new Promise((resolve,reject) => {
+    request(header, resolve, reject)
+  })
+}
+
+function getHomepageImgDate() {
+  let header = {
+    url: '/homepage',
+    data: {
     }
   }
   return new Promise((resolve,reject) => {
@@ -638,4 +652,5 @@ module.exports = {
   sendPost,
   modifyPost,
   deletePost,
+  getHomepageImgDate,
 }
