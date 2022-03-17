@@ -1,7 +1,6 @@
-const api = require('../../../utils/api')
+const curriculum_api = require('./curriculum_api')
 const util = require('../../../utils/util')
-const curriculum_tool = require('./curriculum_tool')
-const {getSchoolNextTermInfo} = require("../../../utils/api");
+const curriculum_util = require('./curriculum_util')
 
 Page({
     data: {
@@ -47,8 +46,8 @@ Page({
         })
         this.buildTable()
         this.setData({
-            curr_week: util.getCurrWeek(that.data.CurrTermInfo.StartDate),
-            week: util.getCurrWeek(that.data.CurrTermInfo.StartDate),
+            curr_week: curriculum_util.getCurrWeek(that.data.CurrTermInfo.StartDate),
+            week: curriculum_util.getCurrWeek(that.data.CurrTermInfo.StartDate),
         })
     },
 
@@ -63,11 +62,11 @@ Page({
             minute: _time.getMinutes()
         }, {hour:22, minute:30}) >=0) return 1690 - 1;
 
-        let index = util.get_lesson_index({
+        let index = curriculum_util.getLessonIndex({
             hour: _time.getHours(),
             minute: _time.getMinutes()
         })
-        let zone = util.get_time_from_index(index)[0].split(':')
+        let zone = curriculum_util.getTimeFromIndex(index)[0].split(':')
         // time2 - time1
         function time_sub(time1, time2) {
             return (time2.hour - time1.hour) * 60 + (time2.minute - time1.minute)
@@ -153,14 +152,13 @@ Page({
     },
 
     getDetailLessonInfo(e) {
-        let that = this
         let item_list = e.currentTarget.dataset.item
         function teaching_time_helper(n, self=false) {
             if (!self) n.InstructorName = n.InstructorName.replace('-[主讲];', ' ')
             let time_list = n.PeriodFormat.split('-')
             if (time_list.length === 1) time_list.push(time_list[0])
-            let start_time = util.get_time_from_index(time_list[0] - 1)[0]
-            let end_time = util.get_time_from_index(time_list[1] - 1)[1]
+            let start_time = curriculum_util.getTimeFromIndex(time_list[0] - 1)[0]
+            let end_time = curriculum_util.getTimeFromIndex(time_list[1] - 1)[1]
             n.TeachingTime = start_time + '~' + end_time
             return n
         }
@@ -218,19 +216,19 @@ Page({
             'Next': {'TermInfo': null, 'Table': null,}
         }
         // 1.获取当前学期学校信息
-        api.getSchoolTermInfo(uid, uid_pwd).then(res => {
+        curriculum_api.getSchoolTermInfo(uid, uid_pwd).then(res => {
             Curriculum['Curr']['TermInfo'] = {
                 StartDate: res.StartDate,
                 EndDate: res.EndDate,
                 Term: res.Term
             }
-            return api.getCurriculum(stu_id, uid, uid_pwd)
+            return curriculum_api.getCurriculum(stu_id, uid, uid_pwd)
         }, err => {
             Curriculum['Curr'] = {'TermInfo': null, 'Table': null}
             return new Promise(()=>{})
         }).then(res => {
             Curriculum['Curr']['Table'] = res.Courses
-            return api.getSchoolNextTermInfo(uid, uid_pwd)
+            return curriculum_api.getSchoolNextTermInfo(uid, uid_pwd)
         }, err => {
             Curriculum['Curr']['Table'] = null
             return new Promise(()=>{})
@@ -240,7 +238,7 @@ Page({
                 EndDate: res.EndDate,
                 Term: res.Term
             }
-            return api.getNextCurriculum(stu_id, uid, uid_pwd)
+            return curriculum_api.getNextCurriculum(stu_id, uid, uid_pwd)
         }, err => {
             Curriculum['Next'] = {'TermInfo': null, 'Table': null}
             return new Promise(()=>{})
@@ -271,11 +269,11 @@ Page({
         if (!SelfSchedule) SelfSchedule = []
         let Priority = Curriculum['Priority']
         if (!Priority) Priority = []
-        CurrTable = curriculum_tool.filterCourses(CurrTable)
-        curriculum_tool.selectColor(CurrTable, SelfSchedule)
-        let table = curriculum_tool.createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
-        curriculum_tool.adaptPriority(table, Priority)
-        table = curriculum_tool.UIProcess(table)
+        CurrTable = curriculum_util.filterCourses(CurrTable)
+        curriculum_util.selectColor(CurrTable, SelfSchedule)
+        let table = curriculum_util.createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
+        curriculum_util.adaptPriority(table, Priority)
+        table = curriculum_util.UIProcess(table)
         this.setData({
             table: table,
             CurrTermInfo: CurrTermInfo,

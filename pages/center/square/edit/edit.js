@@ -1,4 +1,4 @@
-const api = require('../../../../utils/api')
+const square_api = require('../square_api')
 const square_util = require('../square_util')
 Page({
     data: {
@@ -67,7 +67,7 @@ Page({
         }
         if (this.data.mode === 0) {
             console.log(this.data.content)
-            api.sendPost(this.data.type, this.data.title, this.data.content, this.data.stu_id).then(res => {
+            square_api.sendPost(this.data.type, this.data.title, this.data.content, this.data.stu_id).then(res => {
                 wx.showToast({
                     title: '新建成功',
                     icon: 'none'
@@ -79,7 +79,7 @@ Page({
                 })
             })
         } else if (this.data.mode === 1) {
-            api.modifyPost(this.data.title, this.data.content, this.data.pid, this.data.stu_id).then(res => {
+            square_api.modifyPost(this.data.title, this.data.content, this.data.pid, this.data.stu_id).then(res => {
                 wx.showToast({
                     title: '修改成功',
                     icon: 'none'

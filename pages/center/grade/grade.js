@@ -1,6 +1,5 @@
-const api = require('../../../utils/api')
-const util = require('../../../utils/util')
-const {getVolunteerRecord} = require("../../../utils/api");
+const grade_api = require('./grade_api')
+const grade_util = require('./grade_util')
 
 Page({
     data: {
@@ -29,7 +28,6 @@ Page({
     user_grade_config_process: function () {
         let grade_list = this.data.grade_list
         let user_grade_config =this.data.user_grade_config
-        console.log(user_grade_config)
         // 用户自定义配置
         for (const term in user_grade_config) {
             for (const curr_item of user_grade_config[term]) {
@@ -100,121 +98,37 @@ Page({
                 return
             }
         }
-
-        wx.showLoading()
         if (this.data.identity === '本科生') {
             // 查询绩点和排名
-            wx.showLoading()
-            api.get_gpa_and_rank(that.data.uid, that.data.uid_pwd).then(res => {
-                wx.hideLoading()
-                if (res.statusCode === 200) {
-                    if (res.data.Statue === 1) {
-                        wx.setStorageSync('official_grade', res.data.GpaRanking)
-                        that.setData({
-                            official_grade: res.data.GpaRanking
-                        })
-                    } else {
-                        util.showError(res)
-                    }
-                } else {
-                    wx.showToast({
-                        title: `网络错误[${res.statusCode}]`,
-                        icon: 'error'
-                    })
-                }
+            grade_api.getGpaAndRank(that.data.uid, that.data.uid_pwd).then(res => {
+                wx.setStorageSync('official_grade', res.GpaRanking)
+                that.setData({
+                    official_grade: res.GpaRanking
+                })
+                wx.showToast({
+                    title: '排名查询成功',
+                    icon: 'none'
+                })
             })
             wx.login({
                 success: function(res) {
-                    api.getGrade(that.data.stu_id, that.data.uid, that.data.uid_pwd, res.code).then(res => {
-                        wx.hideLoading()
-                        if (res.statusCode === 200) {
-                            if (res.data.Statue === 1) {
-                                let grade_list = res.data.ScoreLog
-                                let term_list = Object.keys(res.data.ScoreLog)
-                                let gid = 0
-                                for (const term_name of term_list) {
-                                    for (let i = 0; i < grade_list[term_name].length; i++) {
-                                        // 过滤四六级和未评教,缓登
-                                        if (grade_list[term_name][i].CourseCredit===-1||!grade_list[term_name][i].EffectiveScoreShow || grade_list[term_name][i].CourseName === '大学英语(国家四级)' || grade_list[term_name][i].CourseName === '大学英语(国家六级)')
-                                            continue
-                                        grade_list[term_name][i]['select'] = true  // 每一项成绩用户是否选择，默认选择
-                                        grade_list[term_name][i]['gid'] = gid   // 每一项成绩id号
-                                        gid ++
-
-                                    }
-                                }
-                                // 默认选中重修，不选对应的初修
-                                // ???
-                                that.setData({
-                                    grade_list: grade_list,
-                                    term_list: term_list
-                                })
-                                let curr_term = that.data.term_list[0]
-                                that.setData({
-                                    curr_term: curr_term
-                                })
-                                // 本地缓存
-                                let grade_info = {
-                                    grade_list: that.data.grade_list,
-                                    term_list: that.data.term_list,
-                                    curr_term: that.data.curr_term
-                                }
-                                wx.setStorageSync('grade_info', grade_info)
-                                that.user_grade_config_process()
-                                wx.showToast({
-                                    title: '查询成功',
-                                    icon: 'none'
-                                })
-                            } else {
-                                util.showError(res)
-                            }
-                        } else {
-                            wx.showToast({
-                                title: `网络错误[${res.statusCode}]`,
-                                icon: 'error'
-                            })
-                        }
-                    })
-                },
-                fail: function() {
-                    wx.hideLoading()
-                    wx.showToast({
-                        title: '登陆失败',
-                        icon: 'error'
-                    })
-                }
-            })
-        } else if (this.data.identity === '研究生') {
-            api.getPGGrade(this.data.uid, this.data.uid_pwd).then(res => {
-                wx.hideLoading()
-                if (res.statusCode === 200) {
-                    if (res.data.Statue === 1) {
-                        let _grade_list = res.data.ScoreLog
-                        let grade_list = {}
-                        let term_list = []
+                    grade_api.getUGGrade(that.data.stu_id, that.data.uid, that.data.uid_pwd, res.code).then(res => {
+                        let grade_list = res.ScoreLog
+                        let term_list = Object.keys(res.ScoreLog)
                         let gid = 0
-                        for (const item of _grade_list) {
-                            let term_name = `第${item.Year}学年${item.Term}`
-                            if (!term_list.includes(term_name)) {
-                                term_list.push(term_name)
-                                grade_list[term_name] = []
+                        for (const term_name of term_list) {
+                            for (let i = 0; i < grade_list[term_name].length; i++) {
+                                // 过滤四六级和未评教,缓登
+                                if (grade_list[term_name][i].CourseCredit===-1||!grade_list[term_name][i].EffectiveScoreShow || grade_list[term_name][i].CourseName === '大学英语(国家四级)' || grade_list[term_name][i].CourseName === '大学英语(国家六级)')
+                                    continue
+                                grade_list[term_name][i]['select'] = true  // 每一项成绩用户是否选择，默认选择
+                                grade_list[term_name][i]['gid'] = gid   // 每一项成绩id号
+                                gid ++
+
                             }
-                            let curr_item = {
-                                'CourseName': item.Cname,
-                                'CourseCode' : item.Cid,
-                                'CourseCredit' : item.Credit,
-                                'EffectiveScoreShow': item.Score
-                            }
-                            // 过滤四六级和未评教,缓登
-                            if (item.Credit===-1||!item.Score || item.Cname === '大学英语(国家四级)' || item.Cname === '大学英语(国家六级)') {
-                                grade_list[term_name].push(curr_item)
-                                continue
-                            }
-                            curr_item['select'] = true  // 每一项成绩用户是否选择，默认不选择
-                            curr_item['gid'] = gid   // 每一项成绩id号
-                            gid ++
-                            grade_list[term_name].push(curr_item)
                         }
+                        // 默认选中重修，不选对应的初修
+                        // ???
                         that.setData({
                             grade_list: grade_list,
                             term_list: term_list
@@ -232,21 +146,68 @@ Page({
                         wx.setStorageSync('grade_info', grade_info)
                         that.user_grade_config_process()
                         wx.showToast({
-                            title: '查询成功',
+                            title: '成绩查询成功',
                             icon: 'none'
                         })
-                    } else {
-                        util.showError(res)
-                    }
-                } else {
+                    })
+                },
+                fail: function() {
                     wx.showToast({
-                        title: `网络错误${res.statusCode}`,
-                        icon: 'none'
+                        title: '登陆失败',
+                        icon: 'error'
                     })
                 }
             })
+        } else if (this.data.identity === '研究生') {
+            grade_api.getPGGrade(this.data.uid, this.data.uid_pwd).then(res => {
+                let _grade_list = res.ScoreLog
+                let grade_list = {}
+                let term_list = []
+                let gid = 0
+                for (const item of _grade_list) {
+                    let term_name = `第${item.Year}学年${item.Term}`
+                    if (!term_list.includes(term_name)) {
+                        term_list.push(term_name)
+                        grade_list[term_name] = []
+                    }
+                    let curr_item = {
+                        'CourseName': item.Cname,
+                        'CourseCode' : item.Cid,
+                        'CourseCredit' : item.Credit,
+                        'EffectiveScoreShow': item.Score
+                    }
+                    // 过滤四六级和未评教,缓登
+                    if (item.Credit===-1||!item.Score || item.Cname === '大学英语(国家四级)' || item.Cname === '大学英语(国家六级)') {
+                        grade_list[term_name].push(curr_item)
+                        continue
+                    }
+                    curr_item['select'] = true  // 每一项成绩用户是否选择，默认不选择
+                    curr_item['gid'] = gid   // 每一项成绩id号
+                    gid ++
+                    grade_list[term_name].push(curr_item)
+                }
+                that.setData({
+                    grade_list: grade_list,
+                    term_list: term_list
+                })
+                let curr_term = that.data.term_list[0]
+                that.setData({
+                    curr_term: curr_term
+                })
+                // 本地缓存
+                let grade_info = {
+                    grade_list: that.data.grade_list,
+                    term_list: that.data.term_list,
+                    curr_term: that.data.curr_term
+                }
+                wx.setStorageSync('grade_info', grade_info)
+                that.user_grade_config_process()
+                wx.showToast({
+                    title: '成绩查询成功',
+                    icon: 'none'
+                })
+            })
         } else {
-            wx.hideLoading()
             wx.showToast({
                 title: '身份错误',
                 icon: 'none'
@@ -304,7 +265,7 @@ Page({
                     // 过滤项
                     if (!item.select) continue
                     let curr_credit = item.CourseCredit
-                    let curr_point = util.score2point(item.EffectiveScoreShow, this.data.calculation_rule)
+                    let curr_point = grade_util.score2point(item.EffectiveScoreShow, this.data.calculation_rule)
                     // 考虑重修
                     if (item.StudyNature!==undefined && item.StudyNature === '重修') {
                         if (curr_point >= 1.0) {

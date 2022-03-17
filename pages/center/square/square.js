@@ -1,4 +1,4 @@
-const api = require('../../../utils/api')
+const square_api = require('./square_api')
 const square_util = require('./square_util')
 
 Page({
@@ -60,12 +60,13 @@ Page({
                         })
                     } else if (res.tapIndex === 1) {
                         // 删除
-                        api.deletePost(item.Pid, that.data.stu_id).then(res => {
+                        square_api.deletePost(item.Pid, that.data.stu_id).then(res => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'
                             })
                         })
+                        that.updateData()
                     }
                 }
             })
@@ -76,12 +77,13 @@ Page({
                 success: res => {
                     if (res.tapIndex === 0) {
                         // 删除
-                        api.deletePost(item.Pid, that.data.stu_id).then(res => {
+                        square_api.deletePost(item.Pid, that.data.stu_id).then(res => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'
                             })
                         })
+                        that.updateData()
                     }
                 }
             })
@@ -91,7 +93,7 @@ Page({
     updateData: function (limit=null) {
         let that = this
         let post_list = this.data.post_list
-        api.getPostList(limit, that.data.curr_type).then(res => {
+        square_api.getPostList(limit, that.data.curr_type).then(res => {
             console.log(res)
             if (that.data.curr_type === 'all') {
                 post_list = {}

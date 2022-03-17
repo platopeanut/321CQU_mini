@@ -1,13 +1,11 @@
-const api = require('../../../utils/api')
-const util = require('../../../utils/util')
+const life_api = require('./life_api')
+const life_util = require('./life_util')
 
 Page({
-
     data: {
         fees_info: null,
         card_fee: 0
     },
-
     updateData: function () {
         let that = this
         let StuInfo = wx.getStorageSync('StuInfo')
@@ -52,66 +50,35 @@ Page({
         let is_hu_xi = room['campus'].startsWith("虎溪")
         let room_code
         if(is_hu_xi){
-            room_code = util.get_dormitory_code(room)
+            room_code = life_util.getDormitoryCode(room)
         }
-        else room_code = util.get_dormitory_code_inABC(room)
+        else room_code = life_util.getDormitoryCodeInABC(room)
     
         console.log(room_code)
         console.log(is_hu_xi)
 
-        wx.showLoading()
-        api.get_fees(uid, uid_pwd, is_hu_xi, room_code).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    wx.setStorageSync('fees_info', res.data.FeesInfo)
-                  
-                    that.setData({
-                        fees_info: res.data.FeesInfo
-                    })
-                    wx.showToast({
-                        title: '水电费查询成功',
-                        icon: 'none'
-                    })
-                } else {
-                    util.showError(res)
-                }
-            } else {
-                wx.showToast({
-                    title: `网络错误[${res.statusCode}]`,
-                    icon: 'error'
-                })
-            }
-        })
-     
-//一卡通
-            
-        wx.showLoading()
-        api.getSchoolCardInfo(uid, uid_pwd).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    wx.setStorageSync('card_fee', res.data.Amount)
-                    that.setData({
-                        card_fee: res.data.Amount
-                    })
-                    wx.showToast({
-                        title: '一卡通查询成功',
-                        icon: 'none'
-                    })
-                } else {
-                    util.showError(res)
-                }
-            } else {
-                wx.showToast({
-                    title: `网络错误[${res.statusCode}]`,
-                    icon: 'error'
-                })
-            }
+        life_api.getFees(uid, uid_pwd, is_hu_xi, room_code).then(res => {
+            wx.setStorageSync('fees_info', res.FeesInfo)
+            that.setData({
+                fees_info: res.FeesInfo
+            })
+            wx.showToast({
+                title: '水电费查询成功',
+                icon: 'none'
+            })
+            return life_api.getSchoolCardInfo(uid, uid_pwd)
+        }).then(res => {
+            //一卡通
+            wx.setStorageSync('card_fee', res.Amount)
+            that.setData({
+                card_fee: res.Amount
+            })
+            wx.showToast({
+                title: '一卡通查询成功',
+                icon: 'none'
+            })
         })
     },
-
-
     onShow: function () {
         let fees_info = wx.getStorageSync('fees_info')
         let card_fee = wx.getStorageSync('card_fee')

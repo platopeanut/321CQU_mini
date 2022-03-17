@@ -1,5 +1,4 @@
-const api = require('../../../../utils/api')
-const util = require('../../../../utils/util')
+const life_api = require('../life_api')
 
 Page({
 
@@ -40,39 +39,25 @@ Page({
             }
         }
 
-//一卡通信息
-        wx.showLoading()
-        api.getSchoolCardInfo(uid, uid_pwd).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    wx.setStorageSync('card_fee', res.data.Amount)
-                    let bills = res.data.Bills
-                    for (let i = 0; i < bills.length; i++) {
-                        bills[i]['Time'] = bills[i]['Time'].substring(5,16)
-                        console.log(bills[i]['Time'])
-                    }
-                    console.log(bills)
-                    that.setData({
-                        card_fee: res.data.Amount,
-                        bill_list: bills,
-                     
-                    })
-                    
-                    wx.setStorageSync('bill_list',that.data.bill_list)
-                    wx.showToast({
-                        title: '账单通查询成功',
-                        icon: 'none'
-                    })
-                } else {
-                    util.showError(res)
-                }
-            } else {
-                wx.showToast({
-                    title: `网络错误[${res.statusCode}]`,
-                    icon: 'error'
-                })
+        //一卡通信息
+        life_api.getSchoolCardInfo(uid, uid_pwd).then(res => {
+            wx.setStorageSync('card_fee', res.Amount)
+            let bills = res.Bills
+            for (let i = 0; i < bills.length; i++) {
+                bills[i]['Time'] = bills[i]['Time'].substring(5,16)
+                console.log(bills[i]['Time'])
             }
+            console.log(bills)
+            that.setData({
+                card_fee: res.Amount,
+                bill_list: bills,
+
+            })
+            wx.setStorageSync('bill_list',that.data.bill_list)
+            wx.showToast({
+                title: '账单通查询成功',
+                icon: 'none'
+            })
         })
     },
 

@@ -8,5 +8,5 @@ function toString(e) {
 
 module.exports = {
     cut_str: cut_str,
-    toString: toString,
+    toString: toString
 }

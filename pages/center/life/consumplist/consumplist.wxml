@@ -1,4 +1,3 @@
-<!--pages/center/life/consumplist.wxml-->
 <view class="cu-list menu sm-border card-menu margin-top">
         <view class="cu-item">
             <view class="content">

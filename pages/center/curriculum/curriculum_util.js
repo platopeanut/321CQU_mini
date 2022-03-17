@@ -1,4 +1,136 @@
-const util = require("../../../utils/util");
+const util = require("../../../utils/util")
+
+const time_table = [
+    '08:30~09:15',
+    '09:25~10:10',
+    '10:30~11:15',
+    '11:25~12:10',
+    '13:30~14:15',
+    '14:25~15:10',
+    '15:20~16:05',
+    '16:25~17:10',
+    '17:20~18:05',
+    '19:00~19:45',
+    '19:55~20:40',
+    '20:50~21:35',
+    '21:45~22:30',
+]
+
+// 计算当前是第几周
+function getCurrWeek(StartDate) {
+    let _curr_date = util.getDate()
+    let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
+    let distance = util.daysDistance2(StartDate, CurrDate)
+    if (distance >= 0 ) return parseInt(distance / 7 + 1)
+    else {
+        if (distance % 7 === 0) return parseInt(distance / 7) + 1
+        else return parseInt(distance / 7)
+    }
+}
+
+function getTimeFromIndex(index) {
+    return time_table[index].split('~')
+}
+
+// 行课时间与课程节数转换
+/**
+ *  -1 表示当天课程已经结束
+ */
+function getLessonIndex(time) {
+    let time_list = [
+        [9, 15],
+        [10, 10],
+        [11, 15],
+        [12, 10],
+        [14, 15],
+        [15, 10],
+        [16, 5],
+        [17, 10],
+        [18, 5],
+        [19, 45],
+        [20, 40],
+        [21, 35],
+        [22, 30],
+    ]
+    for (let i = 0; i < time_list.length; i++) {
+        if (util.compareTime(time, {hour: time_list[i][0], minute: time_list[i][1]}) <= 0) {
+            return i
+        }
+    }
+    return -1
+}
+
+// 送给首页的信息
+function getIndexInfo() {
+    let Curriculum = wx.getStorageSync('Curriculum')
+    if (Curriculum === '') {
+        return {
+            today_info: {
+                week: 'unknown',
+                today: new Date().getDay()
+            },
+            curriculum_info: '请先刷新课表数据'
+        }
+    }
+    let CurrTerm = Curriculum['CurrTerm']
+    let CurrTable = Curriculum[CurrTerm]['Table']
+    let CurrTermInfo = Curriculum[CurrTerm]['TermInfo']
+    let SelfSchedule = Curriculum['SelfSchedule']
+    if (!SelfSchedule) SelfSchedule = []
+    let Priority = Curriculum['Priority']
+    if (!Priority) Priority = []
+
+    let week = getCurrWeek(CurrTermInfo.StartDate)
+    CurrTable = filterCourses(CurrTable)
+    let curriculum = createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
+    adaptPriority(curriculum, Priority)
+
+
+    let curriculum_info = ''
+    let _today = new Date().getDay() - 1
+    if (_today === -1) _today = 6
+    if (curriculum[week] === undefined || curriculum[week][_today] === undefined)
+        curriculum_info = '今日无课'
+    else {
+        let _list = curriculum[week][_today]
+        let _flag = false
+        for (const item of _list) {
+            if (item) _flag = true
+        }
+        if (!_flag) curriculum_info = '今日无课'
+        else {
+            let _time = new Date()
+            let index = getLessonIndex({
+                hour: _time.getHours(),
+                minute: _time.getMinutes()
+            })
+            if (index === -1) {
+                curriculum_info = '今日无课'
+            } else {
+                for (let i = index; i < _list.length; i ++) {
+                    if (_list[i]) {
+                        index = i
+                        let time_li = getTimeFromIndex(index)
+                        if (_list[index][0]['Self'])
+                            curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index][0].CourseName}`
+                        else curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index][0].CourseName}\n${_list[index][0].RoomName}`
+                        break
+                    }
+                }
+            }
+        }
+    }
+    return {
+        today_info: {
+            week: week,
+            today: new Date().getDay()
+        },
+        curriculum_info: curriculum_info
+    }
+}
+
+
+
 
 function parseFormat(str) {
     let list = str.split(',')
@@ -156,4 +288,8 @@ module.exports = {
     adaptPriority,
     UIProcess,
     filterCourses,
+    getIndexInfo,
+    getCurrWeek,
+    getLessonIndex,
+    getTimeFromIndex,
 }

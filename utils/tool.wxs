@@ -9,8 +9,9 @@ var filters = {
       return parseFloat(value).toFixed(0)//此处0为取整数
     }
   }
-  module.exports = {
+
+module.exports = {
     toFix2: filters.toFix2,
     toFix1: filters.toFix1,
     toFix: filters.toFix
-  }
+}

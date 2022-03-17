@@ -1,6 +1,5 @@
-const curriculum_tool = require('../curriculum_tool')
-const util = require('../../../../utils/util')
-const api = require('../../../../utils/api')
+const curriculum_util = require('../curriculum_util')
+const curriculum_api = require('../curriculum_api')
 
 Page({
 
@@ -83,7 +82,7 @@ Page({
         }
         wx.login({
             success: res => {
-                api.pushSelfSchedule(res.code, events).then(res => {
+                curriculum_api.pushSelfSchedule(res.code, events).then(res => {
                     wx.showToast({
                         title: '备份成功',
                         icon: 'none'
@@ -101,7 +100,7 @@ Page({
     sync2Local: function () {
         wx.login({
             success: res => {
-                api.pullSelfSchedule(res.code).then(res => {
+                curriculum_api.pullSelfSchedule(res.code).then(res => {
                     console.log(res.Events)
                     let SelfSchedule = []
                     for (const item of res.Events) {
@@ -194,7 +193,7 @@ Page({
             })
             return
         }
-        for (const item of curriculum_tool.parseFormat(TeachingWeekFormat)) {
+        for (const item of curriculum_util.parseFormat(TeachingWeekFormat)) {
             if (!(item >= 1 && item <= 30)) {
                 wx.showToast({
                     title: '周次取值为1-30\n注意符号需为英文',
@@ -203,7 +202,7 @@ Page({
                 return
             }
         }
-        for (const item of curriculum_tool.parseFormat(PeriodFormat)) {
+        for (const item of curriculum_util.parseFormat(PeriodFormat)) {
             if (!(item >=1 && item <= 13)) {
                 wx.showToast({
                     title: '时段取值为1-13\n注意符号需为英文',

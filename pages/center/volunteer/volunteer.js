@@ -1,5 +1,4 @@
-const api = require('../../../utils/api')
-const util = require('../../../utils/util')
+const volunteer_api = require('./volunteer_api')
 Page({
     data: {
         stu_name: '',
@@ -23,6 +22,8 @@ Page({
                 title: '请完善统一身份认证信息',
                 icon: 'none'
             })
+        } else {
+            this.updateData()
         }
     },
 
@@ -111,26 +112,17 @@ Page({
             })
         }, 200)
         // 发送请求
-        api.sendVolunteer(stu_id, email, fid_list).then(res => {
-            if(res.statusCode !== 200) {
-                task_map[task_id]['status'] = -1
-                task_map[task_id]['content'] = `网络错误${res.statusCode}`
-            } else {
-                if (res.data.Statue === 1) {
-                    task_map[task_id]['status'] = 1
-                    task_map[task_id]['content'] = "已发送至邮箱"
-                } else {
-                    // 失败
-                    task_map[task_id]['status'] = -1
-                    task_map[task_id]['content'] = "发送失败" + `[error:${res.data.ErrorCode}] ${res.data.ErrorInfo}`
-                }
-            }
+        volunteer_api.sendVolunteer(stu_id, email, fid_list).then(res => {
+            task_map[task_id]['status'] = 1
+            task_map[task_id]['content'] = "已发送至邮箱"
+        }, err => {
+            task_map[task_id]['status'] = -1
+            task_map[task_id]['content'] = `发送失败${err}`
         })
     },
 
     updateData() {
-        let global = this
-        // id和name不能为空
+        let that = this
         let stu_id = this.data.stu_id
         let stu_name = this.data.stu_name
         if (stu_id === '' || stu_name === '') {
@@ -138,71 +130,18 @@ Page({
                 title: '请填写完整！',
                 icon: 'error'
             })
-        } else {
-            // 向服务器校验身份信息
-            wx.showLoading({
-                title: '校验信息',
-            })
-            api.getStuName(stu_id).then(res => {
-                wx.hideLoading()
-                if (res.statusCode !== 200) {
-                    wx.showToast({
-                        title: `网络错误${res.statusCode}`,
-                        icon: 'error'
-                    })
-                } else {
-                    if(res.data.Statue === 0) {
-                        util.showError(res)
-                        return
-                    }
-                    let std_name = res.data.Sname
-                    if (std_name === stu_name) {
-                        wx.showLoading({
-                            title: '查询中',
-                        })
-                        // 获取志愿时长记录
-                        api.getVolunteerRecord(stu_id).then(res => {
-                            if (res.statusCode === 200) {
-                                if (res.Statue === 0) {
-                                    util.showError(res)
-                                    return
-                                }
-                                global.loadAllRecords(res.data.AllActivity)
-                                // 获取总志愿时长
-                                api.getVolunteerTime(stu_id).then(res => {
-                                    if (res.statusCode === 200) {
-                                        if (res.Statue === 0) {
-                                            util.showError(res)
-                                            return
-                                        }
-                                        global.setData({
-                                            time_sum: res.data.TotalDuration
-                                        })
-                                        wx.hideLoading()
-                                    } else {
-                                        wx.showToast({
-                                            title: `网络错误${res.statusCode}`,
-                                            icon: 'error'
-                                        })
-                                    }
-                                })
-                            } else {
-                                wx.showToast({
-                                    title: `网络错误${res.statusCode}`,
-                                    icon: 'error'
-                                })
-                            }
-                        })
-
-                    } else {
-                        wx.showToast({
-                            title: '信息有误',
-                            icon: 'error'
-                        })
-                    }
-                }
-            })
+            return
         }
+        // 获取志愿时长记录
+        volunteer_api.getVolunteerRecord(stu_id).then(res => {
+            that.loadAllRecords(res.AllActivity)
+        })
+        // 获取总志愿时长
+        volunteer_api.getVolunteerTime(stu_id).then(res => {
+            that.setData({
+                time_sum: res.TotalDuration
+            })
+        })
     },
     onPullDownRefresh() {
         this.updateData()

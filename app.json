@@ -20,7 +20,8 @@
     "pages/center/class_info/detail/detail",
     "pages/center/square/square",
     "pages/center/square/detail/detail",
-    "pages/center/square/edit/edit"
+    "pages/center/square/edit/edit",
+    "pages/center/library/library"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -33,9 +34,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "四次元口袋",
+        "text": "口袋",
         "iconPath": "./res/icons/yinyong.png",
         "selectedIconPath": "./res/icons/yinyong-o.png"
+      },
+      {
+        "pagePath": "pages/center/square/square",
+        "text": "广场",
+        "iconPath": "./res/icons/shequ.png",
+        "selectedIconPath": "./res/icons/shequ-o.png"
       },
       {
         "pagePath": "pages/my/my",

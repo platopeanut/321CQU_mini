@@ -1,5 +1,5 @@
 <view>
-    <view class="cu-card">
+    <view class="cu-card" bindlongpress="longPressOperation">
         <view class="cu-item shadow">
             <view class="title" wx:if="{{item.Title}}">
                 <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
@@ -29,33 +29,35 @@
             <view class="text-gray text-sm text-right padding">
 <!--                <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
 <!--                <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
-<!--                <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
+                <text wx:if="{{comment_list.length > 0}}">
+                    <text class="cuIcon-messagefill margin-lr-xs"></text>{{comment_list.length}}
+                </text>
             </view>
 
             <view class="cu-list menu-avatar comment solids-top">
-                <view class="cu-item" wx:for="{{comment_list}}">
+                <view class="cu-item" wx:for="{{comment_list}}" bindtap="deleteComment" data-item="{{item}}">
                     <view class="cu-avatar round" style="background-image:url({{item.UserImg}});"></view>
                     <view class="content">
                         <view class="text-grey">{{item.UserName?item.UserName:item.Author}}</view>
                         <view class="text-gray text-content text-df">
                             {{item.Content}}
                         </view>
-<!--                        <view class="bg-grey padding-sm radius margin-top-sm  text-sm">-->
-<!--                            <view class="flex">-->
-<!--                                <view>凯尔：</view>-->
-<!--                                <view class="flex-sub">妹妹，你在帮他们给黑暗找借口吗?</view>-->
-<!--                            </view>-->
-<!--                        </view>-->
                         <view class="margin-top-sm flex justify-between">
-                            <view class="text-gray text-df">2018年12月4日</view>
-                            <view>
-                                <text class="cuIcon-appreciatefill text-red"></text>
-                                <text class="cuIcon-messagefill text-gray margin-left-sm"></text>
-                            </view>
+                            <view class="text-gray text-df">{{item.UpdateTime}}</view>
+<!--                            <view>-->
+<!--                                <text class="cuIcon-appreciatefill text-red"></text>-->
+<!--                                <text class="cuIcon-messagefill text-gray margin-left-sm"></text>-->
+<!--                            </view>-->
                         </view>
                     </view>
                 </view>
             </view>
         </view>
+    </view>
+
+    <!--发送评论-->
+    <view class="cu-bar foot input {{InputBottom!==0?'cur':''}}" style="bottom:{{InputBottom}}px">
+        <input class="solid-bottom" bindfocus="InputFocus" value="{{comment}}" bindinput="InputValue" bindblur="InputBlur" adjust-position="{{false}}" focus="{{false}}" maxlength="1000" cursor-spacing="10"></input>
+        <button class="cu-btn bg-green shadow" style="width: max-content;" bindtap="sendComment">发送</button>
     </view>
 </view>

@@ -1,5 +1,6 @@
-const api = require('../../../utils/api')
-const util = require('../../../utils/util')
+const info_api = require('./info_api')
+const util = require('./info_util')
+
 Page({
     data: {
         StuInfo: {},
@@ -32,7 +33,7 @@ Page({
             })
         }
         this.setData({
-            dormitory: [util.get_campus_list(), util.get_dormitory()],
+            dormitory: [util.getCampusList(), util.getDormitory()],
             dormitory_index: [0,0],
         })
     },
@@ -49,9 +50,9 @@ Page({
     bindMultiPickerColumnChange: function (e) {
         if (e.detail.column === 0) {
             let zone = this.data.dormitory[0][e.detail.value]
-            let li = util.get_dormitory(zone)
+            let li = util.getDormitory(zone)
             this.setData({
-                dormitory: [util.get_campus_list(), li],
+                dormitory: [util.getCampusList(), li],
                 dormitory_index: [e.detail.value, 0]
             })
         }
@@ -70,7 +71,7 @@ Page({
         }
         let StuInfo = {}
         if (identity === '本科生') {
-            api.loginUG(uid, uid_pwd).then(res => {
+            info_api.loginUG(uid, uid_pwd).then(res => {
                 StuInfo['uid'] = uid
                 StuInfo['uid_pwd'] = uid_pwd
                 StuInfo['stu_id'] = res.Sid
@@ -87,7 +88,7 @@ Page({
             })
         }
         else if (identity === '研究生') {
-            api.loginPG(uid, uid_pwd).then(res => {
+            info_api.loginPG(uid, uid_pwd).then(res => {
                 StuInfo['uid'] = uid
                 StuInfo['uid_pwd'] = uid_pwd
                 StuInfo['identity'] = '研究生'
@@ -163,7 +164,7 @@ Page({
             })
             return
         }
-        api.setNickname(stu_id, nickname, avatarUrl).then(res => {
+        info_api.setNickname(stu_id, nickname, avatarUrl).then(res => {
             StuInfo['nickname'] = nickname
             StuInfo['authority'] = res.Authority
             wx.setStorageSync('StuInfo', StuInfo)

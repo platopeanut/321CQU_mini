@@ -1,4 +1,4 @@
-const util = require('../../utils/util')
+const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
 
 Page({
@@ -57,17 +57,23 @@ Page({
                 color: 'yellow',
                 icon: 'baby'
             },
-            {
-                title: '信息广场',
-                path: 'square',
-                color: 'red',
-                icon: 'wefill'
-            },
+            // {
+            //     title: '信息广场',
+            //     path: 'square',
+            //     color: 'red',
+            //     icon: 'wefill'
+            // },
             {
                 title: '任务管理',
                 path: 'task',
                 color: 'blue',
                 icon: 'deliver'
+            },
+            {
+                title: '图书馆',
+                path: 'library',
+                color: 'green',
+                icon: 'read'
             },
         ],
         url: 'https://www.zhulegend.com',
@@ -76,8 +82,6 @@ Page({
     onShow: function () {
         // 加载首页课程信息
         this.LoadCurriculumInfo()
-        // 加载首页轮播图片
-        this.LoadSwiperImg()
     },
 
     LoadSwiperImg: function () {
@@ -90,8 +94,7 @@ Page({
                 HomePage['PictureUrls'] = res.PictureUrls
                 wx.setStorageSync('HomePage', HomePage)
             }
-
-            let swiperList = that.data.swiperList
+            let swiperList = [{url: false}]
             for (const url of HomePage['PictureUrls']) {
                 swiperList.push({url: that.data.url + url})
             }
@@ -102,7 +105,7 @@ Page({
     },
 
     LoadCurriculumInfo: function () {
-        let index_info = util.get_index_info()
+        let index_info = curriculum_util.getIndexInfo()
         let today_info = index_info.today_info
         let curriculum_info = index_info.curriculum_info
         this.setData({
@@ -139,6 +142,8 @@ Page({
             })
             wx.setStorageSync('AppUse', true)
         }
+        // 加载首页轮播图片
+        this.LoadSwiperImg()
     },
 
     // saveImg: function (e) {

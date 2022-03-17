@@ -1,4 +1,4 @@
-const util = require("./util");
+const util = require("./util")
 /**
  *  321CQU API 接口
  */
@@ -6,15 +6,15 @@ const util = require("./util");
 const url = 'https://www.zhulegend.com/321CQU'
 const Password = 'CQUz5321'
 
-function request(header, resolve, reject) {
-  wx.showLoading()
+function request(header, resolve, reject, loading = true) {
+  if (loading) {wx.showLoading()}
   header['data']['Key'] = Password
   wx.request({
     url: url + header['url'],
     method: 'POST',
     data: header['data'],
     success: res => {
-      wx.hideLoading()
+      if (loading) {wx.hideLoading()}
       if (res.statusCode === 200) {
         if (res.data.Statue === 1) {
           resolve(res.data)
@@ -36,117 +36,6 @@ function request(header, resolve, reject) {
         icon: 'none'
       })
     }
-  })
-}
-
-
-// 本科生统一身份登录
-function loginUG(uid, uid_pwd) {
-  let header = {
-    url: '/user/login',
-    data: {
-      'UserName': uid,
-      'Password': uid_pwd
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-
-
-// 研究生统一身份登录
-function loginPG(uid, uid_pwd) {
-  let header = {
-    url: '/pg_student/is_match',
-    data: {
-      'UserName': uid,
-      'Password': uid_pwd
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-
-// 对应学号的姓名
-function getStuName(stu_id) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/StuVal',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-      },
-      success: resolve,
-      fail: reject
-    })
-  }) 
-}
-
-// 志愿时长的记录
-function getVolunteerRecord(stu_id) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/all_activity',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
-
-// 志愿总时长
-function getVolunteerTime(stu_id) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/total_duration',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
-
-// 志愿发送至邮箱
-function sendVolunteer(stu_id, email, fid_list) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/mail/send_volunteer_pdfs',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-        'Mail': email,
-        'Fid': fid_list,
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
-
-// 设置昵称，上传用户头像
-function setNickname(stu_id, nickname, avatarUrl) {
-  let header = {
-    url: '/user/set_info',
-    data: {
-      'Sid': stu_id,
-      'UserName': nickname,
-      'UserImg': avatarUrl,
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
   })
 }
 
@@ -217,25 +106,6 @@ function send_feedback_comment(Sid, Content, FBid) {
   })
 }
 
-// 成绩查询
-function getGrade(stu_id, uid, uid_pwd, code) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/get_score',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Sid': stu_id,
-        'UserName': uid,
-        'Password': uid_pwd,
-        'Code': code,
-        'NeedAll': true
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
 
 // 考试安排
 function getExamSchedule(stu_id, uid, uid_pwd) {
@@ -301,105 +171,6 @@ function test(data) {
   })
 }
 
-// 获取课表
-function getCurriculum(stu_id, uid, uid_pwd) {
-  let header = {
-    url: '/student/get_course',
-    data: {
-      'Sid': stu_id,
-      'UserName': uid,
-      'Password': uid_pwd
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-
-// 下学期课表预览
-function getNextCurriculum(stu_id, uid, uid_pwd) {
-  let header = {
-    url: '/student/get_enrollment',
-    data: {
-      'Sid': stu_id,
-      'UserName': uid,
-      'Password': uid_pwd
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-
-// 备份到云端
-function pushSelfSchedule(code, events) {
-  let header = {
-    url: '/course_table/push_custom_event',
-    data: {
-      'Code': code,
-      'Events': events,
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-// 同步到本地
-function pullSelfSchedule(code) {
-  let header = {
-    url: '/course_table/pull_custom_event',
-    data: {
-      'Code': code,
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-
-// 研究生成绩查询
-function getPGGrade(uid, uid_pwd) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/pg_student/get_score',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
-
-// 学校当前学期信息
-function getSchoolTermInfo(uid, uid_pwd) {
-  let header = {
-    url: '/school_info/get_curr_term',
-    data: {
-      'UserName': uid,
-      'Password': uid_pwd
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-// 学校下学期信息
-function getSchoolNextTermInfo(uid, uid_pwd) {
-  let header = {
-    url: '/school_info/get_next_term',
-    data: {
-      'UserName': uid,
-      'Password': uid_pwd
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
 
 // 增加一次广告观看次数
 function adLook(code) {
@@ -474,136 +245,13 @@ function query_class_detail(Cid) {
   })
 }
 
-// 查询gpa和排名
-function get_gpa_and_rank(uid, uid_pwd) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/student/get_gpa_ranking',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
 
-// 查询水电费
-function get_fees(uid, uid_pwd, is_hu_xi, room_code) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/school_info/get_fees',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd,
-        'IsHuXi': is_hu_xi,
-        'Room': room_code
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
-
-//查询一卡通相关信息：
-function getSchoolCardInfo(uid, uid_pwd){
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/school_info/get_card',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'UserName': uid,
-        'Password': uid_pwd,
-      },
-      success: resolve,
-      fail: reject
-    })
-  })
-}
 
 /**
- *  信息广场
+ *
+ * 首页广告
  */
-// 获取帖子列表
-function getPostList(limit, type='all') {
-  let header = {
-    url: '/forum/get_post_list',
-    data: {
-      'Type': type,
-      'Limit': limit
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-// 获取帖子详情
-function getPostDetail(pid) {
-  let header = {
-    url: '/forum/get_post_detail',
-    data: {
-      'Pid': pid
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-// 发送帖子
-function sendPost(type, title, content, author) {
-  if (title === undefined) title = ''
-  let header = {
-    url: '/forum/send_post',
-    data: {
-      'Title': title,
-      'Content': content,
-      'Type': type,
-      'Author': author
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-// 更新帖子
-function modifyPost(title, content, pid, sid) {
-  let header = {
-    url: '/forum/update_post',
-    data: {
-      'Title': title,
-      'Content': content,
-      'IsDelete': false,
-      'Pid': pid,
-      'Sid': sid,
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-// 删除帖子
-function deletePost(pid, sid) {
-  let header = {
-    url: '/forum/update_post',
-    data: {
-      'Title': '',
-      'Content': '',
-      'IsDelete': true,
-      'Pid': pid,
-      'Sid': sid,
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
-  })
-}
-
+// 首页图片
 function getHomepageImgDate() {
   let header = {
     url: '/homepage',
@@ -611,46 +259,24 @@ function getHomepageImgDate() {
     }
   }
   return new Promise((resolve,reject) => {
-    request(header, resolve, reject)
+    request(header, resolve, reject, false)
   })
 }
 
 module.exports = {
-  test,
-  getVolunteerTime,
-  getVolunteerRecord,
-  getStuName,
-  sendVolunteer,
-  setNickname,
-  getFeedback,
-  sendFeedback,
-  getGrade,
-  getExamSchedule,
-  getAboutUs,
-  subscribe,
-  send_feedback_comment,
-  get_feedback_comment,
-  getCurriculum,
-  getNextCurriculum,
-  getPGGrade,
-  getSchoolTermInfo,
-  getSchoolNextTermInfo,
-  adLook,
-  adTimes,
-  query_class_info_by_class_name,
-  query_class_info_by_teacher_name,
-  query_class_detail,
-  get_gpa_and_rank,
-  get_fees,
-  getSchoolCardInfo,
-  pullSelfSchedule,
-  pushSelfSchedule,
-  loginUG,
-  loginPG,
-  getPostList,
-  getPostDetail,
-  sendPost,
-  modifyPost,
-  deletePost,
-  getHomepageImgDate,
+    test,
+    request,
+    getFeedback,
+    sendFeedback,
+    getExamSchedule,
+    getAboutUs,
+    subscribe,
+    send_feedback_comment,
+    get_feedback_comment,
+    adLook,
+    adTimes,
+    query_class_info_by_class_name,
+    query_class_info_by_teacher_name,
+    query_class_detail,
+    getHomepageImgDate,
 }
