@@ -115,9 +115,19 @@ Page({
 
     },
 
-    // onPullDownRefresh: function () {
-    //     wx.stopPullDownRefresh()
-    //     this.queryBorrowInfo()
-    // }
+    onPullDownRefresh: function () {
+        wx.stopPullDownRefresh()
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let uid = StuInfo['uid']
+        let uid_pwd = StuInfo['uid_pwd']
+        if (!(uid && uid_pwd)) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
+        this.queryBorrowInfo()
+    }
 
 })

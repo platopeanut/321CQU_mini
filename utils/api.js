@@ -29,7 +29,7 @@ function request(header, resolve, reject, loading = true) {
         })
       }
     },
-    fail: res => {
+    fail: () => {
       wx.hideLoading()
       wx.showToast({
         title: '网络错误',
@@ -45,18 +45,15 @@ function request(header, resolve, reject, loading = true) {
  * 测试接口
  */
 function TEST(data) {
-  return new Promise((resolve,reject) => {
-    wx.request({
-      url: url + '/test_data',
-      method: 'POST',
-      data: {
-        'Key': Password,
-        'Data': data
-      },
-      success: resolve,
-      fail: reject
+    let header = {
+        url: '/test_data',
+        data: {
+            'Data': data
+        }
+    }
+    return new Promise((resolve,reject) => {
+        request(header, resolve, reject)
     })
-  })
 }
 
 

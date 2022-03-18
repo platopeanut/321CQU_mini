@@ -7,28 +7,54 @@ Page({
         gridCol: 5,
         categories: square_util.categories,
         curr_type: 'all',
-        stu_id: wx.getStorageSync('StuInfo')['stu_id'],
-        authority: wx.getStorageSync('StuInfo')['authority'],
-        post_list: null,
+        stu_id: null,
+        authority: null,
+        post_list: {},
         post_index_list: null,
-        post_flag_list: null,
+        post_flag_list: null,   // 1 --> 第一次刷新 --> 0 --> 没有更多 --> -1
     },
 
-    onLoad: function () {
-        if (this.data.stu_id === '') {
+    onShow: function () {
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let stu_id = StuInfo['stu_id']
+        let authority = StuInfo['authority']
+        this.setData({
+            stu_id: stu_id,
+            authority: authority
+        })
+        if (!(this.data.stu_id && this.data.authority)) {
             wx.showToast({
-                title: '请先绑定统一身份认证',
+                title: '请绑定统一身份，昵称信息',
                 icon: 'none'
             })
+            return
         }
-        this.updateData()
+        let length = square_util.type_list.length
+        let post_index_list = new Array(length)
+        for (let i = 0; i < post_index_list.length; i++) {
+            post_index_list[i] = 0
+        }
+        let post_flag_list = new Array(length)
+        for (let i = 0; i < post_flag_list.length; i++) {
+            post_flag_list[i] = 1
+        }
+        this.setData({
+            post_index_list: post_index_list,
+            post_flag_list: post_flag_list,
+            post_list: {},
+        })
+        console.log(this.data)
+        this.updateData(0)
     },
 
     selectPart: function (res) {
         this.setData({
             curr_type: res.currentTarget.dataset.type
         })
-        console.log(this.data.post_list[this.data.curr_type])
+        if (this.data.post_flag_list[square_util.getIndexByType(this.data.curr_type)] === 1) {
+            this.updateData(0)
+            console.log('init update ' + this.data.curr_type)
+        }
     },
 
     jumpToAddPost: function () {
@@ -66,7 +92,7 @@ Page({
                                 icon: 'none'
                             })
                         })
-                        that.updateData()
+                        that.onShow()
                     }
                 }
             })
@@ -83,56 +109,79 @@ Page({
                                 icon: 'none'
                             })
                         })
-                        that.updateData()
+                        that.onShow()
                     }
                 }
             })
         }
     },
 
-    updateData: function (limit=null) {
+    updateData: function (start, batch=10) {
         let that = this
         let post_list = this.data.post_list
-        square_api.getPostList(limit, that.data.curr_type).then(res => {
+        square_api.getPostList(`${start},${batch}`, that.data.curr_type).then(res => {
             console.log(res)
-            if (that.data.curr_type === 'all') {
-                post_list = {}
-                for (const type of square_util.type_list) {
-                    post_list[type] = []
-                }
-                for (const item of res.PostList) {
-                    post_list[item.Type].push(item)
-                }
-            }
+            if (!post_list[that.data.curr_type]) post_list[that.data.curr_type] = []
             for (let i = 0; i < res.PostList.length; i++) {
                 if (res.PostList[i]['Content'].length >= 45) {
                     res.PostList[i]['Content'] = res.PostList[i]['Content'].slice(0, 45) + '...'
                 }
                 res.PostList[i]['Type'] = square_util.getNameByType(res.PostList[i]['Type'])
+                post_list[that.data.curr_type].push(res.PostList[i])
             }
-            post_list[that.data.curr_type] = res.PostList
+
+            let post_flag_list = that.data.post_flag_list
+            post_flag_list[square_util.getIndexByType(that.data.curr_type)] = 0
+
+            let post_index_list = that.data.post_index_list
+            let size = res.PostList.length
+            if (size < batch) {
+                post_flag_list[square_util.getIndexByType(that.data.curr_type)] = -1
+            }
+            post_index_list[square_util.getIndexByType(that.data.curr_type)] += size
+
             that.setData({
-                post_list: post_list
+                post_list: post_list,
+                post_flag_list: post_flag_list,
+                post_index_list: post_index_list
             })
+            console.log(that.data)
         })
     },
 
     onPullDownRefresh() {
-        this.updateData()
+        if (!(this.data.stu_id && this.data.authority)) {
+            wx.stopPullDownRefresh()
+            wx.showToast({
+                title: '请绑定统一身份，昵称信息',
+                icon: 'none'
+            })
+            return
+        }
+        let post_list = this.data.post_list
+        post_list[this.data.curr_type] = []
+        let post_index_list = this.data.post_index_list
+        post_index_list[square_util.getIndexByType(this.data.curr_type)] = 0
+        this.setData({
+            post_list: post_list,
+            post_index_list: post_index_list
+        })
+        this.updateData(0)
         wx.stopPullDownRefresh()
     },
 
     onReachBottom: function() {
-        // let index = square_util.getIndexByType(this.data.curr_type)
-        // if (!this.data.post_flag_list[index]) {
-        //     let start = this.data.post_index_list[index]
-        //     let end = start + 10
-        //     this.updateData(`${start},${end}`)
-        // } else {
-        //     wx.showToast({
-        //         title: '没有更多了',
-        //         icon: 'none'
-        //     })
-        // }
+        console.log('bottom')
+        let post_index_list = this.data.post_index_list
+        let post_flag_list = this.data.post_flag_list
+        let index = square_util.getIndexByType(this.data.curr_type)
+        if (post_flag_list[index] === -1) {
+            wx.showToast({
+                title: '没有更多啦',
+                icon: 'none'
+            })
+            return
+        }
+        this.updateData(post_index_list[index])
     },
 })

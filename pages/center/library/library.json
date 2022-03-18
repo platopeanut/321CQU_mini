@@ -1,5 +1,5 @@
 {
   "usingComponents": {},
   "navigationBarTitleText": "图书馆",
-  "enablePullDownRefresh": false
+  "enablePullDownRefresh": true
 }

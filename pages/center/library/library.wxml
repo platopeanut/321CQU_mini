@@ -15,7 +15,7 @@
             </view>
         </view>
 
-        <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{curr_borrow_list}}" wx:key>
+        <view class="cu-list menu sm-border card-menu margin-top" bindlongpress="longPressOperation" data-id="{{item.Id}}" wx:for="{{curr_borrow_list}}" wx:key>
             <view class="cu-item" bindtap="selectBorrowBook" data-index="{{index}}" data-mode="{{0}}">
                 <view class="content">
                     <text class="text-black text-bold">{{item.Title}}</text>
@@ -90,7 +90,7 @@
         </view>
 
         <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{history_borrow_list}}" wx:key>
-            <view class="cu-item" bindtap="selectBorrowBook" bindlongpress="longPressOperation" data-id="{{item.Id}}" data-index="{{index}}" data-mode="{{1}}">
+            <view class="cu-item" bindtap="selectBorrowBook" data-index="{{index}}" data-mode="{{1}}">
                 <view class="content">
                     <text class="text-black text-bold">{{item.Title}}</text>
                 </view>
