@@ -1,4 +1,4 @@
-const api = require("../../../utils/api")
+const about_api = require("./about_api")
 
 Page({
     data: {
@@ -7,7 +7,7 @@ Page({
 
     onShow: function () {
         let that = this
-        api.getAboutUs().then(res => {
+        about_api.getAboutUs().then(res => {
             that.setData({
               content_list: res.Content
             })

@@ -1,5 +1,4 @@
 const api = require('../../../utils/api')
-const util = require("../../../utils/util")
 // 在页面中定义激励视频广告
 let videoAd = null
 
@@ -15,7 +14,7 @@ Page({
             videoAd.onLoad(() => {
                 wx.hideLoading()
             })
-            videoAd.onError((err) => {
+            videoAd.onError(() => {
                 wx.hideLoading()
                 wx.showToast({
                     title: '加载错误',
@@ -28,7 +27,7 @@ Page({
                     // 正常播放结束，可以下发奖励
                     wx.login({
                         success: res => {
-                            api.adLook(res.code).then(res => {
+                            api.adLook(res.code).then(() => {
                                 wx.showToast({
                                     title: '观看成功',
                                     icon: 'none'
@@ -68,7 +67,7 @@ Page({
                 // 失败重试
                 videoAd.load()
                     .then(() => videoAd.show())
-                    .catch(err => {
+                    .catch(() => {
                         wx.showToast({
                             title: '激励视频广告显示失败',
                             icon: 'none'

@@ -1,5 +1,4 @@
-const api = require('../../../../utils/api')
-const util = require('../../../../utils/util')
+const class_info_api = require('../class_info_api')
 
 Page({
 
@@ -48,7 +47,7 @@ Page({
     compute_level: function (item, year) {
         let distributed = []
         let level_list = [95, 85, 75, 65, 50]
-        let average = ''
+        let average
         let max = ''
         let min = ''
         let _all = 0
@@ -104,88 +103,75 @@ Page({
 
     query: function () {
         let that = this
-        wx.showLoading()
-        api.query_class_detail(this.data.class_id).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    let CourseScore = res.data.CourseScore
-                    let IsHierarchy = res.data.IsHierarchy
-                    console.log(res.data)
-                    let teacher_dict = {}
-                    for (const year in CourseScore) {
-                        // 分数制
-                        if (IsHierarchy[year] === 0) {
-                            for (const item of CourseScore[year]) {
-                                if (item[0] === '') continue
-                                let distributed = []
-                                let _all = 0
-                                for (let i = item.length - 1; i >= 6; i--) {
-                                    distributed.push(item[i])
-                                    _all += item[i]
-                                }
-                                for (let i = 0; i < distributed.length; i++) {
-                                    distributed[i] /= _all
-                                    distributed[i] *= 100
-                                    distributed[i] = distributed[i].toFixed(0)
-                                }
-                                if (teacher_dict[item[0]]) {
-                                    teacher_dict[item[0]]['info'].push({
-                                        year: year,
-                                        average: item[2]?item[2].toFixed(2):'null',
-                                        num: item[3],
-                                        max: item[4],
-                                        min: item[5],
-                                        distributed: distributed
-                                    })
-                                } else {
-                                    teacher_dict[item[0]] = {}
-                                    teacher_dict[item[0]]['state'] = false
-                                    teacher_dict[item[0]]['info'] = [{
-                                        year: year,
-                                        average: item[2]?item[2].toFixed(2):'null',
-                                        num: item[3],
-                                        max: item[4],
-                                        min: item[5],
-                                        distributed: distributed
-                                    }]
-                                }
-                            }
+        class_info_api.queryClassDetail(this.data.class_id).then(res => {
+            let CourseScore = res.CourseScore
+            let IsHierarchy = res.IsHierarchy
+            console.log(res)
+            let teacher_dict = {}
+            for (const year in CourseScore) {
+                // 分数制
+                if (IsHierarchy[year] === 0) {
+                    for (const item of CourseScore[year]) {
+                        if (item[0] === '') continue
+                        let distributed = []
+                        let _all = 0
+                        for (let i = item.length - 1; i >= 6; i--) {
+                            distributed.push(item[i])
+                            _all += item[i]
                         }
-                        else if (IsHierarchy[year] === 1) {
-                            // 等级制
-                            for (const item of CourseScore[year]) {
-                                if (item[0] === '') continue
-                                let result = that.compute_level(item, year)
-                                if (teacher_dict[item[0]]) {
-                                    teacher_dict[item[0]]['info'].push(result)
-                                } else {
-                                    teacher_dict[item[0]] = {}
-                                    teacher_dict[item[0]]['state'] = false
-                                    teacher_dict[item[0]]['info'] = [result]
-                                }
-                            }
+                        for (let i = 0; i < distributed.length; i++) {
+                            distributed[i] /= _all
+                            distributed[i] *= 100
+                            distributed[i] = distributed[i].toFixed(0)
                         }
-                        else {
-                            wx.showToast({
-                                title: 'Hierarchy Error!',
-                                icon: 'none'
+                        if (teacher_dict[item[0]]) {
+                            teacher_dict[item[0]]['info'].push({
+                                year: year,
+                                average: item[2]?item[2].toFixed(2):'null',
+                                num: item[3],
+                                max: item[4],
+                                min: item[5],
+                                distributed: distributed
                             })
+                        } else {
+                            teacher_dict[item[0]] = {}
+                            teacher_dict[item[0]]['state'] = false
+                            teacher_dict[item[0]]['info'] = [{
+                                year: year,
+                                average: item[2]?item[2].toFixed(2):'null',
+                                num: item[3],
+                                max: item[4],
+                                min: item[5],
+                                distributed: distributed
+                            }]
                         }
                     }
-                    console.log(teacher_dict)
-                    that.setData({
-                        teacher_dict: teacher_dict
-                    })
-                } else {
-                    util.showError(res)
                 }
-            } else {
-                wx.showToast({
-                    title: '网络错误' + res.statusCode,
-                    icon: 'none'
-                })
+                else if (IsHierarchy[year] === 1) {
+                    // 等级制
+                    for (const item of CourseScore[year]) {
+                        if (item[0] === '') continue
+                        let result = that.compute_level(item, year)
+                        if (teacher_dict[item[0]]) {
+                            teacher_dict[item[0]]['info'].push(result)
+                        } else {
+                            teacher_dict[item[0]] = {}
+                            teacher_dict[item[0]]['state'] = false
+                            teacher_dict[item[0]]['info'] = [result]
+                        }
+                    }
+                }
+                else {
+                    wx.showToast({
+                        title: 'Hierarchy Error!',
+                        icon: 'none'
+                    })
+                }
             }
+            console.log(teacher_dict)
+            that.setData({
+                teacher_dict: teacher_dict
+            })
         })
     },
 
@@ -195,8 +181,5 @@ Page({
             class_id: e.Cid
         })
         this.query()
-    },
-    onShareAppMessage: function () {
-
     }
 })

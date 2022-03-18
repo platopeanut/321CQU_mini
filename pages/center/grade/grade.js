@@ -222,6 +222,13 @@ Page({
             stu_id: StuInfo['stu_id'],
             identity: StuInfo['identity'],
         })
+        if (!(this.data.uid && this.data.uid_pwd)) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
         let grade_info = wx.getStorageSync('grade_info')
         this.setData({
             grade_list: grade_info.grade_list,
@@ -238,8 +245,15 @@ Page({
         this.user_grade_config_process()
     },
     onPullDownRefresh: function() {
-        this.updateData()
         wx.stopPullDownRefresh()
+        if (!(this.data.uid && this.data.uid_pwd)) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
+        this.updateData()
     },
     score_analysis: function () {
         let that = this

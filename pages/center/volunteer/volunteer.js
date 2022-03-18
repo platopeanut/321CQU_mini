@@ -17,7 +17,7 @@ Page({
             stu_id: StuInfo['stu_id'],
             email: StuInfo['email'],
         })
-        if (this.data.stu_id === '' || this.data.stu_name === '') {
+        if (!(this.data.stu_id && this.data.stu_name)) {
             wx.showToast({
                 title: '请完善统一身份认证信息',
                 icon: 'none'
@@ -59,7 +59,7 @@ Page({
         let stu_id = this.data.stu_id
         let email = this.data.email
         // 邮箱不能为空
-        if (email === '' || email === undefined) {
+        if (!email) {
             wx.showToast({
               title: '请绑定邮箱',
               icon: 'error'
@@ -125,10 +125,10 @@ Page({
         let that = this
         let stu_id = this.data.stu_id
         let stu_name = this.data.stu_name
-        if (stu_id === '' || stu_name === '') {
+        if (!(stu_id && stu_name)) {
             wx.showToast({
-                title: '请填写完整！',
-                icon: 'error'
+                title: '请完善统一身份信息！',
+                icon: 'none'
             })
             return
         }
@@ -144,7 +144,14 @@ Page({
         })
     },
     onPullDownRefresh() {
-        this.updateData()
+        if (!(this.data.stu_id && this.data.stu_name)) {
+            wx.showToast({
+                title: '请完善统一身份认证信息',
+                icon: 'none'
+            })
+        } else {
+            this.updateData()
+        }
         wx.stopPullDownRefresh()
     },
 

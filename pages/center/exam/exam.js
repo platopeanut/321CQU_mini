@@ -1,4 +1,4 @@
-const api = require('../../../utils/api')
+const exam_api = require('./exam_api')
 const util = require('../../../utils/util')
 Page({
 
@@ -32,43 +32,32 @@ Page({
         let stu_id = StuInfo['stu_id']
         let uid = StuInfo['uid']
         let uid_pwd = StuInfo['uid_pwd']
-        if (stu_id === '' || uid === '' || uid_pwd === '') {
+        if (!(stu_id && uid && uid_pwd)) {
             wx.showToast({
-              title: '请先绑定学号，统一身份认证账号及密码',
+              title: '请完善统一身份信息',
               icon: 'none'
             })
             return
         }
         let that = this
-        wx.showLoading()
-        api.getExamSchedule(stu_id, uid, uid_pwd).then(res => {
-            wx.hideLoading()
-            if (res.statusCode === 200) {
-                if (res.data.Statue === 1) {
-                    if (res.data.Exams.length === 0) {
-                        wx.showToast({
-                            title: '暂无考试安排',
-                            icon: 'none'
-                        })
-                        that.setData({
-                            has_exam: false
-                        })
-                        return
-                    }
-                    that.parseData(res.data.Exams)
-                    wx.setStorageSync('exam_schedule', res.data.Exams)
-                } else {
-                    wx.showToast({
-                      title: '查询错误',
-                      icon: 'error'
-                    })
-                }
+        exam_api.getExamSchedule(stu_id, uid, uid_pwd).then(res => {
+            if (res.Exams.length === 0) {
+                wx.showToast({
+                    title: '暂无考试安排',
+                    icon: 'none'
+                })
+                that.setData({
+                    has_exam: false
+                })
+                return
             } else {
                 wx.showToast({
-                  title: '网络错误',
-                  icon: 'error'
+                    title: '更新成功',
+                    icon: 'none'
                 })
             }
+            that.parseData(res.Exams)
+            wx.setStorageSync('exam_schedule', res.Exams)
         })
     },
 

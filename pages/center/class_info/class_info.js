@@ -1,5 +1,4 @@
-const api = require('../../../utils/api')
-const util = require('../../../utils/util')
+const class_info_api = require('./class_info_api')
 
 Page({
 
@@ -71,7 +70,7 @@ Page({
         let stu_id = StuInfo['stu_id']
         let uid = StuInfo['uid']
         let uid_pwd = StuInfo['uid_pwd']
-        if (stu_id === '' || uid === '' || uid_pwd === '') {
+        if (!(stu_id && uid && uid_pwd)) {
             wx.showToast({
                 title: '请绑定学号，统一身份账号及密码',
                 icon: 'none'
@@ -89,81 +88,55 @@ Page({
             first_open_state: false
         })
         if (this.data.curr_way === '搜课程') {
-            wx.showLoading()
-            api.query_class_info_by_class_name(this.data.user_input).then(res => {
-                wx.hideLoading()
-                if (res.statusCode === 200) {
-                    if (res.data.Statue === 1) {
-                        if (res.data.Courses.length !== 0) {
-                            let lesson_list = []
-                            for (const item of res.data.Courses) {
-                                lesson_list.push({
-                                    Cid: item[0],
-                                    Cname: item[1]
-                                })
-                            }
-                            that.setData({
-                                no_result_state: false,
-                                lesson_list: lesson_list,
-                            })
-                        } else {
-                            that.setData({
-                                lesson_list: [],
-                                teacher_dict: {},
-                                no_result_state: true,
-                            })
-                        }
-                    } else {
-                        util.showError(res)
+            class_info_api.queryClassInfoByClassName(this.data.user_input).then(res => {
+                if (res.Courses.length !== 0) {
+                    let lesson_list = []
+                    for (const item of res.Courses) {
+                        lesson_list.push({
+                            Cid: item[0],
+                            Cname: item[1]
+                        })
                     }
+                    that.setData({
+                        no_result_state: false,
+                        lesson_list: lesson_list,
+                    })
                 } else {
-                    wx.showToast({
-                        title: '网络错误' + res.statusCode,
-                        icon: 'none'
+                    that.setData({
+                        lesson_list: [],
+                        teacher_dict: {},
+                        no_result_state: true,
                     })
                 }
             })
         } else if (this.data.curr_way === '搜老师') {
-            wx.showLoading()
-            api.query_class_info_by_teacher_name(this.data.user_input).then(res => {
-                wx.hideLoading()
-                if (res.statusCode === 200) {
-                    if (res.data.Statue === 1) {
-                        if (res.data.Courses.length !== 0) {
-                            let teacher_dict = {}
-                            for (const item of res.data.Courses) {
-                                if (teacher_dict[item[0]]) {
-                                    teacher_dict[item[0]]['class_list'].push({
-                                        Cid: item[1],
-                                        Cname: item[2],
-                                    })
-                                } else {
-                                    teacher_dict[item[0]] = {}
-                                    teacher_dict[item[0]]['state'] = false
-                                    teacher_dict[item[0]]['class_list'] = [{
-                                        Cid: item[1],
-                                        Cname: item[2],
-                                    }]
-                                }
-                            }
-                            that.setData({
-                                teacher_dict: teacher_dict,
-                                no_result_state: false,
+            class_info_api.queryClassInfoByTeacherName(this.data.user_input).then(res => {
+                if (res.Courses.length !== 0) {
+                    let teacher_dict = {}
+                    for (const item of res.Courses) {
+                        if (teacher_dict[item[0]]) {
+                            teacher_dict[item[0]]['class_list'].push({
+                                Cid: item[1],
+                                Cname: item[2],
                             })
                         } else {
-                            that.setData({
-                                lesson_list: [],
-                                teacher_dict: {},
-                                no_result_state: true,
-                            })
+                            teacher_dict[item[0]] = {}
+                            teacher_dict[item[0]]['state'] = false
+                            teacher_dict[item[0]]['class_list'] = [{
+                                Cid: item[1],
+                                Cname: item[2],
+                            }]
                         }
-                    } else {
-                        util.showError(res)
                     }
+                    that.setData({
+                        teacher_dict: teacher_dict,
+                        no_result_state: false,
+                    })
                 } else {
-                    wx.showToast({
-                        title: '网络错误' + res.statusCode,
-                        icon: 'none'
+                    that.setData({
+                        lesson_list: [],
+                        teacher_dict: {},
+                        no_result_state: true,
                     })
                 }
             })
@@ -180,8 +153,4 @@ Page({
         //     url: './detail/detail'
         // })
     },
-
-    onShareAppMessage: function () {
-
-    }
 })

@@ -1,6 +1,6 @@
-const api = require("../../../utils/api")
-let page = Page({
+const feedback_api = require("./feedback_api")
 
+Page({
     data: {
         message : "",
         action : false,
@@ -12,47 +12,26 @@ let page = Page({
 
     // 获取评论总数，每次获取20条，已到达末尾则返回false
     getComments() {
-      wx.showLoading()
       let that = this
       let batch_size = 20
       let limit_index = this.data.limit_index
       // 请求服务器
-      api.getFeedback(`${limit_index},${batch_size}`).then(res => {
-        if (res.statusCode === 200) {
-          if (res.data.Statue === 0) {
-            wx.showToast({
-              title: '获取失败',
-              icon: 'error'
-            })
-            return
-          }
-          // console.log(`${limit_index},${batch_size}`)
-          // console.log(res.data.FeedbackList)
-          for (let i = 0; i < res.data.FeedbackList.length; i++) {
-            const element = res.data.FeedbackList[i];
-          }
-          let feedback_list = res.data.FeedbackList
+      feedback_api.getFeedback(`${limit_index},${batch_size}`).then(res => {
+          let feedback_list = res.FeedbackList
           // 本地显示
           that.setData({
-            feedback_data: this.data.feedback_data.concat(feedback_list)
+              feedback_data: this.data.feedback_data.concat(feedback_list)
           })
           // index自增
           that.setData({
-            limit_index: that.data.limit_index + batch_size
+              limit_index: that.data.limit_index + batch_size
           })
           // 末尾设置标志位
           if (feedback_list.length < batch_size) {
-            that.setData({
-              limit_end: true
-            })
+              that.setData({
+                  limit_end: true
+              })
           }
-        } else {
-          wx.showToast({
-            title: '网络错误',
-            icon: 'error'
-          })
-        }
-        wx.hideLoading()
       })
     },
     onLoad: function () {
@@ -96,12 +75,6 @@ let page = Page({
         if (item.UserImg == null) item.UserImg = this.data.anonymous
         wx.navigateTo({
           url: './detail/detail',
-          events: {
-            // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
-            acceptDataFromOpenedPage: function(data) {
-              console.log('hi')
-            },
-          },
           success: function(res) {
             // 通过eventChannel向被打开页面传送数据
             res.eventChannel.emit('acceptDataFromOpenerPage', {

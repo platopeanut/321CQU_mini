@@ -1,5 +1,4 @@
-const api = require("../../../../utils/api")
-const util = require("../../../../utils/util")
+const feedback_api = require("../feedback_api")
 Page({
 
     data: {
@@ -16,37 +15,25 @@ Page({
     },
 
     sendFeedback() {
-        if (this.data.stu_id === "" || this.data.stu_id === undefined) {
+        if (!this.data.stu_id) {
             wx.showToast({
               title: '请先绑定信息',
               icon: 'error'
             })
             return
         }
-        let global = this
+        let that = this
         if (this.data.message !== '') {
             // 发送反馈信息
-            wx.showLoading()
-            api.sendFeedback(this.data.stu_id, this.data.message).then(res => {
-                wx.hideLoading()
-                if (res.statusCode === 200) {
-                    if (res.data.Statue === 1) {
-                        wx.showToast({
-                            title: '感谢您的反馈',
-                            icon: 'none'
-                        })
-                        global.setData({
-                            message: ""
-                        })
-                    } else {
-                        util.showError(res)
-                    }
-                } else {
-                    wx.showToast({
-                      title: '网络错误',
-                      icon: 'none'
-                    })
-                }
+            feedback_api.sendFeedback(this.data.stu_id, this.data.message).then(() => {
+                wx.showToast({
+                    title: '感谢您的反馈',
+                    icon: 'none'
+                })
+                that.setData({
+                    message: ""
+                })
+            }).finally(() => {
                 // 0.5秒后自动返回上一级
                 setTimeout(() => {
                     wx.navigateBack({

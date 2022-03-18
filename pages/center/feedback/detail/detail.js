@@ -1,4 +1,4 @@
-const api = require('../../../../utils/api')
+const feedback_api = require('../feedback_api')
 
 
 Page({
@@ -23,7 +23,7 @@ Page({
             comment: e.detail.value
         })
     },
-    InputBlur(e) {
+    InputBlur() {
         this.setData({
             InputBottom: 0
         })
@@ -45,30 +45,15 @@ Page({
             })
         }
         let that = this
-        wx.showLoading()
-        api.send_feedback_comment(Sid, this.data.comment, this.data.FBid).then(res => {
-            if (res.statusCode === 200 && res.data.Statue === 1) {
-                wx.hideLoading()
-                // wx.showToast({
-                //   title: '发送成功',
-                //   icon: 'none',
-                //   duration: 1000,
-                // })
-                that.setData({
-                    comment: '',
-                })
-                that.update()
-            } else {
-                wx.hideLoading()
-                wx.showToast({
-                  title: '发送失败',
-                  icon: 'error'
-                })
-            }
+        feedback_api.sendFeedbackComment(Sid, this.data.comment, this.data.FBid).then(() => {
+            that.setData({
+                comment: '',
+            })
+            that.update()
         })
     },
 
-    onShow: function (options) {
+    onShow: function () {
         let that = this
         const eventChannel = this.getOpenerEventChannel()
         eventChannel.on('acceptDataFromOpenerPage', function(data) {
@@ -91,45 +76,18 @@ Page({
     },
     update: function() {
         let that = this
-        wx.showLoading()
-        api.get_feedback_comment(this.data.FBid).then(res => {
-            console.log(res)
-            if (res.statusCode === 200 && res.data.Statue === 1) {
-                let data = res.data.FeedbackList.reverse()
-                for (let i = 0; i < data.length; i++) {
-                    if (!data[i].UserImg) {
-                        data[i].UserImg = this.data.anonymous
-                    }                    
+        feedback_api.getFeedbackComment(this.data.FBid).then(res => {
+            let data = res.FeedbackList.reverse()
+            for (let i = 0; i < data.length; i++) {
+                if (!data[i].UserImg) {
+                    data[i].UserImg = this.data.anonymous
                 }
-                that.setData({
-                    comment_list: data
-                })
-            } else {
-                wx.showToast({
-                    title: '网络错误',
-                    icon: 'none'
-                })
             }
-            wx.hideLoading()
+            that.setData({
+                comment_list: data
+            })
         })
     },
-    // addAgree() {
-    //     let curr = this.data.feedback_data[0].agree
-    //     curr ++
-    //     comment_db.doc(this.data.feedback_data[0]._id).update({
-    //         data: {
-    //             // 表示指示数据库将字段自增 10
-    //             agree: curr
-    //         }
-    //     })
-    //     this.setData({
-    //         isAgree: true
-    //     })
-    //     wx.showToast({
-    //       title: '点赞成功',
-    //       icon: 'success'
-    //     })
-    // },
     onPullDownRefresh: function() {
         this.update()
         wx.stopPullDownRefresh()

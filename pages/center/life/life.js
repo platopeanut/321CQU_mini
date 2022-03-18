@@ -15,7 +15,7 @@ Page({
         let identity= StuInfo['identity']
         let room = StuInfo['room']
 
-        if (identity === '') {
+        if (!identity) {
             wx.showToast({
                 title: '请先绑定学号，统一身份信息',
                 icon: 'none'
@@ -23,7 +23,7 @@ Page({
             return
         }
         if (identity === '本科生') {
-            if (stu_id === '' || uid === '' || uid_pwd === '') {
+            if (!(stu_id && uid && uid_pwd)) {
                 wx.showToast({
                     title: '请先绑定学号，统一身份认证账号及密码',
                     icon: 'none'
@@ -31,7 +31,7 @@ Page({
                 return
             }
         } else if (identity === '研究生') {
-            if (uid === '' || uid_pwd === '') {
+            if (!(uid && uid_pwd)) {
                 wx.showToast({
                     title: '请先绑定统一身份认证账号及密码',
                     icon: 'none'
@@ -40,7 +40,7 @@ Page({
             }
         }
 
-        if (room === '' || room['campus'] === '选择校区' || !room['campus'] || room['building'] === '选择楼栋' || !room['building'] || room['room_id'] === '' || !room['room_id']) {
+        if (!room || room['campus'] === '选择校区' || !room['campus'] || room['building'] === '选择楼栋' || !room['building'] || room['room_id'] === '' || !room['room_id']) {
             wx.showToast({
                 title: '请完善宿舍信息',
                 icon: 'none'

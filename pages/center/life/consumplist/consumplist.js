@@ -14,7 +14,7 @@ Page({
         let uid_pwd = StuInfo['uid_pwd']
         let stu_id= StuInfo['stu_id']
         let identity= StuInfo['identity']
-        if (identity === '') {
+        if (!identity) {
             wx.showToast({
                 title: '请先绑定学号，统一身份信息',
                 icon: 'none'
@@ -22,7 +22,7 @@ Page({
             return
         }
         if (identity === '本科生') {
-            if (stu_id === '' || uid === '' || uid_pwd === '') {
+            if (!(stu_id && uid && uid_pwd)) {
                 wx.showToast({
                     title: '请先绑定学号，统一身份认证账号及密码',
                     icon: 'none'
@@ -30,7 +30,7 @@ Page({
                 return
             }
         } else if (identity === '研究生') {
-            if (uid === '' || uid_pwd === '') {
+            if (!(uid && uid_pwd)) {
                 wx.showToast({
                     title: '请先绑定统一身份认证账号及密码',
                     icon: 'none'

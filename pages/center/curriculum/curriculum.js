@@ -203,7 +203,7 @@ Page({
         let stu_id = StuInfo['stu_id']
         let uid = StuInfo['uid']
         let uid_pwd = StuInfo['uid_pwd']
-        if (stu_id === '' || uid === '' || uid_pwd === '') {
+        if (!(stu_id && uid && uid_pwd)) {
             wx.showToast({
                 title: '请绑定学号，统一身份账号及密码',
                 icon: 'none'

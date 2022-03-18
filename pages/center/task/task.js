@@ -1,4 +1,5 @@
-const api = require('../../../utils/api')
+const task_api = require('./task_api')
+
 Page({
     data: {
         page_list: ['任务', '订阅'],
@@ -38,7 +39,7 @@ Page({
           withSubscriptions: true,
           success: function(res) {
               console.log(res.subscriptionsSetting[grade_id])
-              if (res.subscriptionsSetting[grade_id] == 'accept') {
+              if (res.subscriptionsSetting[grade_id] === 'accept') {
                 subscribe_list[0].isSubscribed = true
               }
               that.setData({
@@ -61,20 +62,21 @@ Page({
     //     this.update()
     // },
     subscribeItem: function(res) {
-        let stu_id = wx.getStorageSync('stu_id')
-        let uid = wx.getStorageSync('uid')
-        let uid_pwd = wx.getStorageSync('uid_pwd')
-        if (stu_id == '' || uid == '' || uid_pwd == '') {
+        let StuInfo = wx.getStorageSync('StuInfo')
+        let stu_id = StuInfo['stu_id']
+        let uid = StuInfo['uid']
+        let uid_pwd = StuInfo['uid_pwd']
+        if (!(stu_id && uid && uid_pwd)) {
             wx.showToast({
-              title: '请完善统一身份认证账号密码，学号信息',
+              title: '请完善统一身份信息',
               icon: 'none'
             })
             return
         }
         let curr_item = res.target.dataset.id
         let that = this
-        if (curr_item == 'grade') {
-            if (wx.getStorageSync('subscribeRecord') == '') {
+        if (curr_item === 'grade') {
+            if (wx.getStorageSync('subscribeRecord') === '') {
                 this.setData({
                     subscribeRecord: false
                 })
@@ -84,45 +86,38 @@ Page({
             wx.requestSubscribeMessage({
               tmplIds: [id,],
               success: function(res) {
-                wx.showLoading()
-                if (res[id] == 'accept') {
+                if (res[id] === 'accept') {
                     wx.login({
                         success: function(res) {
                             // 订阅
-                            api.subscribe(res.code, stu_id, uid, uid_pwd).then(res => {
-                                if (res.data.Statue == 1) {
-                                    that.update()
-                                    wx.hideLoading()
-                                    wx.showToast({
+                            task_api.subscribe(res.code, stu_id, uid, uid_pwd).then(() => {
+                                that.update()
+                                wx.showToast({
                                     title: '订阅成功',
-                                    icon: 'success'
-                                    })
-                                } else {
-                                    wx.hideLoading()
-                                    wx.showToast({
-                                      title: '订阅失败',
-                                      icon: 'error',
-                                    })
-                                }
+                                    icon: 'none'
+                                })
+                            }, () => {
+                                wx.showToast({
+                                    title: '订阅失败',
+                                    icon: 'none',
+                                })
                             })
                         }, 
-                        fail: function(res) {
-                            wx.hideLoading()
+                        fail: () => {
                             wx.showToast({
-                              title: '订阅失败',
-                              icon: 'error'
+                              title: '登陆失败',
+                              icon: 'none'
                             })
                         }
                     })
                 } else {
-                    wx.hideLoading()
                     wx.showToast({
                       title: '订阅失败',
                       icon: 'error'
                     })
                 }
               },
-              fail: function(res) {
+              fail: () => {
                 wx.showToast({
                     title: '订阅失败',
                     icon: 'error'
@@ -137,16 +132,12 @@ Page({
         let task_map = getApp().globalData.task_map
         this.setData({
             task_map: task_map,
-            isEmpty: JSON.stringify(task_map) == '{}'
+            isEmpty: JSON.stringify(task_map) === '{}'
         })
     },
     // 下拉刷新
     onPullDownRefresh: function() {
-        wx.showLoading()
         this.onShow()
-        setTimeout(() => {
-            wx.hideLoading()
-        }, 300)
         wx.stopPullDownRefresh()
     },
 
