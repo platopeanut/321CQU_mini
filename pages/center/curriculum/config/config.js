@@ -180,6 +180,10 @@ Page({
         let WeekDayFormat = e.detail.value.WeekDayFormat
         let PeriodFormat = e.detail.value.PeriodFormat
         let Content = e.detail.value.Content
+        // 支持中文逗号
+        TeachingWeekFormat = TeachingWeekFormat.replaceAll('，', ',')
+        PeriodFormat = PeriodFormat.replaceAll('，', ',')
+
         if (CourseName === '' || TeachingWeekFormat === '' || WeekDayFormat === '' || PeriodFormat === '') {
             wx.showToast({
                 title: '名称，周次，星期，时段不能为空',
@@ -217,21 +221,22 @@ Page({
             })
             return
         }
-        for (const item of curriculum_util.parseFormat(TeachingWeekFormat)) {
+        for (let item of curriculum_util.parseFormat(TeachingWeekFormat)) {
             if (!(item >= 1 && item <= 30)) {
                 wx.showToast({
-                    title: '周次取值为1-30\n注意符号需为英文',
+                    title: '周次取值为1-30',
                     icon: 'none'
                 })
                 return
             }
         }
-        for (const item of curriculum_util.parseFormat(PeriodFormat)) {
+        for (let item of curriculum_util.parseFormat(PeriodFormat)) {
             if (!(item >=1 && item <= 13)) {
                 wx.showToast({
-                    title: '时段取值为1-13\n注意符号需为英文',
+                    title: '时段取值为1-13',
                     icon: 'none'
                 })
+                return
             }
         }
 

@@ -155,11 +155,16 @@ Page({
         let item_list = e.currentTarget.dataset.item
         function teaching_time_helper(n, self=false) {
             if (!self) n.InstructorName = n.InstructorName.replace('-[主讲];', ' ')
-            let time_list = n.PeriodFormat.split('-')
-            if (time_list.length === 1) time_list.push(time_list[0])
-            let start_time = curriculum_util.getTimeFromIndex(time_list[0] - 1)[0]
-            let end_time = curriculum_util.getTimeFromIndex(time_list[1] - 1)[1]
-            n.TeachingTime = start_time + '~' + end_time
+            let time_list = n.PeriodFormat.split(',')
+            n.TeachingTime = ''
+            time_list.forEach((item, idx) => {
+                if (idx !== 0) n.TeachingTime += ', '
+                let time = item.split('-')
+                if (time.length === 1) time.push(time[0])
+                let start_time = curriculum_util.getTimeFromIndex(time[0] - 1)[0]
+                let end_time = curriculum_util.getTimeFromIndex(time[1] - 1)[1]
+                n.TeachingTime += start_time + '~' + end_time
+            })
             return n
         }
         for (let i = 0; i < item_list.length; i++) {
