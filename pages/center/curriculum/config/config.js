@@ -4,6 +4,7 @@ const curriculum_api = require('../curriculum_api')
 Page({
 
     data: {
+        StuInfo: null,
         SelfSchedule: [],
         Priority: [],
         edit_mode: false,
@@ -11,12 +12,14 @@ Page({
     },
 
     onShow: function() {
+        let StuInfo = wx.getStorageSync('StuInfo')
         let Curriculum = wx.getStorageSync('Curriculum')
         let SelfSchedule = Curriculum['SelfSchedule']
         let Priority = Curriculum['Priority']
         if (!SelfSchedule) SelfSchedule = []
         if (!Priority) Priority = []
         this.setData({
+            StuInfo: StuInfo,
             SelfSchedule: SelfSchedule,
             Priority: Priority
         })
@@ -61,11 +64,25 @@ Page({
     },
 
     addNewItem: function () {
+        if (!this.data.StuInfo['stu_id']) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
         this.setData({
             edit_mode: true
         })
     },
     backup2Cloud: function () {
+        if (!this.data.StuInfo['stu_id']) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
         let Curriculum = wx.getStorageSync('Curriculum')
         let SelfSchedule = Curriculum['SelfSchedule']
         if (!SelfSchedule) SelfSchedule = []
@@ -82,14 +99,14 @@ Page({
         }
         wx.login({
             success: res => {
-                curriculum_api.pushSelfSchedule(res.code, events).then(res => {
+                curriculum_api.pushSelfSchedule(res.code, events).then(() => {
                     wx.showToast({
                         title: '备份成功',
                         icon: 'none'
                     })
                 })
             },
-            fail: err => {
+            fail: () => {
                 wx.showToast({
                     title: '登陆失败,请重新授权后重试',
                     icon: 'none'
@@ -98,6 +115,13 @@ Page({
         })
     },
     sync2Local: function () {
+        if (!this.data.StuInfo['stu_id']) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
         wx.login({
             success: res => {
                 curriculum_api.pullSelfSchedule(res.code).then(res => {
@@ -127,7 +151,7 @@ Page({
                     })
                 })
             },
-            fail: err => {
+            fail: () => {
                 wx.showToast({
                     title: '登陆失败,请重新授权后重试',
                     icon: 'none'
@@ -237,7 +261,7 @@ Page({
             icon: 'none'
         })
     },
-    formCancel: function (e) {
+    formCancel: function () {
         this.setData({
             edit_mode: false
         })
