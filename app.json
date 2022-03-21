@@ -21,7 +21,8 @@
     "pages/center/square/square",
     "pages/center/square/detail/detail",
     "pages/center/square/edit/edit",
-    "pages/center/library/library"
+    "pages/center/library/library",
+    "pages/center/empty_classroom/empty_classroom"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -43,6 +43,7 @@
   <view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action">
     <text class="cuIcon-title text-green"></text>基础信息
+      <text class="padding-left text-blue text-bold">{{StuInfo.authority==='normal'?'':StuInfo.authority}}</text>
   </view>
   </view>
 

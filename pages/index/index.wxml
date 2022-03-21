@@ -1,31 +1,31 @@
-<view style="background-color: white;">
+<view>
 
     <view style="height: 400rpx;width: 750rpx;border-bottom: 0rpx solid rgb(143, 136, 136);">
         <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
             <swiper-item wx:for="{{swiperList}}" wx:key>
                 <image wx:if="{{item.url}}" src="{{item.url}}" mode="aspectFill"></image>
-                <view class="padding-lg bg-white radius shadow shadow-lg margin-top" wx:else>
-                    <text class="text-black text-bold" style="text-align: center;width: 100%;">v1.10.0版本公告:</text>
-                    <view class="text-left" style="margin-top: 5rpx;">1.支持<text class="text-red">自定义课表</text>，进入课表页面长按空白区域即可进入配置页面</view>
-                    <view class="text-left" style="margin-top: 5rpx;">2.支持自定义课表<text class="text-red">云存储</text>，进入课表配置界面即可查看详情</view>
-                    <view class="text-left" style="margin-top: 5rpx;">3.支持提高冲突课程优先级，点击冲突课程详情页面长按即可<text class="text-red">提升显示优先级</text></view>
-                </view>
+<!--                <view class="padding-lg bg-white radius shadow shadow-lg margin-top" style="height:100%" wx:else>-->
+<!--                    <text class="text-black text-bold" style="text-align: center;width: 100%;">v2.0版本公告:</text>-->
+<!--&lt;!&ndash;                    <view class="text-left" style="margin-top: 5rpx;">1.支持<text class="text-red">自定义课表</text>进入课表页面长按空白区域即可进入配置页面</view>&ndash;&gt;-->
+<!--                </view>-->
             </swiper-item>
         </swiper>
     </view>
 
-    <view class="solids-bottom padding-xs flex align-center" style="background-color: white;" bindtap="jumpToCurriculum">
-        <view class="flex-sub text-center">
-        <view class="solid-bottom text-xl padding">
-            <text text-gray text-bold>
-                {{curriculum_info}}
-            </text>
-        </view>
-        <view class="padding">{{today_info}}</view>
+    <view>
+        <view class="solids-bottom padding-xs flex align-center" style="background-color: white;" bindtap="jumpToCurriculum">
+            <view class="flex-sub text-center">
+                <view class="solid-bottom text-xl padding">
+                    <text>
+                        {{curriculum_info}}
+                    </text>
+                </view>
+                <view class="padding"><text class="cuIcon-calendar text-blue margin-right"></text>{{today_info}}</view>
+            </view>
         </view>
     </view>
 
-    <view class="bg-img padding-bottom-xl " style="background-image:url('https://www.zhulegend.com/media/background.jpg');">
+    <view class="bg-img padding-bottom-xl " style="background-image:url({{IndexImgUrl}});">
     <view class=" padding" style="opacity: 0.8">
         <view class="cu-list grid col-{{gridCol}} border">
             <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">

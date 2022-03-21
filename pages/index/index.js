@@ -1,5 +1,6 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
+const util = require('../../utils/util');
 
 Page({
 
@@ -7,14 +8,15 @@ Page({
         today_info: '',
         curriculum_info: '',
         gridCol: 2,
-        swiperList: [{url:false}],
+        // swiperList: [{url:false}],
+        swiperList: [],
         iconList: [
-            {
-                title: '反馈',
-                path: 'feedback',
-                color: 'green',
-                icon: 'comment'
-            },
+            // {
+            //     title: '反馈',
+            //     path: 'feedback',
+            //     color: 'green',
+            //     icon: 'comment'
+            // },
             {
                 title: '支持我们',
                 path: 'sponsor',
@@ -75,13 +77,30 @@ Page({
                 color: 'green',
                 icon: 'read'
             },
+            {
+                title: '空教室',
+                path: 'empty_classroom',
+                color: 'red',
+                icon: 'location'
+            },
         ],
         url: 'https://www.zhulegend.com',
+        // IndexImgUrl: wx.getStorageSync('IndexImgUrl')
+        IndexImgUrl: 'https://www.zhulegend.com/media/background.jpg'
     },
 
     onShow: function () {
         // 加载首页课程信息
         this.LoadCurriculumInfo()
+        // 加载首页背景图片
+        // let IndexImgUrl = wx.getStorageSync('IndexImgUrl')
+        // if (IndexImgUrl === '') {
+        //     util.saveImg('https://www.zhulegend.com/media/background.jpg', 'IndexImgUrl')
+        // } else {
+        //     this.setData({
+        //         IndexImgUrl: IndexImgUrl
+        //     })
+        // }
     },
 
     LoadSwiperImg: function () {
@@ -94,7 +113,8 @@ Page({
                 HomePage['PictureUrls'] = res.PictureUrls
                 wx.setStorageSync('HomePage', HomePage)
             }
-            let swiperList = [{url: false}]
+            // let swiperList = [{url: false}]
+            let swiperList = []
             for (const url of HomePage['PictureUrls']) {
                 swiperList.push({url: that.data.url + url})
             }

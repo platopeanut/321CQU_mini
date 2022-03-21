@@ -6,7 +6,15 @@ Page({
         mode: false,
         UserInfo: wx.getStorageSync('UserInfo'),
         AdCount: wx.getStorageSync('AdCount'),
+        StuInfo: '',
     },
+
+    onShow: function () {
+        this.setData({
+            StuInfo: wx.getStorageSync('StuInfo')
+        })
+    },
+
 
     // 获取广告观看次数
     updateAdTimes: function () {

@@ -157,6 +157,13 @@ Page({
         let StuInfo = wx.getStorageSync('StuInfo')
         let avatarUrl = wx.getStorageSync('UserInfo').avatarUrl
         // avatarUrl不存在则需要重新授权
+        if (StuInfo === '') {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
+            })
+            return
+        }
         if (avatarUrl === '') {
             wx.showToast({
                 title: '需要重新授权',

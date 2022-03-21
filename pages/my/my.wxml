@@ -16,6 +16,7 @@
     <block>
       <image class="userinfo-avatar" src="{{UserInfo.avatarUrl}}" mode="cover"></image>
       <text class="userinfo-nickname">{{UserInfo.nickName}}</text>
+      <view wx:if="{{StuInfo !== ''}}"><text class="text-blue text-bold">{{StuInfo.authority==='normal'?'':StuInfo.authority}}</text></view>
     </block>
   </view>
   </view>

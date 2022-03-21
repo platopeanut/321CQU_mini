@@ -1,0 +1,98 @@
+<!--pages/center/empty_classroom/empty_classroom.wxml-->
+
+
+
+<scroll-view scroll-x class=" nav text-center text-black text-bold bg-white" >
+    <view class = "wordsize">
+  <view class="cu-item {{campus_idx==CampusCur?'text-red cur':''}} " wx:for="{{campus_list}}" wx:for-index="campus_idx" wx:key bindtap="campus_Select" data-id="{{campus_idx}}">
+    {{item}}
+  </view>
+    </view>
+</scroll-view>
+
+<!-- 虎溪 -->
+<view wx:if="{{CampusCur==0}}">
+    <scroll-view scroll-x class="bg-white nav text-center text-black text-bold" style="background-color:   rgb(239, 254, 255);">
+        <view class = "wordsize">
+        <view class="cu-item {{building_idx==BuildingCur?'text-red cur':''}} " wx:for="{{building_list_huxi}}" wx:for-index="building_idx" wx:key bindtap="building_Select" data-id="{{building_idx}}">
+            {{item}}
+        </view>
+        </view>
+    </scroll-view>
+</view>
+<!-- A区 -->
+<view wx:if="{{CampusCur==1}}">
+    <scroll-view scroll-x class="bg-white nav text-center text-black text-bold" style="background-color:  rgb(239, 254, 255);">
+        <view class = "wordsize">
+        <view class="cu-item {{building_idx==BuildingCur?'text-red cur':''}} " wx:for="{{building_list_A}}" wx:for-index="building_idx" wx:key bindtap="building_Select" data-id="{{building_idx}}">
+            {{item}}
+        </view>
+        </view>
+    </scroll-view>
+</view>
+<!-- B区 -->
+<view wx:if="{{CampusCur==2}}">
+    <scroll-view scroll-x class="bg-white nav text-center text-black text-bold" style="background-color: rgb(239, 254, 255);">
+        <view class = "wordsize">
+        <view class="cu-item {{building_idx==BuildingCur?'text-red cur':''}} " wx:for="{{building_list_B}}" wx:for-index="building_idx" wx:key bindtap="building_Select" data-id="{{building_idx}}">
+            {{item}}
+        </view>
+        </view>
+    </scroll-view>
+</view>
+<!-- 周次 -->
+<view class = "bottom padding text-center text-black text-bold bg-white" >
+  <view style="width: 90%;display: inline-block;">
+  <view class = "wordsize">
+    <view bindtap="preWeek" style="display: inline-block;width: 150rpx;"><text class="cuIcon-back " ></text>
+    </view>
+    <text >目前学期第 {{week<10?'0'+week:week}} 周，{{(month+1)<10?''+(month+1):month+1}}月</text>
+    <view bindtap="nextWeek" style="display: inline-block;width: 150rpx;"><text class="cuIcon-right"></text>
+    </view>
+    </view>
+  </view>
+</view>
+
+<scroll-view scroll-x class="bg-white nav text-center text-black text-bold" style="background-color:  rgb(239, 254, 255);">
+  <view style="font-size: 25rpx">
+    <view class="cu-item {{date_idx==dateCur?'text-red cur':''}} " wx:for="{{week_list}}" wx:for-index="date_idx" wx:key bindtap="date_Select" data-id="{{date_idx}}">{{item[0]}}
+    </view>
+  </view>
+</scroll-view>
+<scroll-view scroll-x class="nav text-center text-black text-bold bg-white" >
+<view style="font-size: 25rpx">
+    <view class="cu-item {{date_idx==dateCur?'text-red cur':''}} " wx:for="{{week_list}}" wx:for-index="date_idx" wx:key bindtap="date_Select" data-id="{{date_idx}}">{{item[1]<10?'0'+item[1]:item[1]}}号
+    </view>
+</view>
+</scroll-view>
+
+
+<!-- 左侧时间栏 -->
+<view class="VerticalBox">
+  <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}" style="height:calc(100vh)">
+    <view class="cu-item text-bold" >时间段</view>
+    <view class="cu-item {{time_idx==TabTimeCur?'text-pink cur':''}} " wx:for="{{time_list}}" wx:for-index="time_idx" wx:key bindtap='time_Select' data-id="{{time_idx}}">
+      {{item.time}}
+    </view>
+    
+  </scroll-view>
+<!-- 右侧主模块 -->
+
+  <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh)" scroll-into-view="main-{{MainTimeCur}}" bindscroll="VerticalMain">
+    <view class="padding-top padding-lr  " wx:for="{{time_list}}" wx:key id="main-{{index}}">
+      <view class='cu-bar solids bg-white '>
+
+        <view class='action '>
+          <text class='cuIcon-title text-green'></text> {{item.time}} </view>
+        </view>
+
+      <view class="padding bg-white">
+        <view wx:for="{{item.room_list}}" style="display: inline-block;margin-left: 30rpx;" wx:key wx:for-item="room">
+            <text class="cu-tag line-blue text-bold padding" style="font-size: 25rpx;width: 110rpx;">{{room}}</text>
+        </view>
+      </view>
+ 
+
+    </view>
+  </scroll-view>
+</view>

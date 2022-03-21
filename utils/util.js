@@ -135,6 +135,25 @@ function shuffle(arr){
     return arr
 }
 
+function saveImg(url, img_name) {
+    wx.downloadFile({
+        url: url,
+        success: res => {
+            if (res.statusCode === 200) {
+                console.log(res.tempFilePath)
+                const fs = wx.getFileSystemManager()
+                fs.saveFile({
+                    tempFilePath: res.tempFilePath,
+                    success: res => {
+                        console.log(res.savedFilePath)
+                        wx.setStorageSync(img_name, res.savedFilePath)
+                    }
+                })
+            }
+        }
+    })
+}
+
 
 // function parseFormat2Lesson(str) {
 //     let list = str.split('-')
@@ -157,4 +176,5 @@ module.exports = {
     daysDistance2,
     showError,
     shuffle,
+    saveImg,
 }

@@ -31,6 +31,7 @@ function getCurrWeek(StartDate) {
 // 获取当前周数
 function getCurrWeekIndex() {
     let Curriculum = wx.getStorageSync('Curriculum')
+    if (Curriculum === '') return -1
     let CurrTerm = Curriculum['CurrTerm']
     let CurrTermInfo = Curriculum[CurrTerm]['TermInfo']
     return getCurrWeek(CurrTermInfo.StartDate)

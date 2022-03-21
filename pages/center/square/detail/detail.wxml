@@ -55,6 +55,8 @@
         </view>
     </view>
 
+    <!--占位    -->
+    <view style="width:100%;height:100rpx;"></view>
     <!--发送评论-->
     <view class="cu-bar foot input {{InputBottom!==0?'cur':''}}" style="bottom:{{InputBottom}}px">
         <input class="solid-bottom" bindfocus="InputFocus" value="{{comment}}" bindinput="InputValue" bindblur="InputBlur" adjust-position="{{false}}" focus="{{false}}" maxlength="1000" cursor-spacing="10"></input>

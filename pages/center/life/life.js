@@ -45,7 +45,7 @@ Page({
                 title: '请完善宿舍信息',
                 icon: 'none'
             })
-            
+            return
         }
         let is_hu_xi = room['campus'].startsWith("虎溪")
         let room_code
@@ -94,11 +94,13 @@ Page({
                 title: '下拉刷新更新数据',
                 icon: 'none'
             })
+            return
         }
+        this.updateData()
     },
 
     onPullDownRefresh: function() {
-        this.updateData()
         wx.stopPullDownRefresh()
+        this.updateData()
     },
 })

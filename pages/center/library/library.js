@@ -78,10 +78,10 @@ Page({
             that.setData({
                 curr_borrow_list: res.BookList
             })
-            wx.showToast({
-                title: '当前借阅查询成功',
-                icon: 'none'
-            })
+            // wx.showToast({
+            //     title: '当前借阅查询成功',
+            //     icon: 'none'
+            // })
             return library_api.getBorrowInfo(that.data.uid, that.data.uid_pwd, false)
         }).then(res => {
             // 获取历史
@@ -92,7 +92,7 @@ Page({
                 history_borrow_list: res.BookList
             })
             wx.showToast({
-                title: '历史借阅查询成功',
+                title: '查询成功',
                 icon: 'none'
             })
         })
@@ -100,14 +100,19 @@ Page({
 
     longPressOperation: function (e) {
         let that = this
-        wx.vibrateShort()
+        wx.vibrateShort({
+            type: 'heavy'
+        })
         let book_id = e.currentTarget.dataset.id
         wx.showActionSheet({
             itemList: ['续借'],
             success: res => {
                 if (res.tapIndex === 0) {
                     library_api.renewBook(that.data.uid, that.data.uid_pwd, book_id).then(res => {
-                        console.log(e)
+                        wx.showToast({
+                            title: '续借成功',
+                            icon: 'none'
+                        })
                     })
                 }
             }
