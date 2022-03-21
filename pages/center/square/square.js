@@ -44,7 +44,7 @@ Page({
             post_list: {},
         })
         console.log(this.data)
-        this.updateData(0)
+        this.updateData(0, 10, false)
     },
 
     selectPart: function (res) {
@@ -52,7 +52,7 @@ Page({
             curr_type: res.currentTarget.dataset.type
         })
         if (this.data.post_flag_list[square_util.getIndexByType(this.data.curr_type)] === 1) {
-            this.updateData(0)
+            this.updateData(0, 10, false)
             console.log('init update ' + this.data.curr_type)
         }
     },
@@ -116,10 +116,10 @@ Page({
         }
     },
 
-    updateData: function (start, batch=10) {
+    updateData: function (start, batch=10, loading=true) {
         let that = this
         let post_list = this.data.post_list
-        square_api.getPostList(`${start},${batch}`, that.data.curr_type).then(res => {
+        square_api.getPostList(`${start},${batch}`, that.data.curr_type, loading).then(res => {
             console.log(res)
             if (!post_list[that.data.curr_type]) post_list[that.data.curr_type] = []
             for (let i = 0; i < res.PostList.length; i++) {

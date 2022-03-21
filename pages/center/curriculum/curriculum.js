@@ -42,7 +42,7 @@ Page({
             curr_month: new Date().getMonth(),
             month: new Date().getMonth(),
             today: new Date().getDay(),
-            week_list: that.getCurrWeekList(),
+            week_list: curriculum_util.getCurrWeekList(),
         })
         this.buildTable()
         this.setData({
@@ -82,43 +82,14 @@ Page({
         return index * 130 + _time_sub*130/45
     },
 
-    getCurrWeekList() {
-        let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
-        let day_list = []
-        let curDate = new Date()
-        let week_index = curDate.getDay()   // 周几
-        if (week_index===0) week_index = 7
-        for (let i = week_index-1; i >=0; i--) {
-            day_list.push(new Date(curDate.getTime() - 24*60*60*1000*i).getDate())
-        }
-        for (let i = 0; i < 7-week_index; i++) {
-            day_list.push(new Date(curDate.getTime() + 24*60*60*1000*(i+1)).getDate())
-        }
-        for (let i = 0; i < week_list.length; i++) {
-            week_list[i].push(day_list[i])
-        }
-        return week_list
-    },
 
     // -1 为指定日期上一周， 1 为指定日期下一周
     getNeighborDayList(date, flag) {
-        let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
-        let day_list = []
-        let week_index = date.getDay()   // 周几
-        if (week_index === 0) week_index = 7
-        let _date = new Date(date.getTime() + 24*60*60*1000*7*flag)
-        for (let i = week_index-1; i >=0; i--) {
-            day_list.push(new Date(_date.getTime() - 24*60*60*1000*i).getDate())
-        }
-        for (let i = 0; i < 7-week_index; i++) {
-            day_list.push(new Date(_date.getTime() + 24*60*60*1000*(i+1)).getDate())
-        }
-        for (let i = 0; i < week_list.length; i++) {
-            week_list[i].push(day_list[i])
-        }
+        let result = curriculum_util.getNeighborDayList(date, flag)
+        let week_list = result['week_list']
         this.setData({
-            month: _date.getMonth(),
-            year: _date.getFullYear()
+            month: result['month'],
+            year: result['year']
         })
         return week_list
     },

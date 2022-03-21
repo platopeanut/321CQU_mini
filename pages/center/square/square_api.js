@@ -4,7 +4,7 @@ const api = require('../../../utils/api')
  *  信息广场
  */
 // 获取帖子列表
-function getPostList(limit, type='all') {
+function getPostList(limit, type='all', loading=true) {
     let header = {
         url: '/forum/get_post_list',
         data: {
@@ -13,7 +13,7 @@ function getPostList(limit, type='all') {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, loading)
     })
 }
 // 获取帖子详情
