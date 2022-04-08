@@ -1,5 +1,5 @@
 <view>
-    <view class="cu-list grid col-{{gridCol}} border">
+    <view class="cu-list grid col-{{3}} border">
         <view class="cu-item {{item.type === curr_type?'text-bold':''}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">
             <view class="cuIcon-{{item.icon}} text-{{item.color}}">
             </view>
@@ -24,12 +24,12 @@
                             </view>
                         </view>
                         <view wx:if="{{item.Authority!=='normal'}}">
-                            <view class="cu-capsule radius margin-right">
-                                <view class="cu-tag bg-gradual-orange">{{item.Authority}}</view>
+                            <view class="cu-capsule margin-right">
+                                <view class="cu-tag bg-gradual-orange">管理员</view>
                             </view>
                         </view>
                         <view class="action" wx:if="{{curr_type === 'all'}}">
-                            <view class="cu-capsule radius margin-right">
+                            <view class="cu-capsule margin-right">
                                 <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
                             </view>
                         </view>

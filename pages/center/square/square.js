@@ -4,7 +4,6 @@ const square_util = require('./square_util')
 Page({
 
     data: {
-        gridCol: 5,
         categories: square_util.categories,
         curr_type: 'all',
         stu_id: null,
@@ -84,7 +83,7 @@ Page({
                         })
                     } else if (res.tapIndex === 1) {
                         // 删除
-                        square_api.deletePost(item.Pid, that.data.stu_id).then(res => {
+                        square_api.deletePost(item.Pid, that.data.stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'
@@ -101,7 +100,7 @@ Page({
                 success: res => {
                     if (res.tapIndex === 0) {
                         // 删除
-                        square_api.deletePost(item.Pid, that.data.stu_id).then(res => {
+                        square_api.deletePost(item.Pid, that.data.stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'

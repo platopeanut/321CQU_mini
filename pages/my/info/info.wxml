@@ -11,7 +11,7 @@
     </view>
     <view class="padding bg-white">
         <view class="text-left text-gray" style="margin-top: 5rpx;">
-            1.开启后，小程序每次启动时当检查到用户绑定信息缺失（小程序更新，手机缓存清理等造成）时自动填充缺失信息
+            1.开启后，每次点击<text class="text-bold">重新授权</text>时当检查到用户绑定信息缺失（小程序更新，手机缓存清理等造成）时自动填充缺失信息
         </view>
         <view class="text-left text-gray" style="margin-top: 5rpx;">
             2.取消后，服务器会自动删除对应用户信息

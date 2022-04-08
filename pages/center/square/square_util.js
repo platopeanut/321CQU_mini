@@ -5,12 +5,6 @@ const categories = [
         color: 'red',
         type: 'all'
     },
-    // {
-    //     title: '拼车',
-    //     icon: 'ticket',
-    //     color: 'red',
-    //     type: 'PC'
-    // },
     {
         title: '课程',
         icon: 'form',
@@ -30,27 +24,29 @@ const categories = [
         type: 'SD',
     },
     {
+        title: '音乐',
+        color: 'pink',
+        icon: 'musicfill',
+        type: 'YL',
+    },
+    {
         title: '反馈',
         color: 'green',
         icon: 'comment',
         type: 'FK',
     },
 ]
-const type_list = ['all', 'KC', 'SW', 'SD', 'FK']
-const Type2Name = {
-    // 'PC': '拼车',
-    'KC': '课程',
-    'SW': '失物',
-    'SD': '树洞',
-    'FK': '反馈',
-}
-const Name2Type = {
-    // '拼车': 'PC',
-    '课程': 'KC',
-    '失物': 'SW',
-    '树洞': 'SD',
-    '反馈': 'FK',
-}
+
+const type_list = [];
+const Type2Name = {};
+const Name2Type = {};
+(function(){
+    for (const category of categories) {
+        type_list.push(category.type)
+        Type2Name[category.type] = category.title
+        Name2Type[category.title] = category.type
+    }
+})()
 
 function getIndexByType(type) {
     for (let i = 0; i < type_list.length; i++) {
@@ -63,9 +59,9 @@ function getNameByType(type) {
     return Type2Name[type]
 }
 
-function getTypeByName(name) {
-    return Name2Type[name]
-}
+// function getTypeByName(name) {
+//     return Name2Type[name]
+// }
 
 function getColorByType(type) {
     for (const category of categories) {
@@ -78,7 +74,6 @@ module.exports = {
     categories,
     type_list,
     getNameByType,
-    getTypeByName,
     getIndexByType,
     getColorByType,
 }

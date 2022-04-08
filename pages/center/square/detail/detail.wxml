@@ -15,12 +15,12 @@
                         </view>
                     </view>
                     <view wx:if="{{item.Authority!=='normal'}}">
-                        <view class="cu-capsule radius margin-right">
-                            <view class="cu-tag bg-gradual-orange">{{item.Authority}}</view>
+                        <view class="cu-capsule margin-right">
+                            <view class="cu-tag bg-gradual-orange">管理员</view>
                         </view>
                     </view>
                     <view class="action">
-                        <view class="cu-capsule radius margin-right">
+                        <view class="cu-capsule margin-right">
                             <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
                         </view>
                     </view>
