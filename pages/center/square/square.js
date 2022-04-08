@@ -43,7 +43,6 @@ Page({
             post_flag_list: post_flag_list,
             post_list: {},
         })
-        console.log(this.data)
         this.updateData(0, 10, false)
     },
 
@@ -53,7 +52,6 @@ Page({
         })
         if (this.data.post_flag_list[square_util.getIndexByType(this.data.curr_type)] === 1) {
             this.updateData(0, 10, false)
-            console.log('init update ' + this.data.curr_type)
         }
     },
 
@@ -120,12 +118,12 @@ Page({
         let that = this
         let post_list = this.data.post_list
         square_api.getPostList(`${start},${batch}`, that.data.curr_type, loading).then(res => {
-            console.log(res)
             if (!post_list[that.data.curr_type]) post_list[that.data.curr_type] = []
             for (let i = 0; i < res.PostList.length; i++) {
                 if (res.PostList[i]['Content'].length >= 45) {
                     res.PostList[i]['Content'] = res.PostList[i]['Content'].slice(0, 45) + '...'
                 }
+                res.PostList[i]['Color'] = square_util.getColorByType(res.PostList[i]['Type'])
                 res.PostList[i]['Type'] = square_util.getNameByType(res.PostList[i]['Type'])
                 post_list[that.data.curr_type].push(res.PostList[i])
             }
@@ -145,7 +143,6 @@ Page({
                 post_flag_list: post_flag_list,
                 post_index_list: post_index_list
             })
-            console.log(that.data)
         })
     },
 
@@ -171,7 +168,6 @@ Page({
     },
 
     onReachBottom: function() {
-        console.log('bottom')
         let post_index_list = this.data.post_index_list
         let post_flag_list = this.data.post_flag_list
         let index = square_util.getIndexByType(this.data.curr_type)

@@ -14,9 +14,14 @@
                             {{item.UpdateDate}}
                         </view>
                     </view>
+                    <view wx:if="{{item.Authority!=='normal'}}">
+                        <view class="cu-capsule radius margin-right">
+                            <view class="cu-tag bg-gradual-orange">{{item.Authority}}</view>
+                        </view>
+                    </view>
                     <view class="action">
                         <view class="cu-capsule radius margin-right">
-                            <view class="cu-tag bg-cyan">{{item.Type}}</view>
+                            <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
                         </view>
                     </view>
                 </view>

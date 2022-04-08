@@ -53,6 +53,7 @@ function getTime() {
 }
 // 比较两个日期的先后传入date1，date2，返回-1，0，1表示date1-date2
 function compareDate(date1, date2) {
+    console.log(date1, date2)
     if (date1.year > date2.year) return 1
     else if (date1.year < date2.year) return -1
     else {
@@ -108,7 +109,7 @@ function daysDistance(date1,date2){
     if (startDate===endDate){
         return 1;
     }
-    return  (endDate - startDate) / (24 * 60 * 60 * 1000);
+    return  ((endDate - startDate) / (24 * 60 * 60 * 1000)).toFixed(1);
 }
 function daysDistance2(date1,date2){
     let startDate = Date.parse(date1);

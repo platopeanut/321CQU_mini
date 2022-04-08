@@ -35,7 +35,9 @@
                         <text class="cuIcon-title text-green"></text>
                         <text class="text-black">考试地点：{{item.RoomName}}</text>
                         <text class="text-black" style="margin-left: 50rpx;">座位号：{{item.SeatNum}}</text>
-                        <text style="margin-left: 50rpx;font-weight: bold;font-size: large;color: {{item.distance>10?'green':(item.distance>5?'#B4F200':(item.distance>3?'orange':'red'))}};">{{item.distance}}</text>
+                    </view>
+                    <view class="action">
+                        <text style="font-weight: bold;font-size: 40rpx;color: {{item.distance>10?'green':(item.distance>5?'#B4F200':(item.distance>3?'orange':'red'))}};">{{item.distance}}</text>
                         <text class="text-black" style="margin-left: 10rpx;">天后</text>
                     </view>
                 </view>

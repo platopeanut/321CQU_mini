@@ -1,7 +1,6 @@
 const volunteer_api = require('./volunteer_api')
 Page({
     data: {
-        stu_name: '',
         stu_id: '',
         email: '',
         result: [], 
@@ -13,11 +12,10 @@ Page({
     onShow() {
         let StuInfo = wx.getStorageSync('StuInfo')
         this.setData({
-            stu_name: StuInfo['stu_name'],
             stu_id: StuInfo['stu_id'],
             email: StuInfo['email'],
         })
-        if (!(this.data.stu_id && this.data.stu_name)) {
+        if (!this.data.stu_id) {
             wx.showToast({
                 title: '请完善统一身份认证信息',
                 icon: 'none'
@@ -124,8 +122,7 @@ Page({
     updateData() {
         let that = this
         let stu_id = this.data.stu_id
-        let stu_name = this.data.stu_name
-        if (!(stu_id && stu_name)) {
+        if (!stu_id) {
             wx.showToast({
                 title: '请完善统一身份信息！',
                 icon: 'none'
@@ -144,7 +141,7 @@ Page({
         })
     },
     onPullDownRefresh() {
-        if (!(this.data.stu_id && this.data.stu_name)) {
+        if (!this.data.stu_id) {
             wx.showToast({
                 title: '请完善统一身份认证信息',
                 icon: 'none'
@@ -153,26 +150,5 @@ Page({
             this.updateData()
         }
         wx.stopPullDownRefresh()
-    },
-
-    // formSubmit(e) {
-    //     let global = this
-    //     let stu_name = e.detail.value.stu_name
-    //     let stu_id = e.detail.value.stu_id
-    //     // 保存到页面
-    //     this.setData({
-    //         stu_name: stu_name,
-    //         stu_id: stu_id,
-    //         // email: email
-    //     })
-    //     this.updateData()
-    // },
-    // formReset(e) {
-    //     this.setData({
-    //         result: [],
-    //         time_sum: 0,
-    //         stu_name: '',
-    //         stu_id: '',
-    //     });
-    // },
+    }
 })

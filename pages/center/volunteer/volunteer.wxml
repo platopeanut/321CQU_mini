@@ -19,7 +19,7 @@
 <view class="cu-bar bg-white solid-bottom margin-top">
     <view class="action">
         <text class="cuIcon-title text-orange text-bold"></text>
-        <text>亲爱的<text class="text-bold">{{stu_name?stu_name:'unknown'}}</text>同学</text>
+        <text>亲爱的<text class="text-bold">{{stu_id?stu_id:'unknown'}}</text>同学</text>
     </view>
 </view>
 <view class="cu-bar bg-white solid-bottom margin-top">

@@ -1,4 +1,5 @@
 const info_api = require('./info_api')
+const info_util = require('./info_util')
 const util = require('./info_util')
 
 Page({
@@ -10,12 +11,18 @@ Page({
             'building': '选择楼栋',
             'room_id': ''
         },
-
         dormitory: [],
         dormitory_index: [],
+        AutoFill: null,
     },
 
     onShow: function() {
+        let AutoFill = wx.getStorageSync('AutoFill')
+        if (AutoFill === '') AutoFill = false
+        this.setData({
+            AutoFill: AutoFill
+        })
+
         let StuInfo = wx.getStorageSync('StuInfo')
         if (StuInfo !== '') {
             this.setData({
@@ -183,5 +190,74 @@ Page({
                 icon: 'none'
             })
         })
+    },
+    bindAutoFill: function (e) {
+        let that = this
+        let flag = e.detail.value
+        let StuInfo = wx.getStorageSync('StuInfo')
+        if (!StuInfo) {
+            wx.showToast({
+                title: '请先完善统一身份信息',
+                icon: 'none'
+            })
+            setTimeout(()=>{
+                that.setData({
+                    AutoFill: false
+                })
+            }, 200)
+            return
+        }
+        let stu_id = StuInfo['stu_id']
+        let uid = StuInfo['uid']
+        let uid_pwd = StuInfo['uid_pwd']
+        let email = StuInfo['email']
+        let identity = StuInfo['identity']
+        let dormitory = info_util.packDormitoryInfo(StuInfo['room'])
+
+
+        if (flag) {
+            wx.login({
+                success: res => {
+                    info_api.pushUserInfo(res.code, stu_id, uid, uid_pwd, email, dormitory, identity).then(() => {
+                        wx.showToast({
+                            title: '订阅成功',
+                            icon: 'none'
+                        })
+                        wx.setStorageSync('AutoFill', true)
+                        that.setData({
+                            AutoFill: true
+                        })
+                    })
+                },
+                fail: () => {
+                    wx.showToast({
+                        title: "登陆失败",
+                        icon: 'none'
+                    })
+                }
+            })
+        } else {
+            // 取消订阅
+            wx.login({
+                success: res => {
+                    info_api.deleteUserInfo(res.code).then(()=>{
+                        wx.showToast({
+                            title: '取消成功',
+                            icon: 'none'
+                        })
+                        wx.setStorageSync('AutoFill', false)
+                        that.setData({
+                            AutoFill: false
+                        })
+                    })
+                },
+                fail: () => {
+                    wx.showToast({
+                        title: '登陆失败',
+                        icon: 'none'
+                    })
+                }
+            })
+        }
     }
 })

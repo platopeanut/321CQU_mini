@@ -13,7 +13,7 @@ Page({
     onShow: function() {
         // 从本地缓存中获取数据
         let that = this
-        let exams = wx.getStorageSync('exam_schedule')
+        let exams = wx.getStorageSync('ExamSchedule')
         if (exams === '' || exams.length === 0) {
             that.setData({
                 has_exam: false
@@ -44,12 +44,13 @@ Page({
             if (res.Exams.length === 0) {
                 wx.showToast({
                     title: '暂无考试安排',
-                    icon: 'none'
+                    icon: 'none',
                 })
                 that.setData({
-                    has_exam: false
+                    has_exam: false,
+                    exam_list: [],
+                    exam_list_over: [],
                 })
-                return
             } else {
                 wx.showToast({
                     title: '更新成功',
@@ -57,7 +58,7 @@ Page({
                 })
             }
             that.parseData(res.Exams)
-            wx.setStorageSync('exam_schedule', res.Exams)
+            wx.setStorageSync('ExamSchedule', res.Exams)
         })
     },
 
@@ -67,11 +68,7 @@ Page({
         data.forEach(element => {
             // 计算相距天数
             let curr_date = this.data.curr_date.year + '-' + this.data.curr_date.month + '-' + this.data.curr_date.day
-            let distance = 0;
-            if (util.compareDate(curr_date, element.ExamDate) !== 0) {
-                distance = util.daysDistance(curr_date, element.ExamDate)
-            }
-            element.distance = distance
+            element.distance = util.daysDistance(curr_date, element.ExamDate)
             let exam_date = util.parseDate(element.ExamDate)
             let exam_time = util.parseTime(element.StartTime)
             let over = util.compareDate(this.data.curr_date, exam_date) > 0 ||(util.compareDate(this.data.curr_date, exam_date) === 0 && util.compareTime(this.data.curr_time, exam_time) > 0)
@@ -85,7 +82,7 @@ Page({
     },
 
     onPullDownRefresh: function() {
-        this.updateData()
         wx.stopPullDownRefresh()
+        this.updateData()
     }
 })

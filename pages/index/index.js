@@ -1,6 +1,5 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
-const util = require('../../utils/util');
 
 Page({
 
@@ -86,7 +85,7 @@ Page({
         ],
         url: 'https://www.zhulegend.com',
         // IndexImgUrl: wx.getStorageSync('IndexImgUrl')
-        IndexImgUrl: 'https://www.zhulegend.com/media/background.jpg'
+        IndexImgUrl: 'https://www.zhulegend.com/media/background.jpg',
     },
 
     onShow: function () {
@@ -158,7 +157,7 @@ Page({
         if (AppUse === '') {
             wx.showModal({
                 title: "使用说明",
-                content: "1. 仅适用于重庆大学学生进行志愿者时长查询\n2.所有用户相关数据均在本地存储，我们未通过小程序收集用户个人数据\n3.有什么问题请在反馈中及时反馈"
+                content: "欢迎使用321CQU，您遇到什么问题或有什么建议请及时反馈"
             })
             wx.setStorageSync('AppUse', true)
         }

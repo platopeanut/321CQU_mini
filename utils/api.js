@@ -6,7 +6,7 @@ const util = require("./util")
 const url = 'https://www.zhulegend.com/321CQU'
 const Password = 'CQUz5321'
 
-function request(header, resolve, reject, loading = true) {
+function request(header, resolve, reject, loading = true, show_err = true) {
   if (loading) {wx.showLoading()}
   header['data']['Key'] = Password
   wx.request({
@@ -19,8 +19,10 @@ function request(header, resolve, reject, loading = true) {
         if (res.data.Statue === 1) {
           resolve(res.data)
         } else {
-          util.showError(res)
-          reject(new Error())
+            if (show_err) {
+                util.showError(res)
+            }
+            reject(res.data)
         }
       } else {
         wx.showToast({

@@ -1,5 +1,7 @@
 const api = require('../../utils/api')
 const util = require('../../utils/util')
+const info_util = require("./info/info_util")
+
 Page({
 
     data: {
@@ -54,6 +56,8 @@ Page({
                 })
                 //缓存用户信息
                 wx.setStorageSync("UserInfo",res.userInfo)
+                // 自动填充用户信息
+                info_util.autoFillUserInfo()
             }
         })
     },

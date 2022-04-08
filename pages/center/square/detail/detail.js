@@ -21,6 +21,7 @@ Page({
     updateData: function (pid) {
         let that = this
         square_api.getPostDetail(pid).then(res => {
+            res.PostDetail['Color'] = square_util.getColorByType(res.PostDetail['Type'])
             res.PostDetail['Type'] = square_util.getNameByType(res.PostDetail['Type'])
             that.setData({
                 item: res.PostDetail
