@@ -16,7 +16,8 @@
                     </view>
                     <view wx:if="{{item.Authority!=='normal'}}">
                         <view class="cu-capsule margin-right">
-                            <view class="cu-tag bg-gradual-orange">管理员</view>
+                            <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
+                            <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
                         </view>
                     </view>
                     <view class="action">
@@ -43,7 +44,14 @@
                 <view class="cu-item" wx:for="{{comment_list}}" bindtap="deleteComment" data-item="{{item}}">
                     <view class="cu-avatar round" style="background-image:url({{item.UserImg}});"></view>
                     <view class="content">
-                        <view class="text-grey">{{item.UserName?item.UserName:item.Author}}</view>
+                        <view class="text-grey">{{item.UserName?item.UserName:item.Author}}
+                            <view class="padding" wx:if="{{item.Authority!=='normal'}}">
+                                <view class="cu-capsule margin-right">
+                                    <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
+                                    <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
+                                </view>
+                            </view>
+                        </view>
                         <view class="text-gray text-content text-df">
                             {{item.Content}}
                         </view>
