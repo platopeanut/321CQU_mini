@@ -1,5 +1,6 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
+const util = require("../../utils/util");
 
 Page({
 
@@ -84,43 +85,58 @@ Page({
             },
         ],
         url: 'https://www.zhulegend.com',
-        // IndexImgUrl: wx.getStorageSync('IndexImgUrl')
-        IndexImgUrl: 'https://www.zhulegend.com/media/background.jpg',
+        IndexImgPath: '',
     },
 
     onShow: function () {
         // 加载首页课程信息
         this.LoadCurriculumInfo()
-        // 加载首页背景图片
-        // let IndexImgUrl = wx.getStorageSync('IndexImgUrl')
-        // if (IndexImgUrl === '') {
-        //     util.saveImg('https://www.zhulegend.com/media/background.jpg', 'IndexImgUrl')
-        // } else {
-        //     this.setData({
-        //         IndexImgUrl: IndexImgUrl
-        //     })
-        // }
     },
-
+    loadSwiperList: function (HomePage) {
+        // let swiperList = [{url: false}]
+        let swiperList = []
+        for (const url of HomePage['LocalPaths']) {
+            swiperList.push({url: url})
+        }
+        this.setData({
+            swiperList: swiperList,
+            IndexImgPath: HomePage['IndexImgPath']
+        })
+    },
     LoadSwiperImg: function () {
         let that = this
         let HomePage = wx.getStorageSync('HomePage')
-        api.getHomepageImgDate().then(res=>{
-            if (HomePage['LastUpdate'] !== res.LastUpdate) {
-                HomePage = {}
-                HomePage['LastUpdate'] = res.LastUpdate
-                HomePage['PictureUrls'] = res.PictureUrls
-                wx.setStorageSync('HomePage', HomePage)
-            }
-            // let swiperList = [{url: false}]
-            let swiperList = []
-            for (const url of HomePage['PictureUrls']) {
-                swiperList.push({url: that.data.url + url})
-            }
-            this.setData({
-                swiperList: swiperList
+        // 每天检查一次是否发生更新,或者初始化
+        if (!HomePage || new Date().toDateString() !== HomePage['LastCheck']) {
+            api.getHomepageImgDate().then(res=>{
+                if (!HomePage || HomePage['LastUpdate'] !== res.LastUpdate) {
+                    HomePage = {}
+                    HomePage['LastUpdate'] = res.LastUpdate
+                    HomePage['PictureUrls'] = []
+                    for (const pictureUrl of res.PictureUrls) {
+                        HomePage['PictureUrls'].push(that.data.url + pictureUrl)
+                    }
+                    HomePage['LocalPaths'] = []
+                    util.saveBatchImg(HomePage['PictureUrls']).then(values => {
+                        HomePage['LocalPaths'] = values
+                        wx.setStorageSync('HomePage', HomePage)
+                        that.loadSwiperList(HomePage)
+                    })
+                    // 获取首页背景图
+                    util.saveImg(util.IndexImgUrl).then(res => {
+                        HomePage['IndexImgPath'] = res
+                        wx.setStorageSync('HomePage', HomePage)
+                        that.setData({
+                            IndexImgPath: res
+                        })
+                    })
+                }
             })
-        })
+        }
+        // 加载swiper
+        if (HomePage && HomePage['LocalPaths']) {
+            this.loadSwiperList(HomePage)
+        }
     },
 
     LoadCurriculumInfo: function () {
@@ -164,35 +180,4 @@ Page({
         // 加载首页轮播图片
         this.LoadSwiperImg()
     },
-
-    // saveImg: function (e) {
-    //     wx.downloadFile({
-    //         url: e.target.dataset.url,     //仅为示例，并非真实的资源
-    //         success: function (res) {
-    //             // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
-    //             if (res.statusCode === 200) {
-    //                 wx.saveImageToPhotosAlbum({
-    //                     filePath: res.tempFilePath,
-    //                     success(res) {
-    //                         wx.showToast({
-    //                             title: '已保存',
-    //                             icon: 'none'
-    //                         })
-    //                     },
-    //                     fail(res) {
-    //                         wx.showToast({
-    //                             title: '保存失败',
-    //                             icon: 'none'
-    //                         })
-    //                     }
-    //                 })
-    //             } else {
-    //                 wx.showToast({
-    //                     title: '网络错误',
-    //                     icon: 'none'
-    //                 })
-    //             }
-    //         }
-    //     })
-    // }
 })

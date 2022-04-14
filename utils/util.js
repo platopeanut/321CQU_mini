@@ -26,6 +26,8 @@ function showError(res, prefix='') {
     })
 }
 
+const IndexImgUrl = 'https://www.zhulegend.com/media/background.jpg'
+
 // 获取当前日期
 function getDate() {
     let timestamp = Date.parse(new Date());
@@ -53,7 +55,6 @@ function getTime() {
 }
 // 比较两个日期的先后传入date1，date2，返回-1，0，1表示date1-date2
 function compareDate(date1, date2) {
-    console.log(date1, date2)
     if (date1.year > date2.year) return 1
     else if (date1.year < date2.year) return -1
     else {
@@ -136,19 +137,61 @@ function shuffle(arr){
     return arr
 }
 
-function saveImg(url, img_name) {
+function saveImg(url) {
+    return new Promise((resolve, reject) => {
+        const fs = wx.getFileSystemManager()
+        wx.downloadFile({
+            url: url,
+            success: res => {
+                if (res.statusCode === 200) {
+                    fs.saveFile({
+                        tempFilePath: res.tempFilePath,
+                        success: res => {
+                            resolve(res.savedFilePath)
+                        },
+                        fail: res => {
+                            reject(res.errMsg)
+                        }
+                    })
+                }
+            }
+        })
+    })
+}
+
+function saveBatchImg(urls) {
+    let tasks = []
+    for (const url of urls) {
+        tasks.push(saveImg(url))
+    }
+    return Promise.all(tasks)
+}
+
+// 保存图片至相册
+function saveImgToAlbum(e) {
     wx.downloadFile({
-        url: url,
-        success: res => {
+        url: e.target.dataset.url,
+        success: function (res) {
             if (res.statusCode === 200) {
-                console.log(res.tempFilePath)
-                const fs = wx.getFileSystemManager()
-                fs.saveFile({
-                    tempFilePath: res.tempFilePath,
-                    success: res => {
-                        console.log(res.savedFilePath)
-                        wx.setStorageSync(img_name, res.savedFilePath)
+                wx.saveImageToPhotosAlbum({
+                    filePath: res.tempFilePath,
+                    success(res) {
+                        wx.showToast({
+                            title: '保存成功',
+                            icon: 'none'
+                        })
+                    },
+                    fail(res) {
+                        wx.showToast({
+                            title: '保存失败',
+                            icon: 'none'
+                        })
                     }
+                })
+            } else {
+                wx.showToast({
+                    title: '网络错误' + res.statusCode,
+                    icon: 'none'
                 })
             }
         }
@@ -164,6 +207,7 @@ function saveImg(url, img_name) {
 
 
 module.exports = {
+    IndexImgUrl,
     dormitory,
     dormitory_code,
     getDate,
@@ -178,4 +222,5 @@ module.exports = {
     showError,
     shuffle,
     saveImg,
+    saveBatchImg,
 }
