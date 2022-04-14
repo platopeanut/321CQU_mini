@@ -205,6 +205,11 @@ function saveImgToAlbum(e) {
 //     return [parseInt(list[0]), parseInt(list[1]) - parseInt(list[0]) + 1]
 // }
 
+function changeParentPageOpt(opt) {
+    let pages = getCurrentPages()
+    pages[pages.length - 2].setData(opt)
+}
+
 
 module.exports = {
     IndexImgUrl,
@@ -223,4 +228,5 @@ module.exports = {
     shuffle,
     saveImg,
     saveBatchImg,
+    changeParentPageOpt,
 }

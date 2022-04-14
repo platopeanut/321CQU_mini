@@ -1,5 +1,6 @@
 const square_api = require('../square_api')
 const square_util = require('../square_util')
+const util = require('../../../../utils/util')
 Page({
     data: {
         content: '',
@@ -12,6 +13,9 @@ Page({
     },
 
     onLoad: function (e) {
+        util.changeParentPageOpt({
+            option: 1
+        })
         if (e.content) {
             this.setData({
                 mode: 1
@@ -89,6 +93,11 @@ Page({
                     title : '',
                     content: '',
                 })
+            })
+        }
+        if (this.data.mode === 0 || this.data.mode === 1) {
+            util.changeParentPageOpt({
+                option: 0
             })
         }
     },

@@ -1,5 +1,6 @@
 const square_api = require('./square_api')
 const square_util = require('./square_util')
+const {parserOptions} = require("../../../.eslintrc");
 
 Page({
 
@@ -11,38 +12,41 @@ Page({
         post_list: {},
         post_index_list: null,
         post_flag_list: null,   // 1 --> 第一次刷新 --> 0 --> 没有更多 --> -1
+        option: 0,
     },
 
     onShow: function () {
-        let StuInfo = wx.getStorageSync('StuInfo')
-        let stu_id = StuInfo['stu_id']
-        let authority = StuInfo['authority']
-        this.setData({
-            stu_id: stu_id,
-            authority: authority
-        })
-        if (!(this.data.stu_id && this.data.authority)) {
-            wx.showToast({
-                title: '请绑定统一身份，昵称信息',
-                icon: 'none'
+        if (this.data.option === 0) {
+            let StuInfo = wx.getStorageSync('StuInfo')
+            let stu_id = StuInfo['stu_id']
+            let authority = StuInfo['authority']
+            this.setData({
+                stu_id: stu_id,
+                authority: authority
             })
-            return
+            if (!(this.data.stu_id && this.data.authority)) {
+                wx.showToast({
+                    title: '请绑定统一身份，昵称信息',
+                    icon: 'none'
+                })
+                return
+            }
+            let length = square_util.type_list.length
+            let post_index_list = new Array(length)
+            for (let i = 0; i < post_index_list.length; i++) {
+                post_index_list[i] = 0
+            }
+            let post_flag_list = new Array(length)
+            for (let i = 0; i < post_flag_list.length; i++) {
+                post_flag_list[i] = 1
+            }
+            this.setData({
+                post_index_list: post_index_list,
+                post_flag_list: post_flag_list,
+                post_list: {},
+            })
+            this.updateData(0, 10, false)
         }
-        let length = square_util.type_list.length
-        let post_index_list = new Array(length)
-        for (let i = 0; i < post_index_list.length; i++) {
-            post_index_list[i] = 0
-        }
-        let post_flag_list = new Array(length)
-        for (let i = 0; i < post_flag_list.length; i++) {
-            post_flag_list[i] = 1
-        }
-        this.setData({
-            post_index_list: post_index_list,
-            post_flag_list: post_flag_list,
-            post_list: {},
-        })
-        this.updateData(0, 10, false)
     },
 
     selectPart: function (res) {

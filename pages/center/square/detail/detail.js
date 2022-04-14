@@ -1,5 +1,6 @@
 const square_api = require('../square_api')
 const square_util = require('../square_util')
+const util = require('../../../../utils/util')
 
 Page({
 
@@ -14,6 +15,9 @@ Page({
     onLoad: function (e) {
         this.setData({
             pid: e.pid
+        })
+        util.changeParentPageOpt({
+            option: 1
         })
         this.updateData(e.pid)
     },
@@ -116,6 +120,7 @@ Page({
 
     longPressOperation: function (e) {
         wx.vibrateShort()
+        let that = this
         let item = this.data.item
         let StuInfo = wx.getStorageSync('StuInfo')
         let stu_id = StuInfo['stu_id']
@@ -139,6 +144,7 @@ Page({
                             wx.navigateBack({ delta: 1})
                         })
                     }
+                    that.changeParentPageOpt(res)
                 }
             })
         }
@@ -155,9 +161,16 @@ Page({
                             })
                             wx.navigateBack({ delta: 1})
                         })
-
                     }
+                    that.changeParentPageOpt(res)
                 }
+            })
+        }
+    },
+    changeParentPageOpt(res) {
+        if (res.tapIndex === 0 || res.tapIndex === 1) {
+            util.changeParentPageOpt({
+                option: 0
             })
         }
     }
