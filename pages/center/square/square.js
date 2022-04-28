@@ -121,6 +121,30 @@ Page({
         let that = this
         let post_list = this.data.post_list
         square_api.getPostList(`${start},${batch}`, that.data.curr_type, loading).then(res => {
+            //////////test
+            // if (that.data.curr_type === 'TP') {
+            //     res.PostList = [
+            //         {
+            //             'Content': '你支持321CQU吗',
+            //             'Type': 'TP',
+            //             'Vote': [
+            //                 {
+            //                     title: '支持',
+            //                     color: 'red',
+            //                     value: '64%',
+            //                     num: 64
+            //                 },
+            //                 {
+            //                     title: '反对',
+            //                     color: 'blue',
+            //                     value: '36%',
+            //                     num: 36
+            //                 }
+            //             ]
+            //         }
+            //     ]
+            // }
+            //////////
             if (!post_list[that.data.curr_type]) post_list[that.data.curr_type] = []
             for (let i = 0; i < res.PostList.length; i++) {
                 if (res.PostList[i]['Content'].length >= 45) {

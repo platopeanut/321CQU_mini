@@ -29,6 +29,12 @@ const categories = [
         icon: 'musicfill',
         type: 'YL',
     },
+    // {
+    //     title: '投票',
+    //     color: 'green',
+    //     icon: 'comment',
+    //     type: 'TP',
+    // },
     {
         title: '反馈',
         color: 'green',

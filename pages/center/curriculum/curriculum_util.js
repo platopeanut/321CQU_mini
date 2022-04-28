@@ -265,11 +265,14 @@ function createTable(...list) {
                     for (let i = 0; i < 7; i++) table[teachingWeek][i] = new Array(13)
                 }
                 let weekDay = parseWeekDayFormat(item['WeekDayFormat'])
-                for (const period of parseFormat(item['PeriodFormat'])) {
+                let periodList = parseFormat(item['PeriodFormat'])
+                for (const period of periodList) {
                     if (!table[teachingWeek][weekDay][period-1])
                         table[teachingWeek][weekDay][period-1] = []
                     // 拷贝赋值！！！
-                    table[teachingWeek][weekDay][period-1].push(Object.assign({}, item))
+                    table[teachingWeek][weekDay][period-1].push(Object.assign({
+                        'PeriodLength': periodList.length
+                    }, item))
                 }
             }
         }
@@ -303,7 +306,7 @@ function UIProcess(table) {
             for (let i = 0; i < day.length; i++) {
                 if (day[i]) {
                     let j = i + 1
-                    for (;j < day.length; j++) {
+                    for (;j < day.length && j - i < day[i][0]['PeriodLength']; j++) {
                         if (!day[j] || day[j][0]['CourseCode'] !== day[i][0]['CourseCode']) break
                     }
                     for (let k = i + 1; k < j; k++) {
