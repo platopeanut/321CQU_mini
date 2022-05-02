@@ -1,4 +1,4 @@
-// pages/center/life/bustimeold/bustimeold.js
+// pages/center/life/bustime/bustime.js
 Page({
 
     /**

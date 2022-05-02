@@ -11,6 +11,7 @@
     "pages/center/sponsor/sponsor",
     "pages/my/about/about",
     "pages/my/info/info",
+    "pages/my/guide/guide",
     "pages/center/curriculum/curriculum",
     "pages/center/curriculum/config/config",
     "pages/center/grade/grade",

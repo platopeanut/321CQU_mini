@@ -50,6 +50,12 @@
       </view>
     </view>
     <view class="cu-item arrow">
+      <navigator class="content" url="/pages/my/guide/guide" hover-class="none">
+        <text class="cuIcon-read text-orange"></text>
+        <text class="text-grey">使用教程</text>
+      </navigator>
+    </view>
+    <view class="cu-item arrow">
       <navigator class="content" url="/pages/my/about/about" hover-class="none">
         <text class="cuIcon-formfill text-green"></text>
         <text class="text-grey">关于我们</text>

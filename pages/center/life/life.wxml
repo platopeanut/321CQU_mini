@@ -1,6 +1,6 @@
 <wxs module="filters" src="../../../utils/tool.wxs"></wxs>
 <view>
-    <view class="cu-bar  solid-bottom" style="background: #a7edff">
+    <view class="cu-bar  solid-bottom">
 				<view class="action">
 					<text class="cuIcon-title text-blue text-bold"></text> 
                     <text class="text-bold">水电费</text>
@@ -70,7 +70,7 @@
 
 
 
-    <view class="cu-bar bg-white solid-bottom margin-top " style="background: #a7ffed">
+    <view class="cu-bar bg-white solid-bottom margin-top ">
         <view class="action">
             <text class="cuIcon-title text-blue text-bold"></text> 
             <text class="text-bold">一卡通</text>
@@ -79,7 +79,7 @@
 	</view>
 
     <view class="cu-list menu sm-border card-menu margin-top">
-        <view class="cu-item" style="background: #a7ffed">
+        <view class="cu-item">
             <view class="content">
                 <text class="cuIcon-moneybag text-yellow "> </text>
                 <text class="text-black"> 一卡通余额</text>
@@ -111,7 +111,7 @@
     </view>
 
 
-    <view class="cu-bar bg-white solid-bottom margin-top " style="background: #a7ffed">
+    <view class="cu-bar bg-white solid-bottom margin-top ">
         <view class="action">
             <text class="cuIcon-title text-blue text-bold"></text>
             <text class="text-bold">校车时间查询</text>

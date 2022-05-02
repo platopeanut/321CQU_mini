@@ -3,7 +3,10 @@
 
     <view style="height: 400rpx;width: 750rpx;border-bottom: 0rpx solid rgb(143, 136, 136);">
         <swiper class="screen-swiper square-dot" style="width:100%;height:100%;" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-            <swiper-item wx:for="{{swiperList}}" bindtap="jumpToPicDetail" data-item="{{item}}" wx:key>
+
+<!--            bindtap="jumpToPicDetail" data-item="{{item}}"-->
+
+            <swiper-item wx:for="{{swiperList}}" wx:key>
                 <image wx:if="{{item.url}}" src="{{item.url}}" mode="scaleToFill"></image>
 <!--                <view class="padding-lg bg-white radius shadow shadow-lg margin-top" style="height:100%" wx:else>-->
 <!--                    <text class="text-black text-bold" style="text-align: center;width: 100%;">v2.0版本公告:</text>-->

@@ -1,8 +1,3 @@
-<view class='margin-xl bg-white padding-xl radius shadow-lg'>
-  <view class='text-center margin-bottom text-lg  text-grey'>关于321CQU团队</view>
-  <view class='text-content'>
-    <view wx:for="{{content_list}}" wx:key>
-      {{item}}
-    </view>
-  </view>
+<view>
+  <towxml nodes="{{article}}"/>
 </view>

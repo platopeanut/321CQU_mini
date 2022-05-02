@@ -179,8 +179,8 @@ Page({
         let AppUse = wx.getStorageSync('AppUse')
         if (AppUse === '') {
             wx.showModal({
-                title: "使用说明",
-                content: "欢迎使用321CQU，您遇到什么问题或有什么建议请及时反馈"
+                title: "321CQU v2.1",
+                content: "1.增加老校区空教室查询；2.修复课表合并问题；3.广场消息支持markdown语法，目前点击详情需要点击空白界面；4.图片采取本地缓存；小程序有许多隐藏功能，具体请查看我的/使用教程"
             })
             wx.setStorageSync('AppUse', true)
         }

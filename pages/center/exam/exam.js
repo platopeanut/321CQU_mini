@@ -56,6 +56,9 @@ Page({
                     title: '更新成功',
                     icon: 'none'
                 })
+                that.setData({
+                    has_exam: true
+                })
             }
             that.parseData(res.Exams)
             wx.setStorageSync('ExamSchedule', res.Exams)
