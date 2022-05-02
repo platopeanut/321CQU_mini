@@ -111,63 +111,63 @@
     </view>
 
 
-    <view class="cu-bar bg-white solid-bottom margin-top ">
-        <view class="action">
-            <text class="cuIcon-title text-blue text-bold"></text>
-            <text class="text-bold">校车时间查询</text>
-        </view>
-    </view>
+<!--    <view class="cu-bar bg-white solid-bottom margin-top ">-->
+<!--        <view class="action">-->
+<!--            <text class="cuIcon-title text-blue text-bold"></text>-->
+<!--            <text class="text-bold">校车时间查询</text>-->
+<!--        </view>-->
+<!--    </view>-->
 
-    <view class="cu-list menu sm-border card-menu margin-top">
+<!--    <view class="cu-list menu sm-border card-menu margin-top">-->
 
-        <view class="cu-item">
-            <view class="content">
-                <text class="cuIcon-time text-black "></text>
-                <text class="text-black">去老校区</text>
-            </view>
-            <view class="action item-right">
-                <button class="cu-btn bg-cyan shadow" size="mini" bindtap="showModal" data-target="toOld" >detail</button>
-            </view>
-        </view>
+<!--        <view class="cu-item">-->
+<!--            <view class="content">-->
+<!--                <text class="cuIcon-time text-black "></text>-->
+<!--                <text class="text-black">去老校区</text>-->
+<!--            </view>-->
+<!--            <view class="action item-right">-->
+<!--                <button class="cu-btn bg-cyan shadow" size="mini" bindtap="showModal" data-target="toOld" >detail</button>-->
+<!--            </view>-->
+<!--        </view>-->
 
-        <view class="cu-modal {{modalName==='toOld'?'show':''}}">
-            <view class="cu-dialog">
-                <view class="cu-bar bg-white justify-end">
-                    <view class="content">to 虎溪</view>
-                    <view class="action" bindtap="hideModal">
-                        <text class="cuIcon-close text-red"></text>
-                    </view>
-                </view>
-                <view class="padding-xl">
-                    Modal 内容。
-                </view>
-            </view>
-        </view>
+<!--        <view class="cu-modal {{modalName==='toOld'?'show':''}}">-->
+<!--            <view class="cu-dialog">-->
+<!--                <view class="cu-bar bg-white justify-end">-->
+<!--                    <view class="content">to 虎溪</view>-->
+<!--                    <view class="action" bindtap="hideModal">-->
+<!--                        <text class="cuIcon-close text-red"></text>-->
+<!--                    </view>-->
+<!--                </view>-->
+<!--                <view class="padding-xl">-->
+<!--                    Modal 内容。-->
+<!--                </view>-->
+<!--            </view>-->
+<!--        </view>-->
 
-        <view class="cu-item">
-            <view class="content">
-                <text class="cuIcon-time text-black "></text>
-                <text class="text-black">去新校区</text>
-            </view>
-            <view class="action item-right">
-                <button class="cu-btn bg-cyan shadow" size="mini" bindtap="showModal" data-target="toHu_xi">detail</button>
-            </view>
-        </view>
-        <view class="cu-modal {{modalName==='toHu_xi'?'show':''}}">
-            <view class="cu-dialog">
-                <view class="cu-bar bg-white justify-end">
-                    <view class="content">to A B C</view>
-                    <view class="action" bindtap="hideModal">
-                        <text class="cuIcon-close text-red"></text>
-                    </view>
-                </view>
-                <view class="padding-xl">
-                    Modal 内容。
-                </view>
-            </view>
-        </view>
+<!--        <view class="cu-item">-->
+<!--            <view class="content">-->
+<!--                <text class="cuIcon-time text-black "></text>-->
+<!--                <text class="text-black">去新校区</text>-->
+<!--            </view>-->
+<!--            <view class="action item-right">-->
+<!--                <button class="cu-btn bg-cyan shadow" size="mini" bindtap="showModal" data-target="toHu_xi">detail</button>-->
+<!--            </view>-->
+<!--        </view>-->
+<!--        <view class="cu-modal {{modalName==='toHu_xi'?'show':''}}">-->
+<!--            <view class="cu-dialog">-->
+<!--                <view class="cu-bar bg-white justify-end">-->
+<!--                    <view class="content">to A B C</view>-->
+<!--                    <view class="action" bindtap="hideModal">-->
+<!--                        <text class="cuIcon-close text-red"></text>-->
+<!--                    </view>-->
+<!--                </view>-->
+<!--                <view class="padding-xl">-->
+<!--                    Modal 内容。-->
+<!--                </view>-->
+<!--            </view>-->
+<!--        </view>-->
 
-    </view>
+<!--    </view>-->
 
 
 
