@@ -124,7 +124,7 @@ Page({
              week: curr_week
             })
         } 
-        if (wx.getStorageSync("campus_info") != {}){
+        if (wx.getStorageSync("campus_info") !== ""){
             this.setData({
                 CampusCur: wx.getStorageSync("campus_info").campus_index,
                 BuildingCur: wx.getStorageSync("campus_info").building_index
@@ -142,7 +142,7 @@ Page({
 
         let week = this.data.curr_week.toString()
         let weekday = this.data.dateCur+1    //dataCur是索引，从零开始，而today与weekday则是周一就是一
-        // console.log(week,weekday)
+        console.log(uid, uid_pwd, week,weekday, this.data.CampusCur)
 
         let time_list = this.data.time_list
 
@@ -152,7 +152,7 @@ Page({
                     let i = (index+1).toString()
                     time_list[index]["room_list"] = res.VacantRoomList[i]
                 }
-                // console.log(res)
+                console.log(res)
                 this.setData({
                     time_list:time_list
                 })
@@ -247,7 +247,9 @@ Page({
     },
     campus_Select(e){
         this.setData({
-            CampusCur: e.currentTarget.dataset.id
+            CampusCur: e.currentTarget.dataset.id,
+            BuildingCur: 0 
+
         })
     },
     building_Select(e){
