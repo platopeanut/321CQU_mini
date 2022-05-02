@@ -1,6 +1,7 @@
 const square_api = require('../square_api')
 const square_util = require('../square_util')
 const util = require('../../../../utils/util')
+const app = getApp()
 
 Page({
 
@@ -27,13 +28,23 @@ Page({
         square_api.getPostDetail(pid).then(res => {
             res.PostDetail['Color'] = square_util.getColorByType(res.PostDetail['Type'])
             res.PostDetail['Type'] = square_util.getNameByType(res.PostDetail['Type'])
+            res.PostDetail['Content'] = app.towxml(res.PostDetail['Content'], 'markdown', {
+                // base:'http://jwc.cqu.edu.cn/images/',				// 相对资源的base路径
+                // theme:'dark',					// 主题，默认`light`
+                events:{					// 为元素绑定的事件方法
+                    tap:(e)=>{
+                        console.log(e)
+                        // that.jumpToDetail(Object.assign({}, res.PostList[i]), true)
+                    }
+                }
+            })
             that.setData({
                 item: res.PostDetail
             })
             return square_api.getReply(pid)
         }).then(res => {
             that.setData({
-                comment_list: res.Reply
+                comment_list: res.Reply.reverse()
             })
         })
     },
@@ -132,7 +143,7 @@ Page({
                     if (res.tapIndex === 0) {
                         // 修改
                         wx.navigateTo({
-                            url: '../edit/edit?type=' + item.type + '&pid=' + item.Pid + '&title=' + item.Title + '&content=' + item.Content,
+                            url: '../edit/edit?pid=' + item.Pid,
                         })
                     } else if (res.tapIndex === 1) {
                         // 删除

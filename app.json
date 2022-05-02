@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/index/ad/ad",
     "pages/my/my",
     "pages/center/volunteer/volunteer",
     "pages/center/feedback/feedback",
@@ -54,5 +55,8 @@
     ]
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {
+    "towxml":"/lib/towxml/towxml"
+  }
 }

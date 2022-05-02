@@ -155,6 +155,13 @@ Page({
         })
     },
 
+    jumpToPicDetail: function (e) {
+        console.log(e.currentTarget.dataset.item)
+        wx.navigateTo({
+            url: './ad/ad'
+        })
+    },
+
     router: function (e) {
         let path = e.currentTarget.dataset.path
         wx.navigateTo({

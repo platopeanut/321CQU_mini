@@ -13,22 +13,39 @@ Page({
     },
 
     onLoad: function (e) {
+        console.log(e)
+        let that = this
         util.changeParentPageOpt({
             option: 1
         })
-        if (e.content) {
+        if (e.pid) {
             this.setData({
                 mode: 1
             })
+            // type_name: type_name,
+            //     title: e.title,
+            //     content: e.content,
+            square_api.getPostDetail(e.pid).then(res => {
+                that.setData({
+                    title: res.PostDetail.Title,
+                    content: res.PostDetail.Content,
+                })
+                let type_name = square_util.getNameByType(res.PostDetail.Type)
+                that.setData({
+                    type: res.PostDetail.Type,
+                    pid: e.pid,
+                    type_name: type_name
+                })
+                // console.log(that.data)
+            })
+        } else {
+            let type_name = square_util.getNameByType(e.type)
+            this.setData({
+                type: e.type,
+                pid: e.pid,
+                type_name: type_name
+            })
         }
-        let type_name = square_util.getNameByType(e.type)
-        this.setData({
-            type: e.type,
-            type_name: type_name,
-            title: e.title,
-            content: e.content,
-            pid: e.pid
-        })
         let StuInfo = wx.getStorageSync('StuInfo')
         if (StuInfo === '' || !StuInfo['stu_id']) {
             wx.showToast({

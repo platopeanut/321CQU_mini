@@ -1,6 +1,6 @@
 const square_api = require('./square_api')
 const square_util = require('./square_util')
-const {parserOptions} = require("../../../.eslintrc");
+const app = getApp()
 
 Page({
 
@@ -65,8 +65,8 @@ Page({
         })
     },
 
-    jumpToDetail: function (e) {
-        let item = e.currentTarget.dataset.item
+    jumpToDetail: function (e, direct=false) {
+        let item = direct ? e : e.currentTarget.dataset.item
         wx.navigateTo({
             url: './detail/detail?pid=' + item.Pid
         })
@@ -83,7 +83,7 @@ Page({
                     if (res.tapIndex === 0) {
                         // 修改
                         wx.navigateTo({
-                            url: './edit/edit?type=' + item.type + '&pid=' + item.Pid + '&title=' + item.Title + '&content=' + item.Content,
+                            url: './edit/edit?pid=' + item.Pid,
                         })
                     } else if (res.tapIndex === 1) {
                         // 删除
@@ -150,6 +150,17 @@ Page({
                 if (res.PostList[i]['Content'].length >= 45) {
                     res.PostList[i]['Content'] = res.PostList[i]['Content'].slice(0, 45) + '...'
                 }
+                res.PostList[i]['Content'] = app.towxml(res.PostList[i]['Content'], 'markdown', {
+                    // base:'http://jwc.cqu.edu.cn/images/',				// 相对资源的base路径
+                    // theme:'dark',					// 主题，默认`light`
+                    // events:{					// 为元素绑定的事件方法
+                    //     tap:(e)=>{
+                    //         console.log(e)
+                    //         // that.jumpToDetail(Object.assign({}, res.PostList[i]), true)
+                    //     }
+                    // }
+                })
+                // console.log(res.PostList[i])
                 res.PostList[i]['Color'] = square_util.getColorByType(res.PostList[i]['Type'])
                 res.PostList[i]['Type'] = square_util.getNameByType(res.PostList[i]['Type'])
                 post_list[that.data.curr_type].push(res.PostList[i])

@@ -92,7 +92,10 @@
                     </view>
 
                     <view class="text-content" style="margin: 20rpx;">
-                        <text user-select>{{item.Content}}</text>
+<!--                        <text user-select>-->
+<!--                           -->
+<!--                        </text>-->
+                        <towxml nodes="{{item.Content}}"/>
                     </view>
 
                     <view class="text-gray text-sm text-right padding">
