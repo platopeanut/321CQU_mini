@@ -17,13 +17,15 @@
     "pages/center/exam/exam",
     "pages/center/life/life",
     "pages/center/life/consumplist/consumplist",
+    "pages/center/life/bustime/bustime",
     "pages/center/class_info/class_info",
     "pages/center/class_info/detail/detail",
     "pages/center/square/square",
     "pages/center/square/detail/detail",
     "pages/center/square/edit/edit",
     "pages/center/library/library",
-    "pages/center/empty_classroom/empty_classroom"
+    "pages/center/vacant_classroom/vacant_classroom",
+    "pages/center/life/bustimeold/bustimeold"
   ],
   "window": {
     "backgroundTextStyle": "light",

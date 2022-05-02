@@ -1,1 +1,9 @@
-/* pages/center/life/life.wxss */
+.hover_style{
+    opacity: 0.9;
+    background: #f7f7f7;
+}
+
+.item-right{
+    position: relative;
+    align-items:center;
+}
