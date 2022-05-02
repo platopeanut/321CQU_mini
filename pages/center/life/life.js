@@ -4,8 +4,10 @@ const life_util = require('./life_util')
 Page({
     data: {
         fees_info: null,
-        card_fee: 0
+        card_fee: 0,
+        modalName: null
     },
+
     updateData: function () {
         let that = this
         let StuInfo = wx.getStorageSync('StuInfo')
@@ -79,7 +81,7 @@ Page({
             })
         })
     },
-    onShow: function () {
+    onLoad: function () {
         let fees_info = wx.getStorageSync('fees_info')
         let card_fee = wx.getStorageSync('card_fee')
         console.log(card_fee)
@@ -94,13 +96,22 @@ Page({
                 title: '下拉刷新更新数据',
                 icon: 'none'
             })
-            return
         }
-        this.updateData()
     },
 
     onPullDownRefresh: function() {
         wx.stopPullDownRefresh()
         this.updateData()
+    },
+
+    showModal(e) {
+        this.setData({
+            modalName: e.currentTarget.dataset.target
+        })
+    },
+    hideModal(e) {
+        this.setData({
+            modalName: null
+        })
     },
 })

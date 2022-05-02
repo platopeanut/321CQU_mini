@@ -79,7 +79,7 @@ Page({
             },
             {
                 title: '空教室',
-                path: 'empty_classroom',
+                path: 'vacant_classroom',
                 color: 'red',
                 icon: 'location'
             },
