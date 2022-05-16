@@ -52,7 +52,7 @@ function getDate() {
 function getTime() {
     let date = new Date()
     return {
-        hour: date.getHours() + 1,
+        hour: date.getHours(),
         minute: date.getMinutes(),
         second: date.getSeconds()
     }
@@ -108,13 +108,13 @@ function parseTime(str, sep=':') {
 function daysDistance(date1,date2){
     let startDate = Date.parse(date1);
     let endDate = Date.parse(date2);
-    if (startDate>endDate){
-        return 0;
-    }
-    if (startDate===endDate){
+    if (startDate > endDate){
         return 1;
     }
-    return  ((endDate - startDate) / (24 * 60 * 60 * 1000)).toFixed(1);
+    if (startDate === endDate){
+        return 0;
+    }
+    return  (endDate - startDate) / (24 * 60 * 60 * 1000);
 }
 function daysDistance2(date1,date2){
     let startDate = Date.parse(date1);

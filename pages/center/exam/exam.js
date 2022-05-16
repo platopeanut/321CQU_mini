@@ -66,6 +66,7 @@ Page({
     },
 
     parseData: function (data) {
+        let that = this
         let exam_list = []
         let exam_list_over = []
         data.forEach(element => {
