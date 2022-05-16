@@ -1,0 +1,53 @@
+<view style="background:white;">
+<!--    <image src="https://mmbiz.qpic.cn/mmbiz_jpg/s7vN9F5Hw981GKIJDbKIelic1YsAOLI6QulzroUMSnJTeu4p0zegiaUzEubGeBIj6nUDmNKAuILYcAo1mia60Rc8w/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1&wx_co=1"  show-menu-by-longpress="{{true}}" mode="scaleToFill" style="width:100%;height:400rpx;"></image>-->
+<!--    <image src="https://qr.api.cli.im/newqr/create?data=https%253A%252F%252Fmp.weixin.qq.com%252Fs%252F7HMAp6S_xpU7tgijInnURg&level=H&transparent=false&bgcolor=%23ffffff&forecolor=%23000000&blockpixel=12&marginblock=1&logourl=&logoshape=no&size=500&kid=cliim&key=717e12f09fadc93b13d192eaf78290bc" show-menu-by-longpress mode="scaleToFill" style="width:100%;height:750rpx;"></image>-->
+
+<view wx:if="{{id === '0'}}">
+    <view class="padding bg-white">
+        <view class="padding solid">
+            近年来，就业压力，考研趋势越来越明显，考研越来越激烈，21届人数377万人，22届457万人，预计23届考研人数500万+。因此精细化备考考研逐渐成为主流。自划线高校本校生优势越来越小，如重庆大学，初试占比70%，复试占比30%，整体优势不明显。
+        </view>
+    </view>
+    <view class="grid col-1 bg-white padding-sm">
+        <view class="padding-sm">
+            <view class="bg-blue padding radius text-center light" bindtap="getUrl" data-item="{{info[0]}}">
+                <view class="text-lg text-bold">{{info[0].name}}</view>
+                <view class="margin-top-sm text-Abc">
+                    {{info[0].url}}
+                </view>
+            </view>
+        </view>
+        <view class="padding-sm">
+            <view class="bg-olive padding radius text-center light" bindtap="getUrl" data-item="{{info[1]}}">
+                <view class="text-lg text-bold">{{info[1].name}}</view>
+                <view class="margin-top-sm text-Abc">
+                    {{info[1].url}}
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+<view wx:elif="{{id === '1'}}">
+    <view class="grid col-1 bg-white padding-sm">
+        <view class="padding-sm">
+            <view class="bg-cyan padding radius text-center light" bindtap="getUrl" data-item="{{info[2]}}">
+                <view class="text-lg text-bold">{{info[2].name}}</view>
+                <view class="margin-top-sm text-Abc">
+                    {{info[2].url}}
+                </view>
+            </view>
+        </view>
+        <view class="padding-sm">
+            <view class="bg-orange padding radius text-center light" bindtap="getUrl" data-item="{{info[3]}}">
+                <view class="text-lg text-bold">{{info[3].name}}</view>
+                <view class="margin-top-sm text-Abc">
+                    {{info[3].url}}
+                </view>
+            </view>
+        </view>
+    </view>
+<!--    第二外语：https://jinshuju.net/f/sg98C4-->
+<!--    留学：https://jinshuju.net/f/d5hStQ-->
+</view>
+</view>
+

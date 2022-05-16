@@ -1,4 +1,5 @@
 const util = require("./util")
+const {version} = require("../lib/towxml/echarts/wx-echarts");
 /**
  *  321CQU API 接口
  */
@@ -6,18 +7,29 @@ const util = require("./util")
 const url = 'https://www.zhulegend.com/321CQU'
 const Password = 'CQUz5321'
 
-function request(header, resolve, reject, loading = true, show_err = true) {
+function request(header, resolve, reject, loading = true, show_err = true, version='1.0') {
   if (loading) {wx.showLoading()}
-  header['data']['Key'] = Password
+  let data = {}
+  if (version === '1.0') {
+      header['data']['Key'] = Password
+      data = header['data']
+  } else {
+      data = {
+          'Key': Password,
+          'Version': version,
+          'Params': header,
+      }
+  }
   wx.request({
     url: url + header['url'],
     method: 'POST',
-    data: header['data'],
+    data: data,
     success: res => {
       if (loading) {wx.hideLoading()}
       if (res.statusCode === 200) {
         if (res.data.Statue === 1) {
-          resolve(res.data)
+          if (version === '1.0') resolve(res.data)
+          else resolve(res.data.data)
         } else {
             if (show_err) {
                 util.showError(res)
@@ -94,21 +106,21 @@ function adTimes(code) {
  * 首页广告
  */
 // 首页图片
-function getHomepageImgDate() {
+function getHomepageImgData() {
   let header = {
     url: '/homepage',
     data: {
     }
   }
   return new Promise((resolve,reject) => {
-    request(header, resolve, reject, false)
+    request(header, resolve, reject, false, true, '2.0')
   })
 }
 
 module.exports = {
     TEST,
     request,
-    getHomepageImgDate,
+    getHomepageImgData,
     adLook,
     adTimes,
 }

@@ -1,4 +1,7 @@
 // noinspection JSNonASCIINames,NonAsciiCharacters
+const {pi} = require("../lib/towxml/parse/parse2/entities/maps/entities")
+const log = require('./log')
+const {attrs} = require("../lib/towxml/config");
 const dormitory = {
     'A区': ['选择楼栋','一舍学生宿舍','二舍学生宿舍','三舍学生宿舍','四舍学生宿舍','五舍学生宿舍','六舍学生宿舍','七舍学生宿舍','八舍学生宿舍','九舍学生宿舍','十舍学生宿舍','十一舍学生宿舍','十二舍学生宿舍','A栋宿舍','C栋宿舍','D栋宿舍'],
     'B区': ['选择楼栋','一舍学生宿舍','二舍学生宿舍','三舍学生宿舍','四舍学生宿舍','五舍学生宿舍','六舍学生宿舍','七舍学生宿舍','八舍学生宿舍','九舍学生宿舍','十舍学生宿舍','十一舍学生宿舍','十二舍学生宿舍'],
@@ -20,6 +23,7 @@ const dormitory_code = {
 }
 
 function showError(res, prefix='') {
+    log.error(`showError::[${prefix}][error:${res.data.ErrorCode}] ${res.data.ErrorInfo}`)
     wx.showToast({
         title: `[${prefix}][error:${res.data.ErrorCode}] ${res.data.ErrorInfo}`,
         icon: 'none'
@@ -137,7 +141,7 @@ function shuffle(arr){
     return arr
 }
 
-function saveImg(url) {
+function saveFile(url, id=null) {
     return new Promise((resolve, reject) => {
         const fs = wx.getFileSystemManager()
         wx.downloadFile({
@@ -147,10 +151,17 @@ function saveImg(url) {
                     fs.saveFile({
                         tempFilePath: res.tempFilePath,
                         success: res => {
-                            resolve(res.savedFilePath)
+                            resolve({
+                                path: res.savedFilePath,
+                                id: id
+                            })
                         },
                         fail: res => {
-                            reject(res.errMsg)
+                            log.error(`saveFile::downloadFile::err=${res.errMsg}&id=${id}`)
+                            reject({
+                                err: res.errMsg,
+                                id: id
+                            })
                         }
                     })
                 }
@@ -159,10 +170,10 @@ function saveImg(url) {
     })
 }
 
-function saveBatchImg(urls) {
+function saveBatchFile(pictures) {
     let tasks = []
-    for (const url of urls) {
-        tasks.push(saveImg(url))
+    for (let i = 0; i < pictures.length; i++) {
+        tasks.push(saveFile(pictures[i].Url, i))
     }
     return Promise.all(tasks)
 }
@@ -182,6 +193,7 @@ function saveImgToAlbum(e) {
                         })
                     },
                     fail(res) {
+                        log.error(`saveImgToAlbum::downloadFile::err=${res}`)
                         wx.showToast({
                             title: '保存失败',
                             icon: 'none'
@@ -196,6 +208,20 @@ function saveImgToAlbum(e) {
             }
         }
     })
+}
+
+// 查询md中的超链接
+function findUrlFromMd(items) {
+    if (!items) return ''
+    let urls = ''
+    for (let item of items) {
+        if (item.tag === 'img')
+            urls += item.attrs.src + '\n'
+        else if (item.tag === 'navigator')
+            urls += item.attrs.href + '\n'
+        urls += findUrlFromMd(item.children)
+    }
+    return urls
 }
 
 
@@ -226,7 +252,8 @@ module.exports = {
     daysDistance2,
     showError,
     shuffle,
-    saveImg,
-    saveBatchImg,
+    saveFile,
+    saveBatchFile,
     changeParentPageOpt,
+    findUrlFromMd,
 }

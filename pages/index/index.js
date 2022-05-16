@@ -1,6 +1,7 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
-const util = require("../../utils/util");
+const util = require("../../utils/util")
+const {nu} = require("../../lib/towxml/parse/parse2/entities/maps/entities");
 
 Page({
 
@@ -11,24 +12,6 @@ Page({
         // swiperList: [{url:false}],
         swiperList: [],
         iconList: [
-            // {
-            //     title: '反馈',
-            //     path: 'feedback',
-            //     color: 'green',
-            //     icon: 'comment'
-            // },
-            {
-                title: '支持我们',
-                path: 'sponsor',
-                color: 'brown',
-                icon: 'sponsor'
-            },
-            {
-                title: '志愿者时长',
-                path: 'volunteer',
-                color: 'pink',
-                icon: 'newsfill'
-            },
             {
                 title: '课表',
                 path: 'curriculum',
@@ -48,6 +31,12 @@ Page({
                 icon: 'time'
             },
             {
+                title: '升学通',
+                path: 'sxt',
+                color: 'green',
+                icon: 'medal'
+            },
+            {
                 title: '查课',
                 path: 'class_info',
                 color: 'purple',
@@ -59,12 +48,6 @@ Page({
                 color: 'yellow',
                 icon: 'baby'
             },
-            // {
-            //     title: '信息广场',
-            //     path: 'square',
-            //     color: 'red',
-            //     icon: 'wefill'
-            // },
             {
                 title: '任务管理',
                 path: 'task',
@@ -83,6 +66,12 @@ Page({
                 color: 'red',
                 icon: 'location'
             },
+            {
+                title: '志愿者时长',
+                path: 'volunteer',
+                color: 'pink',
+                icon: 'newsfill'
+            },
         ],
         url: 'https://www.zhulegend.com',
         IndexImgPath: '',
@@ -91,52 +80,60 @@ Page({
     onShow: function () {
         // 加载首页课程信息
         this.LoadCurriculumInfo()
+        console.log(wx.getStorageSync('HomePage'))
     },
     loadSwiperList: function (HomePage) {
-        // let swiperList = [{url: false}]
-        let swiperList = []
-        for (const url of HomePage['LocalPaths']) {
-            swiperList.push({url: url})
-        }
+        util.saveBatchFile(HomePage['Pictures'].filter(value => {
+            return value.JumpType === 'md' && !value.Local
+        })).then(values => {
+            for (let value of values) {
+                HomePage['Pictures'][value.id].Url = value.path
+                HomePage['Pictures'][value.id].Local = true
+            }
+            wx.setStorageSync('HomePage', HomePage)
+        })
         this.setData({
-            swiperList: swiperList,
+            swiperList: HomePage['Pictures'],
             IndexImgPath: HomePage['IndexImgPath']
         })
     },
     LoadSwiperImg: function () {
         let that = this
         let HomePage = wx.getStorageSync('HomePage')
-        // 每天检查一次是否发生更新,或者初始化
-        if (!HomePage || new Date().toDateString() !== HomePage['LastCheck']) {
-            api.getHomepageImgDate().then(res=>{
+        // 1.当没有缓存（清除缓存或更新后）2.有缓存且时间到了
+        if (!HomePage || (new Date().toDateString() !== HomePage['LastCheck'] && new Date().getHours() > 6)) {
+            console.log('pass')
+            if (!HomePage) HomePage = {}
+            HomePage['LastCheck'] = new Date().toDateString()
+            api.getHomepageImgData().then(res=>{
                 if (!HomePage || HomePage['LastUpdate'] !== res.LastUpdate) {
-                    HomePage = {}
                     HomePage['LastUpdate'] = res.LastUpdate
-                    HomePage['PictureUrls'] = []
-                    for (const pictureUrl of res.PictureUrls) {
-                        HomePage['PictureUrls'].push(that.data.url + pictureUrl)
+                    HomePage['Pictures'] = []
+                    let cnt = 0;
+                    for (const item of res.Pictures) {
+                        HomePage['Pictures'].push({
+                            'Url': that.data.url + item.Url,
+                            'ContentUrl': item.JumpType === 'md'? that.data.url + item.ContentUrl : item.ContentUrl,
+                            'Local': false,     // pic是否本地化
+                            'LocalContent': false,   // pic对应的content是否本地化
+                            'JumpType': item.JumpType,
+                            'Id': cnt
+                        })
+                        cnt ++
                     }
-                    HomePage['LocalPaths'] = []
-                    util.saveBatchImg(HomePage['PictureUrls']).then(values => {
-                        HomePage['LocalPaths'] = values
+                    // 获取首页背景图
+                    util.saveFile(util.IndexImgUrl).then(res => {
+                        HomePage['IndexImgPath'] = res.path
+                        that.setData({
+                            IndexImgPath: res.path
+                        })
+                    }).finally(()=>{
                         wx.setStorageSync('HomePage', HomePage)
                         that.loadSwiperList(HomePage)
                     })
-                    // 获取首页背景图
-                    util.saveImg(util.IndexImgUrl).then(res => {
-                        HomePage['IndexImgPath'] = res
-                        wx.setStorageSync('HomePage', HomePage)
-                        that.setData({
-                            IndexImgPath: res
-                        })
-                    })
                 }
             })
-        }
-        // 加载swiper
-        if (HomePage && HomePage['LocalPaths']) {
-            this.loadSwiperList(HomePage)
-        }
+        } else this.loadSwiperList(HomePage)
     },
 
     LoadCurriculumInfo: function () {
@@ -156,9 +153,27 @@ Page({
     },
 
     jumpToPicDetail: function (e) {
-        console.log(e.currentTarget.dataset.item)
-        wx.navigateTo({
-            url: './ad/ad'
+        let item = e.currentTarget.dataset.item
+        if (item.JumpType === 'md') {
+            wx.navigateTo({
+                url: './ad/ad?Id=' + item.Id
+            })
+        } else if (item.JumpType === 'mk') {
+            let mk_name = item.ContentUrl.slice(0, -3)
+            wx.navigateTo({
+                url: `../center/${mk_name}/${mk_name}`
+            })
+        }
+    },
+
+    previewImg: function (e) {
+        let urls = []
+        for (let item of this.data.swiperList) {
+            urls.push(item.Url)
+        }
+        wx.previewImage({
+            // current: '',
+            urls: urls
         })
     },
 
