@@ -1,30 +1,95 @@
 const curriculum_util = require('../curriculum_util')
 const curriculum_api = require('../curriculum_api')
 
-Page({
+/**
+ *  TODO: 自动获取考试信息显得尤为重要！
+ */
 
+Page({
     data: {
         StuInfo: null,
         SelfSchedule: [],
         Priority: [],
         edit_mode: false,
         curr_schedule: null,
+        ImportExams: false,
     },
-
     onShow: function() {
         let StuInfo = wx.getStorageSync('StuInfo')
         let Curriculum = wx.getStorageSync('Curriculum')
         let SelfSchedule = Curriculum['SelfSchedule']
+        console.log(SelfSchedule)
         let Priority = Curriculum['Priority']
+        let ImportExams = Curriculum['ImportExams']
         if (!SelfSchedule) SelfSchedule = []
         if (!Priority) Priority = []
+        if (!ImportExams) ImportExams = false
         this.setData({
             StuInfo: StuInfo,
             SelfSchedule: SelfSchedule,
-            Priority: Priority
+            Priority: Priority,
+            ImportExams: ImportExams
         })
+        if (ImportExams) this.addImportExams()
     },
-
+    selectImportExams: function (e) {
+        console.log(e.detail.value)
+        let Curriculum = wx.getStorageSync('Curriculum')
+        if (!Curriculum) {
+            wx.showToast({
+                title: '请先刷新课表',
+                icon: 'none'
+            })
+            setInterval(()=>{
+                this.setData({
+                    ImportExams: false
+                })
+            }, 500)
+            return
+        }
+        Curriculum['ImportExams'] = e.detail.value
+        wx.setStorageSync('Curriculum', Curriculum)
+    },
+    addImportExams: function () {
+        let exams = wx.getStorageSync('ExamSchedule')
+        if (!exams) {
+            wx.showToast({
+                title: '请先获取考试安排信息(后面改为自动模式)',
+                icon: 'none'
+            })
+            return
+        }
+        console.log(exams)
+        // TODO
+        let Curriculum = wx.getStorageSync('Curriculum')
+        let SelfSchedule = Curriculum['SelfSchedule']
+        if (!SelfSchedule) SelfSchedule = []
+        console.log(Curriculum)
+        let StartDate = Curriculum['Curr']['TermInfo'].StartDate
+        for (const exam of exams) {
+            let newSchedule = {
+                Self: true,
+                WeekDayFormat: ['日','一','二','三','四','五','六'][new Date(exam.ExamDate).getDay()],
+                Content: `${exam.StartTime}-${exam.EndTime},座位号:${exam.SeatNum}`,
+                CourseCode: exam.CourseCode,
+                CourseName: '[考试]\n' + exam.RoomName + '\n' + exam.CourseName,
+            }
+            newSchedule['TeachingWeekFormat'] = curriculum_util.getCurrWeek(StartDate, exam.ExamDate).toString()
+            let StartTime = exam.StartTime.split(':')
+            let EndTime = exam.EndTime.split(':')
+            newSchedule['PeriodFormat'] = `${curriculum_util.getLessonIndex({
+                hour: StartTime[0],
+                minute: StartTime[1]
+            })}-${curriculum_util.getLessonIndex({
+                hour: EndTime[0],
+                minute: EndTime[1]
+            })}`
+            SelfSchedule.push(newSchedule)
+        }
+        Curriculum['SelfSchedule'] = SelfSchedule
+        wx.setStorageSync('Curriculum', Curriculum)
+        console.log(SelfSchedule)
+    },
     selectScheduleItem: function (e) {
         let that = this
         let index = e.currentTarget.dataset.index
@@ -62,7 +127,6 @@ Page({
             }
         })
     },
-
     addNewItem: function () {
         if (!this.data.StuInfo['stu_id']) {
             wx.showToast({

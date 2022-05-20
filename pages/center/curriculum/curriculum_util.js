@@ -17,9 +17,11 @@ const time_table = [
 ]
 
 // 计算当前是第几周
-function getCurrWeek(StartDate) {
-    let _curr_date = util.getDate()
-    let CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
+function getCurrWeek(StartDate, CurrDate=null) {
+    if (!CurrDate) {
+        let _curr_date = util.getDate()
+        CurrDate = `${_curr_date.year}-${_curr_date.month}-${_curr_date.day}`
+    }
     let distance = util.daysDistance2(StartDate, CurrDate)
     if (distance >= 0 ) return parseInt(distance / 7 + 1)
     else {

@@ -17,7 +17,7 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
       data = {
           'Key': Password,
           'Version': version,
-          'Params': header,
+          'Params': header.data,
       }
   }
   wx.request({

@@ -31,8 +31,42 @@ function renewBook(uid, uid_pwd, book_id) {
     })
 }
 
+// 查询书籍
+function searchBook(uid, uid_pwd, keyword, page, only_huxi) {
+    let header = {
+        url: '/library/search_book',
+        data: {
+            'UserName': uid,
+            'Password': uid_pwd,
+            'Keyword': keyword,
+            'Page': page,
+            'OnlyHuxi': only_huxi
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+
+// 查询书籍状态
+function queryBookState(uid, uid_pwd, book_id) {
+    let header = {
+        url: '/library/search_book',
+        data: {
+            'UserName': uid,
+            'Password': uid_pwd,
+            'BookId': book_id
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+
 
 module.exports = {
     getBorrowInfo,
     renewBook,
+    searchBook,
+    queryBookState,
 }

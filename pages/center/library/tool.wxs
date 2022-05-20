@@ -1,0 +1,7 @@
+function cut_str(str, a, b) {
+    return str.slice(a, b) + '...'
+}
+
+module.exports = {
+    cut_str: cut_str
+}
