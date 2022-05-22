@@ -73,11 +73,10 @@ Page({
     },
 
     getForm: function (e) {
-        console.log(e.detail.value)
-        let info = e.detail.value
+        let form = e.detail.value
         const check_list = ['姓名', '手机', '专业', '预约咨询时间']
         for (let key of check_list) {
-            if (key in info && info[key] === '') {
+            if (key in form && form[key] === '') {
                 wx.showToast({
                     title: key+'不能为空',
                     icon: 'none'
@@ -85,10 +84,13 @@ Page({
                 return
             }
         }
-        for (const key in info) {
-            if (info[key] instanceof Array) info[key] = info[key].toString()
+        for (const key in form) {
+            if (form[key] instanceof Array) form[key] = form[key].toString()
         }
-        console.log(info)
+        let info = {
+            'Type': this.data.Type,
+            'Form': form
+        }
         wx.showModal({
             'content': '您所填写的信息会被提供给新东方',
             success: result => {
