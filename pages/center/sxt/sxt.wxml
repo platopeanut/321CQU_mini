@@ -3,7 +3,11 @@
 <!--        <text class="text-black text-bold"> 介绍1:</text>-->
 <!--        <view class="text-left" style="margin-top: 5rpx;">介绍内容1...</view>-->
 <!--    </view>-->
-    <view style="width:100%;height:100rpx;"></view>
+    <view class="padding bg-white">
+        <view class="padding solid text-center">
+            此模块信息由新东方提供
+        </view>
+    </view>
     <view class="padding">
         <button class="cu-btn block bg-blue lg" bindtap="jumpToDetail" data-id="{{0}}">
             考研、留学

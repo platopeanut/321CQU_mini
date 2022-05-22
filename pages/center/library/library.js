@@ -258,6 +258,18 @@ Page({
         if (this.data.curr_mode === 0) this.queryBorrowInfo()
         else if (this.data.curr_mode === 2) {
             // TODO: 更新每本图书的Pos状态
+            this.updateBookState(uid, uid_pwd)
+        }
+    },
+
+    updateBookState: function (uid, uid_pwd) {
+        let Library = wx.getStorageSync('Library')
+        if (!Library || !Library['MarkBooks']) return
+        let books = Library['MarkBooks']
+        for (let book of books) {
+            library_api.queryBookState(uid, uid_pwd, book.BookId).then(res => {
+                console.log(res)
+            })
         }
     },
 

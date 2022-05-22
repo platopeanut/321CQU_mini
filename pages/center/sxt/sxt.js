@@ -5,7 +5,6 @@ Page({
     },
 
     onLoad: function () {
-
     },
 
     jumpToDetail: function (e) {

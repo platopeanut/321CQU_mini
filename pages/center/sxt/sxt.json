@@ -1,4 +1,6 @@
 {
     "usingComponents": {},
-    "navigationBarTitleText": "升学通"
+    "navigationBarTitleText": "升学通",
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#ffffff"
 }

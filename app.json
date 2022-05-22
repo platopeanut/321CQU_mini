@@ -18,6 +18,7 @@
     "pages/center/exam/exam",
     "pages/center/sxt/sxt",
     "pages/center/sxt/detail/detail",
+    "pages/center/sxt/form/form",
     "pages/center/life/life",
     "pages/center/life/consumplist/consumplist",
     "pages/center/life/bustime/bustime",

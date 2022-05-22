@@ -51,7 +51,7 @@ function searchBook(uid, uid_pwd, keyword, page, only_huxi) {
 // 查询书籍状态
 function queryBookState(uid, uid_pwd, book_id) {
     let header = {
-        url: '/library/search_book',
+        url: '/library/get_book_pos',
         data: {
             'UserName': uid,
             'Password': uid_pwd,

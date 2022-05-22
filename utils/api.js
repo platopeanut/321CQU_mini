@@ -44,7 +44,7 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
       }
     },
     fail: () => {
-      wx.hideLoading()
+      if (loading) {wx.hideLoading()}
       wx.showToast({
         title: '网络错误',
         icon: 'none'
