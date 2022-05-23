@@ -263,14 +263,29 @@ Page({
     },
 
     updateBookState: function (uid, uid_pwd) {
+        let that = this
         let Library = wx.getStorageSync('Library')
         if (!Library || !Library['MarkBooks']) return
         let books = Library['MarkBooks']
+        let tasks = []
         for (let book of books) {
-            library_api.queryBookState(uid, uid_pwd, book.BookId).then(res => {
-                console.log(res)
-            })
+            tasks.push(library_api.queryBookState(uid, uid_pwd, book.BookId))
         }
+        Promise.all(tasks).then(res => {
+            wx.showToast({
+                title: '已获取书籍最新状态',
+                icon: 'none'
+            })
+            res.forEach((value, index) => {
+                books[index].Pos = value.Pos
+                console.log(books[index].Pos)
+            })
+            Library['MarkBooks'] = books
+            wx.setStorageSync('Library', Library)
+            that.setData({
+                markBooks: books
+            })
+        })
     },
 
     onReachBottom: function () {

@@ -22,10 +22,19 @@ Page({
 
     getUrl: function (e) {
         let item = e.currentTarget.dataset.item
-        console.log(item)
-        wx.navigateTo({
-            url: '../form/form?name=' + item.name
+        // console.log(item)
+        wx.setClipboardData({
+            data: item.url,
+            success (res) {
+                wx.showToast({
+                    title: '链接已复制，请使用浏览器打开',
+                    icon: 'none'
+                })
+            }
         })
+        // wx.navigateTo({
+        //     url: '../form/form?name=' + item.name
+        // })
     }
 
 })

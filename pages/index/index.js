@@ -30,12 +30,12 @@ Page({
                 color: 'olive',
                 icon: 'time'
             },
-            {
-                title: '升学通',
-                path: 'sxt',
-                color: 'green',
-                icon: 'medal'
-            },
+            // {
+            //     title: '升学通',
+            //     path: 'sxt',
+            //     color: 'green',
+            //     icon: 'medal'
+            // },
             {
                 title: '查课',
                 path: 'class_info',
@@ -194,8 +194,8 @@ Page({
         let AppUse = wx.getStorageSync('AppUse')
         if (AppUse === '') {
             wx.showModal({
-                title: "321CQU v2.1",
-                content: "1.增加老校区空教室查询；2.修复课表合并问题；3.广场消息支持markdown语法，目前点击详情需要点击空白界面；4.图片采取本地缓存；小程序有许多隐藏功能，具体请查看我的/使用教程"
+                title: "321CQU v2.2",
+                content: "1. 新增图书查询，图书收藏（暂不支持云端备份）;2.优化考试安排"
             })
             wx.setStorageSync('AppUse', true)
         }

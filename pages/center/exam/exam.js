@@ -11,7 +11,6 @@ Page({
     },
 
     onShow: function() {
-        this.updateData()
         // 从本地缓存中获取数据
         let that = this
         let exams = wx.getStorageSync('ExamSchedule')
