@@ -134,6 +134,10 @@ Page({
                         wx.setStorageSync('HomePage', HomePage)
                     })
                 }
+                else {
+                    wx.setStorageSync('HomePage', HomePage)
+                    that.loadSwiperList()
+                }
             })
         } else this.loadSwiperList()
     },
