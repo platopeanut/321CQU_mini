@@ -4,17 +4,28 @@
 
 <view wx:if="{{id === '0'}}">
     <view class="grid col-1 bg-white padding-sm">
+        <view class="padding-sm">
+            <view class="bg-blue padding radius text-center light" bindtap="getUrl" data-item="{{info[0]}}">
+                <view class="text-lg text-bold">{{info[0].name}}</view>
+                <view class="margin-top-sm text-Abc">
+                    {{info[0].url}}
+                </view>
+            </view>
+        </view>
         <view class="padding bg-white">
             <view class="padding solid">
                 <view>近年来，就业压力，考研趋势越来越明显，考研越来越激烈，21届人数377万人，22届457万人，预计23届考研人数500万+。因此精细化备考考研逐渐成为主流。</view>
                <view> 新东方与重庆大学多个学院达成战略合作，为重庆大学学子免费提供《考研规划课堂》、《考研英语全年备考指导课堂》、《考研数学全年备考指导课堂》、《考研政治全年备考指导课堂》、“考研必备书籍”、“免费一对一咨询”等</view>
             </view>
         </view>
+        <view class="text-center">
+            <image bindtap="previewImg" data-src="{{info[0].qrcode}}" src="{{info[0].qrcode}}" style="width:375rpx;height:375rpx;" mode="scaleToFill"></image>
+        </view>
         <view class="padding-sm">
-            <view class="bg-blue padding radius text-center light" bindtap="getUrl" data-item="{{info[0]}}">
-                <view class="text-lg text-bold">{{info[0].name}}</view>
+            <view class="bg-olive padding radius text-center light" bindtap="getUrl" data-item="{{info[1]}}">
+                <view class="text-lg text-bold">{{info[1].name}}</view>
                 <view class="margin-top-sm text-Abc">
-                    {{info[0].url}}
+                    {{info[1].url}}
                 </view>
             </view>
         </view>
@@ -30,24 +41,24 @@
                 <view>4、一对一专项指导咨询（一小时免费），专项内容：考研留学双规划、海外择校择专业、就业指导、实习指导等</view>
             </view>
         </view>
+        <view class="text-center">
+            <image bindtap="previewImg" data-src="{{info[1].qrcode}}" src="{{info[0].qrcode}}" style="width:375rpx;height:375rpx;" mode="scaleToFill"></image>
+        </view>
+    </view>
+    <view class="padding bg-white">
         <view class="padding-sm">
-            <view class="bg-olive padding radius text-center light" bindtap="getUrl" data-item="{{info[1]}}">
-                <view class="text-lg text-bold">{{info[1].name}}</view>
-                <view class="margin-top-sm text-Abc">
-                    {{info[1].url}}
-                </view>
+            <view class="bg-white light">
+                <view class="text-lg text-center">联系方式（点击即可复制）</view>
             </view>
+        </view>
+        <view class="flex">
+            <view class="flex-sub line-blue solids padding-sm margin-xs text-center" bindtap="getContact" data-value="{{1473644763}}">QQ:1473644763</view>
+            <view class="flex-sub line-green solids padding-sm margin-xs text-center" bindtap="getContact" data-value="{{19122575523}}">微信:19122575523</view>
         </view>
     </view>
 </view>
 <view wx:elif="{{id === '1'}}">
     <view class="grid col-1 bg-white padding-sm">
-        <view class="padding bg-white">
-            <view class="padding solid">
-                <view><text class="text-bold">四级作用:</text>本科英语水平证明、研究生要求</view>
-                <view><text class="text-bold">六级作用:</text>保研要求之一、考研复试优势、研究生毕业要求、研究生英语免修要求等</view>
-            </view>
-        </view>
         <view class="padding-sm">
             <view class="bg-cyan padding radius text-center light" bindtap="getUrl" data-item="{{info[2]}}">
                 <view class="text-lg text-bold">{{info[2].name}}</view>
@@ -58,11 +69,14 @@
         </view>
         <view class="padding bg-white">
             <view class="padding solid">
-                <view><text class="text-bold">零起点学习：</text>和英语相比，小语种学习的不存在基础的差异性。对于英语不好的人来说，可以在短周期内从零基础学好小语，当然小语种也可代替英语考研；相反，英语基础扎实，也较容易的找到欧洲语系的共通性，学起来就更有乐趣和成就感。</view>
-                <view><text class="text-bold">作为加分项：</text>小语种学习是传统教育的一片新天地，除了英语之外如果掌握一门小语种的话走到哪里都会比别人更有优势，在应聘的时候，更可成为加分项。</view>
-                <view><text class="text-bold">增加留学机会：</text>除了英美加等英语国家的留学之外，欧亚国家也有雄厚的师资，世界排名考前的大学，比如苏黎世联邦理工学院、海德堡大学、巴塞罗那大学、巴黎六大、巴黎十一大等。</view>
+                <view><text class="text-bold">四级作用:</text>本科英语水平证明、研究生要求</view>
+                <view><text class="text-bold">六级作用:</text>保研要求之一、考研复试优势、研究生毕业要求、研究生英语免修要求等</view>
             </view>
         </view>
+        <view class="text-center">
+            <image bindtap="previewImg" data-src="{{info[2].qrcode}}" src="{{info[0].qrcode}}" style="width:375rpx;height:375rpx;" mode="scaleToFill"></image>
+        </view>
+
         <view class="padding-sm">
             <view class="bg-orange padding radius text-center light" bindtap="getUrl" data-item="{{info[3]}}">
                 <view class="text-lg text-bold">{{info[3].name}}</view>
@@ -70,6 +84,27 @@
                     {{info[3].url}}
                 </view>
             </view>
+        </view>
+        <view class="padding bg-white">
+            <view class="padding solid">
+                <view><text class="text-bold">零起点学习：</text>和英语相比，小语种学习的不存在基础的差异性。对于英语不好的人来说，可以在短周期内从零基础学好小语，当然小语种也可代替英语考研；相反，英语基础扎实，也较容易的找到欧洲语系的共通性，学起来就更有乐趣和成就感。</view>
+                <view><text class="text-bold">作为加分项：</text>小语种学习是传统教育的一片新天地，除了英语之外如果掌握一门小语种的话走到哪里都会比别人更有优势，在应聘的时候，更可成为加分项。</view>
+                <view><text class="text-bold">增加留学机会：</text>除了英美加等英语国家的留学之外，欧亚国家也有雄厚的师资，世界排名考前的大学，比如苏黎世联邦理工学院、海德堡大学、巴塞罗那大学、巴黎六大、巴黎十一大等。</view>
+            </view>
+        </view>
+        <view class="text-center">
+            <image bindtap="previewImg" data-src="{{info[3].qrcode}}" src="{{info[0].qrcode}}" style="width:375rpx;height:375rpx;" mode="scaleToFill"></image>
+        </view>
+    </view>
+    <view class="padding bg-white">
+        <view class="padding-sm">
+            <view class="bg-white light">
+                <view class="text-lg text-center">联系方式（点击即可复制）</view>
+            </view>
+        </view>
+        <view class="flex">
+            <view class="flex-sub line-blue solids padding-sm margin-xs text-center" bindtap="getContact" data-value="{{451685582}}">QQ:451685582</view>
+            <view class="flex-sub line-green solids padding-sm margin-xs text-center" bindtap="getContact" data-value="{{15923735247}}">微信:15923735247</view>
         </view>
     </view>
 <!--    第二外语：https://jinshuju.net/f/sg98C4-->

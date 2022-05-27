@@ -16,9 +16,6 @@
     "pages/center/curriculum/config/config",
     "pages/center/grade/grade",
     "pages/center/exam/exam",
-    "pages/center/sxt/sxt",
-    "pages/center/sxt/detail/detail",
-    "pages/center/sxt/form/form",
     "pages/center/life/life",
     "pages/center/life/consumplist/consumplist",
     "pages/center/life/bustime/bustime",
@@ -29,7 +26,9 @@
     "pages/center/square/edit/edit",
     "pages/center/library/library",
     "pages/center/vacant_classroom/vacant_classroom",
-    "pages/center/life/bustimeold/bustimeold"
+    "pages/center/life/bustimeold/bustimeold",
+    "pages/center/sxt/sxt",
+    "pages/center/sxt/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",

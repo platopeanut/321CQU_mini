@@ -10,14 +10,13 @@ Page({
 
     onLoad: function (e) {
         let HomePage = wx.getStorageSync('HomePage')
-        let item = HomePage['Pictures'].find(value => {return value.Id = e.Id})
+        let item = HomePage['Pictures'].find(value => {return value.Id.toString() === e.Id.toString()})
         if (!item.LocalContent) this.localizedContent(e.Id)
         else this.loadContent(item.ContentUrl)
     },
 
     // 渲染
     loadContent: function (url) {
-        let that = this
         const fs = wx.getFileSystemManager()
         let content = fs.readFileSync(url, 'utf-8')
         let result = app.towxml(content, this.data.type, {
@@ -39,7 +38,7 @@ Page({
     localizedContent: function (id) {
         let that = this
         let HomePage = wx.getStorageSync('HomePage')
-        let item = HomePage['Pictures'].find(value => {return value.Id = id})
+        let item = HomePage['Pictures'].find(value => {return value.Id.toString() === id.toString()})
         util.saveFile(item.ContentUrl).then(res => {
             item.ContentUrl = res.path
             item.LocalContent = true

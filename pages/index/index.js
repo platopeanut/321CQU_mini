@@ -1,7 +1,6 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
 const util = require("../../utils/util")
-const {nu} = require("../../lib/towxml/parse/parse2/entities/maps/entities");
 
 Page({
 
@@ -30,12 +29,12 @@ Page({
                 color: 'olive',
                 icon: 'time'
             },
-            // {
-            //     title: '升学通',
-            //     path: 'sxt',
-            //     color: 'green',
-            //     icon: 'medal'
-            // },
+            {
+                title: '升学通',
+                path: 'sxt',
+                color: 'green',
+                icon: 'medal'
+            },
             {
                 title: '查课',
                 path: 'class_info',
@@ -82,9 +81,10 @@ Page({
         this.LoadCurriculumInfo()
         console.log(wx.getStorageSync('HomePage'))
     },
-    loadSwiperList: function (HomePage) {
+    loadSwiperList: function () {
+        let HomePage = wx.getStorageSync('HomePage')
         util.saveBatchFile(HomePage['Pictures'].filter(value => {
-            return value.JumpType === 'md' && !value.Local
+            return !value.Local
         })).then(values => {
             for (let value of values) {
                 HomePage['Pictures'][value.id].Url = value.path
@@ -102,11 +102,12 @@ Page({
         let HomePage = wx.getStorageSync('HomePage')
         // 1.当没有缓存（清除缓存或更新后）2.有缓存且时间到了
         if (!HomePage || (new Date().toDateString() !== HomePage['LastCheck'] && new Date().getHours() > 6)) {
-            console.log('pass')
+            console.log('local check pass')
             if (!HomePage) HomePage = {}
             HomePage['LastCheck'] = new Date().toDateString()
             api.getHomepageImgData().then(res=>{
                 if (!HomePage || HomePage['LastUpdate'] !== res.LastUpdate) {
+                    console.log('remote check pass')
                     HomePage['LastUpdate'] = res.LastUpdate
                     HomePage['Pictures'] = []
                     let cnt = 0;
@@ -121,6 +122,8 @@ Page({
                         })
                         cnt ++
                     }
+                    wx.setStorageSync('HomePage', HomePage)
+                    that.loadSwiperList()
                     // 获取首页背景图
                     util.saveFile(util.IndexImgUrl).then(res => {
                         HomePage['IndexImgPath'] = res.path
@@ -129,11 +132,10 @@ Page({
                         })
                     }).finally(()=>{
                         wx.setStorageSync('HomePage', HomePage)
-                        that.loadSwiperList(HomePage)
                     })
                 }
             })
-        } else this.loadSwiperList(HomePage)
+        } else this.loadSwiperList()
     },
 
     LoadCurriculumInfo: function () {
@@ -166,7 +168,7 @@ Page({
         }
     },
 
-    previewImg: function (e) {
+    previewImg: function () {
         let urls = []
         for (let item of this.data.swiperList) {
             urls.push(item.Url)
@@ -193,6 +195,17 @@ Page({
     onLoad: function() {
         let AppUse = wx.getStorageSync('AppUse')
         if (AppUse === '') {
+            // 清除之前的文件缓存
+            wx.getSavedFileList({
+                success: result => {
+                    result.fileList.forEach(value=>{
+                        wx.removeSavedFile({
+                            filePath: value.filePath
+                        })
+                        console.log('remove', value.filePath)
+                    })
+                }
+            })
             wx.showModal({
                 title: "321CQU v2.2",
                 content: "1. 新增图书查询，图书收藏（暂不支持云端备份）;2.优化考试安排"
