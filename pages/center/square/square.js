@@ -1,10 +1,12 @@
 const square_api = require('./square_api')
 const square_util = require('./square_util')
+const {ac} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
 const app = getApp()
 
 Page({
-
     data: {
+        Tab: ['活动', '消息', '我的'],
+        TabCur: 1,
         categories: square_util.categories,
         curr_type: 'all',
         stu_id: null,
@@ -13,8 +15,23 @@ Page({
         post_index_list: null,
         post_flag_list: null,   // 1 --> 第一次刷新 --> 0 --> 没有更多 --> -1
         option: 0,
-    },
 
+        ActivityList: [],
+        ActivityPage: 0,
+        ActivityInit: true,
+    },
+    tabSelect: function (e) {
+        let index = e.currentTarget.dataset.id
+        if (index === 0 && this.data.ActivityInit) {
+            this.getActivities()
+            this.setData({
+                ActivityInit: false
+            })
+        }
+        this.setData({
+            TabCur: index
+        })
+    },
     onShow: function () {
         if (this.data.option === 0) {
             let StuInfo = wx.getStorageSync('StuInfo')
@@ -48,7 +65,6 @@ Page({
             this.updateData(0, 10, false)
         }
     },
-
     selectPart: function (res) {
         this.setData({
             curr_type: res.currentTarget.dataset.type
@@ -57,21 +73,18 @@ Page({
             this.updateData(0, 10, false)
         }
     },
-
     jumpToAddPost: function () {
         let that = this
         wx.navigateTo({
             url: './edit/edit?type=' + that.data.curr_type,
         })
     },
-
     jumpToDetail: function (e, direct=false) {
         let item = direct ? e : e.currentTarget.dataset.item
         wx.navigateTo({
             url: './detail/detail?pid=' + item.Pid
         })
     },
-
     longPressOperation: function (e) {
         wx.vibrateShort()
         let that = this
@@ -116,7 +129,6 @@ Page({
             })
         }
     },
-
     updateData: function (start, batch=10, loading=true) {
         let that = this
         let post_list = this.data.post_list
@@ -183,8 +195,9 @@ Page({
             })
         })
     },
-
     onPullDownRefresh() {
+        wx.stopPullDownRefresh()
+        let that = this
         if (!(this.data.stu_id && this.data.authority)) {
             wx.stopPullDownRefresh()
             wx.showToast({
@@ -193,29 +206,73 @@ Page({
             })
             return
         }
-        let post_list = this.data.post_list
-        post_list[this.data.curr_type] = []
-        let post_index_list = this.data.post_index_list
-        post_index_list[square_util.getIndexByType(this.data.curr_type)] = 0
-        this.setData({
-            post_list: post_list,
-            post_index_list: post_index_list
-        })
-        this.updateData(0)
-        wx.stopPullDownRefresh()
-    },
-
-    onReachBottom: function() {
-        let post_index_list = this.data.post_index_list
-        let post_flag_list = this.data.post_flag_list
-        let index = square_util.getIndexByType(this.data.curr_type)
-        if (post_flag_list[index] === -1) {
-            wx.showToast({
-                title: '没有更多啦',
-                icon: 'none'
+        if (this.data.TabCur === 1) {
+            let post_list = this.data.post_list
+            post_list[this.data.curr_type] = []
+            let post_index_list = this.data.post_index_list
+            post_index_list[square_util.getIndexByType(this.data.curr_type)] = 0
+            this.setData({
+                post_list: post_list,
+                post_index_list: post_index_list
             })
-            return
+            this.updateData(0)
         }
-        this.updateData(post_index_list[index])
+        if (this.data.TabCur === 0) {
+            this.setData({
+                ActivityList: [],
+                ActivityPage: 0,
+            })
+            that.getActivities()
+        }
     },
+    onReachBottom: function() {
+        if (this.data.TabCur === 0) {
+            this.getActivities()
+        }
+        if (this.data.TabCur === 1) {
+            let post_index_list = this.data.post_index_list
+            let post_flag_list = this.data.post_flag_list
+            let index = square_util.getIndexByType(this.data.curr_type)
+            if (post_flag_list[index] === -1) {
+                wx.showToast({
+                    title: '没有更多啦',
+                    icon: 'none'
+                })
+                return
+            }
+            this.updateData(post_index_list[index])
+        }
+    },
+    getActivities: function () {
+        let that = this
+        square_api.getActivities(that.data.ActivityPage).then(res => {
+            console.log(res)
+            let ActivityList = that.data.ActivityList
+            let now_time = new Date().getTime()
+            let undefined_time = '0000-00-00'
+            for (let item of res.Announcements) {
+                item['State'] = '进行中'
+                if (item.StartDate !== undefined_time && new Date(item.StartDate).getTime() > now_time) item['State'] = '未开始'
+                if (item.EndDate !== undefined_time && new Date(item.EndDate).getTime() < now_time) item['State'] = '已结束'
+                ActivityList.push(item)
+            }
+            that.setData({
+                ActivityList: ActivityList,
+                ActivityPage: that.data.ActivityPage + 1
+            })
+        })
+    },
+    selectActivity: function (e) {
+        let activity = this.data.ActivityList[e.currentTarget.dataset.index]
+        wx.navigateTo({
+            url: './activity_detail/activity_detail?Aid=' + activity.Aid
+                + '&Url=' + activity.Url
+                + '&Name=' + activity.Name
+                + '&Title=' + activity.Title
+                + '&UpdateDate=' + activity.UpdateDate
+                + '&StartDate=' + activity.StartDate
+                + '&EndDate=' + activity.EndDate
+                + '&State=' + activity.State
+        })
+    }
 })

@@ -1,3 +1,17 @@
+.part {
+    height: 100%;
+    width: 100rpx;
+    margin:25rpx;
+}
+
+.part_list {
+    display: flex;
+    font-size: 15px;
+    width: 100%;
+    overflow-y: scroll;
+    white-space: nowrap;
+}
+
 .movable-area {
     pointer-events:none;
     width: 100%;

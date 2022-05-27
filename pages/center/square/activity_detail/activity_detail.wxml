@@ -1,0 +1,23 @@
+<view>
+    <view class="cu-card dynamic no-card">
+        <view class="cu-item shadow padding">
+            <view class="cu-list menu-avatar">
+                <view class="cu-item">
+                    <view class="cu-avatar round lg" style="background-image:url({{activity.Url}});"></view>
+                    <view class="content flex-sub">
+                        <view>{{activity.Name}}</view>
+                        <view class="text-gray text-sm flex justify-between">
+                            {{activity.UpdateDate}}
+                        </view>
+                    </view>
+                    <view class="cu-tag bg-{{activity.State==='未开始'?'orange':(activity.State === '进行中'?'green':'red')}}">{{activity.State}}</view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="flex bg-white">
+        <view class="flex-sub line-black padding-sm margin-xs text-center">{{activity.StartDate}}</view>
+        <view class="flex-sub line-black padding-sm margin-xs text-center">{{activity.EndDate}}</view>
+    </view>
+    <towxml nodes="{{article}}"/>
+</view>

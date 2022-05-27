@@ -117,6 +117,32 @@ function deleteReply(rid, stu_id) {
     })
 }
 
+// 获取活动
+function getActivities(page=0) {
+    let header = {
+        url: '/announcement/get_list',
+        data: {
+            Page: page
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+
+// 查看活动详情
+function getActivityInfo(id) {
+    let header = {
+        url: '/announcement/get_detail',
+        data: {
+            Id: id
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+
 
 module.exports = {
     getPostList,
@@ -127,4 +153,6 @@ module.exports = {
     getReply,
     sendReply,
     deleteReply,
+    getActivities,
+    getActivityInfo,
 }

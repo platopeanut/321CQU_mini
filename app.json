@@ -24,6 +24,7 @@
     "pages/center/square/square",
     "pages/center/square/detail/detail",
     "pages/center/square/edit/edit",
+    "pages/center/square/activity_detail/activity_detail",
     "pages/center/library/library",
     "pages/center/vacant_classroom/vacant_classroom",
     "pages/center/life/bustimeold/bustimeold",

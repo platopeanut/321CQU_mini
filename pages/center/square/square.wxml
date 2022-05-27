@@ -1,119 +1,170 @@
 <view>
-    <view class="cu-list grid col-{{3}} border">
-        <view class="cu-item {{item.type === curr_type?'text-bold':''}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">
-            <view class="cuIcon-{{item.icon}} text-{{item.color}}">
+    <scroll-view scroll-x class="bg-white nav" style="position:fixed;top:0;z-index:1">
+        <view class="flex text-center">
+            <view class="cu-item flex-sub {{index===TabCur?'text-blue text-bold cur':'text-black'}}" wx:for="{{Tab}}" bindtap="tabSelect" data-id="{{index}}">
+                <text style="font-size: medium;">{{item}}</text>
             </view>
-            <text>{{item.title}}</text>
         </view>
-    </view>
-
-    <view wx:for="{{post_list[curr_type]}}">
-        <view wx:if="{{curr_type==='TP'}}">
-            <view class="cu-card" bindlongpress="longPressOperation" bindtap="jumpToDetail" data-item="{{item}}">
-                <view class="cu-item shadow">
-                    <view class="title" wx:if="{{item.Title}}">
-                        <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
-                    </view>
-                    <view class="cu-list menu-avatar">
-                        <view class="cu-item">
-                            <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
-                            <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
-                            <view class="content flex-sub">
-                                <view>{{item.UserName?item.UserName:item.Author}}</view>
-                                <view class="text-gray text-sm flex justify-between">
-                                    {{item.UpdateDate}}
-                                </view>
-                            </view>
-                            <view wx:if="{{item.Authority!=='normal'}}">
-                                <view class="cu-capsule margin-right">
-                                    <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
-                                    <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
-                                </view>
-                            </view>
-                            <view class="action" wx:if="{{curr_type === 'all'}}">
-                                <view class="cu-capsule margin-right">
-                                    <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
-                                </view>
-                            </view>
-                        </view>
-                    </view>
-
-                    <view class="text-content" style="margin: 20rpx;">
-                        <text user-select>{{item.Content}}</text>
-                    </view>
-<!--                    投票-->
-<!--                    {{item.color==='white'?'bg-grey':'bg-white'}}"-->
-                    <view wx:for="{{item.Vote}}" class="padding flex">
-                        <view class="cu-progress round {{index === 0?'striped active':''}}">
-                            <view class="bg-{{item.color}}" style="width:{{item.value}};">{{item.title}}</view>
-                        </view>
-                        <text class="margin-left">{{item.num}}</text>
-                    </view>
-
-                    <view class="text-gray text-sm text-right padding">
-                        <!--                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
-                        <!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
-                        <!--                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
-                        <text wx:if="{{item.ReplyNum > 0}}">
-                            <text class="cuIcon-messagefill margin-lr-xs"></text>{{item.ReplyNum}}
-                        </text>
+    </scroll-view>
+    <view wx:if="{{TabCur === 1}}">
+        <scroll-view scroll-x class="bg-white nav solids" style="position:fixed;top:90rpx;z-index:1">
+            <view class="flex text-center">
+                <view class="cu-item flex-sub {{item.type === curr_type?'text-blue text-bold cur':'text-black'}}" wx:for="{{categories}}" bindtap="selectPart" data-type="{{item.type}}">
+                    <view class="text-{{item.color}}">
+                        {{item.title}}
                     </view>
                 </view>
             </view>
-        </view>
-        <view wx:else>
-            <view class="cu-card" bindlongpress="longPressOperation" bindtap="jumpToDetail" data-item="{{item}}">
-                <view class="cu-item shadow">
-                    <view class="title" wx:if="{{item.Title}}">
-                        <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
-                    </view>
-                    <view class="cu-list menu-avatar">
-                        <view class="cu-item">
-                            <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
-                            <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
-                            <view class="content flex-sub">
-                                <view>{{item.UserName?item.UserName:item.Author}}</view>
-                                <view class="text-gray text-sm flex justify-between">
-                                    {{item.UpdateDate}}
-                                </view>
-                            </view>
-                            <view wx:if="{{item.Authority!=='normal'}}">
-                                <view class="cu-capsule margin-right">
-                                    <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
-                                    <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
-                                </view>
-                            </view>
-                            <view class="action" wx:if="{{curr_type === 'all'}}">
-                                <view class="cu-capsule margin-right">
-                                    <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
-                                </view>
+        </scroll-view>
+        <view style="width:100%;height:90rpx;"></view>
+    </view>
+    <view style="width:100%;height:90rpx;"></view>
+
+<!--    <scroll-view scroll-x class="bg-white nav solids" scroll-with-animation scroll-left="{{categories}}">-->
+<!--        <view class="cu-item {{index==TabCur?'text-green cur':''}}" wx:for="{{10}}" wx:key bindtap="selectPart" data-type="{{item.type}}">-->
+<!--            Tab{{index}}-->
+<!--        </view>-->
+<!--    </scroll-view>-->
+<!--    <view class="cu-list grid col-{{3}} border solids">-->
+<!--        <view class="cu-item {{item.type === curr_type?'text-bold':''}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">-->
+<!--            <view class="cuIcon-{{item.icon}} text-{{item.color}}">-->
+<!--            </view>-->
+<!--            <text>{{item.title}}</text>-->
+<!--        </view>-->
+<!--    </view>-->
+
+    <view wx:if="{{TabCur === 0}}">
+        <view class="cu-card dynamic" wx:for="{{ActivityList}}" wx:key bindtap="selectActivity" data-index="{{index}}">
+            <view class="cu-item shadow padding">
+                <view class="cu-list menu-avatar">
+                    <view class="cu-item">
+                        <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>
+                        <view class="content flex-sub">
+                            <view>{{item.Name}}</view>
+                            <view class="text-gray text-sm flex justify-between">
+                                {{item.UpdateDate}}
                             </view>
                         </view>
+                        <view class="cu-tag bg-{{item.State==='未开始'?'orange':(item.State === '进行中'?'green':'red')}}">{{item.State}}</view>
                     </view>
-
-                    <view class="text-content" style="margin: 20rpx;">
-<!--                        <text user-select>-->
-<!--                           -->
-<!--                        </text>-->
-                        <towxml nodes="{{item.Content}}"/>
-                    </view>
-
-                    <view class="text-gray text-sm text-right padding">
-                        <!--                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
-                        <!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
-                        <!--                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
-                        <text wx:if="{{item.ReplyNum > 0}}">
-                            <text class="cuIcon-messagefill margin-lr-xs"></text>{{item.ReplyNum}}
-                        </text>
-                    </view>
+                </view>
+                <view class="text-content">
+                    {{item.Title}}
+                </view>
+                <view class="text-gray text-sm text-right padding">
+                    <text>{{item.StartDate}} ~ {{item.EndDate}}</text>
                 </view>
             </view>
         </view>
     </view>
+    <view wx:if="{{TabCur === 1}}">
+        <view wx:for="{{post_list[curr_type]}}">
+            <view wx:if="{{curr_type==='TP'}}">
+                <view class="cu-card" bindlongpress="longPressOperation" bindtap="jumpToDetail" data-item="{{item}}">
+                    <view class="cu-item shadow">
+                        <view class="title" wx:if="{{item.Title}}">
+                            <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
+                        </view>
+                        <view class="cu-list menu-avatar">
+                            <view class="cu-item">
+                                <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
+                                <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
+                                <view class="content flex-sub">
+                                    <view>{{item.UserName?item.UserName:item.Author}}</view>
+                                    <view class="text-gray text-sm flex justify-between">
+                                        {{item.UpdateDate}}
+                                    </view>
+                                </view>
+                                <view wx:if="{{item.Authority!=='normal'}}">
+                                    <view class="cu-capsule margin-right">
+                                        <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
+                                        <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
+                                    </view>
+                                </view>
+                                <view class="action" wx:if="{{curr_type === 'all'}}">
+                                    <view class="cu-capsule margin-right">
+                                        <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
+                                    </view>
+                                </view>
+                            </view>
+                        </view>
 
-    <movable-area bindtap="jumpToAddPost" wx:if="{{curr_type !== 'all'}}" class="movable-area">
-        <movable-view class="movable-view" direction="all">
-            <image src="../../../res/icons/plus.png"></image>
-        </movable-view>
-    </movable-area>
+                        <view class="text-content" style="margin: 20rpx;">
+                            <text user-select>{{item.Content}}</text>
+                        </view>
+                        <!--                    投票-->
+                        <!--                    {{item.color==='white'?'bg-grey':'bg-white'}}"-->
+                        <view wx:for="{{item.Vote}}" class="padding flex">
+                            <view class="cu-progress round {{index === 0?'striped active':''}}">
+                                <view class="bg-{{item.color}}" style="width:{{item.value}};">{{item.title}}</view>
+                            </view>
+                            <text class="margin-left">{{item.num}}</text>
+                        </view>
+
+                        <view class="text-gray text-sm text-right padding">
+                            <!--                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
+                            <!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
+                            <!--                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
+                            <text wx:if="{{item.ReplyNum > 0}}">
+                                <text class="cuIcon-messagefill margin-lr-xs"></text>{{item.ReplyNum}}
+                            </text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view wx:else>
+                <view class="cu-card" bindlongpress="longPressOperation" bindtap="jumpToDetail" data-item="{{item}}">
+                    <view class="cu-item shadow">
+                        <view class="title" wx:if="{{item.Title}}">
+                            <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
+                        </view>
+                        <view class="cu-list menu-avatar">
+                            <view class="cu-item">
+                                <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
+                                <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
+                                <view class="content flex-sub">
+                                    <view>{{item.UserName?item.UserName:item.Author}}</view>
+                                    <view class="text-gray text-sm flex justify-between">
+                                        {{item.UpdateDate}}
+                                    </view>
+                                </view>
+                                <view wx:if="{{item.Authority!=='normal'}}">
+                                    <view class="cu-capsule margin-right">
+                                        <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
+                                        <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
+                                    </view>
+                                </view>
+                                <view class="action" wx:if="{{curr_type === 'all'}}">
+                                    <view class="cu-capsule margin-right">
+                                        <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
+                                    </view>
+                                </view>
+                            </view>
+                        </view>
+
+                        <view class="text-content" style="margin: 20rpx;">
+                            <!--                        <text user-select>-->
+                            <!--                           -->
+                            <!--                        </text>-->
+                            <towxml nodes="{{item.Content}}"/>
+                        </view>
+
+                        <view class="text-gray text-sm text-right padding">
+                            <!--                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
+                            <!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
+                            <!--                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
+                            <text wx:if="{{item.ReplyNum > 0}}">
+                                <text class="cuIcon-messagefill margin-lr-xs"></text>{{item.ReplyNum}}
+                            </text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <movable-area bindtap="jumpToAddPost" wx:if="{{curr_type !== 'all'}}" class="movable-area">
+            <movable-view class="movable-view" direction="all">
+                <image src="../../../res/icons/plus.png"></image>
+            </movable-view>
+        </movable-area>
+    </view>
 </view>
