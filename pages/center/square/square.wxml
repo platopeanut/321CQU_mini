@@ -7,12 +7,10 @@
         </view>
     </scroll-view>
     <view wx:if="{{TabCur === 1}}">
-        <scroll-view scroll-x class="bg-white nav solids" style="position:fixed;top:90rpx;z-index:1">
+        <scroll-view scroll-x class="bg-white nav solids-top" style="position:fixed;top:90rpx;z-index:1">
             <view class="flex text-center">
-                <view class="cu-item flex-sub {{item.type === curr_type?'text-blue text-bold cur':'text-black'}}" wx:for="{{categories}}" bindtap="selectPart" data-type="{{item.type}}">
-                    <view class="text-{{item.color}}">
-                        {{item.title}}
-                    </view>
+                <view class="cu-item flex-sub {{item.type===curr_type?'text-black text-bold cur':'text-gray'}}" wx:for="{{categories}}" bindtap="selectPart" data-type="{{item.type}}">
+                    <text style="font-size:small;">{{item.title}}</text>
                 </view>
             </view>
         </scroll-view>
@@ -34,28 +32,60 @@
 <!--    </view>-->
 
     <view wx:if="{{TabCur === 0}}">
-        <view class="cu-card dynamic" wx:for="{{ActivityList}}" wx:key bindtap="selectActivity" data-index="{{index}}">
-            <view class="cu-item shadow padding">
-                <view class="cu-list menu-avatar">
+        <view class="cu-card case" wx:for="{{ActivityList}}" wx:key>
+            <view class="cu-item shadow">
+                <view class="image" bindtap="selectActivity" data-index="{{index}}">
+                    <image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
+<!--                    <view class="cu-tag bg-blue">史诗</view>-->
+                    <view class="cu-bar bg-shadeBottom">
+                        <text class="text-bold" style="font-size:small;">{{item.Title}}</text>
+                    </view>
+                </view>
+                <view class="cu-list menu-avatar" bindtap="followGroup" data-index="{{index}}">
                     <view class="cu-item">
                         <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>
                         <view class="content flex-sub">
-                            <view>{{item.Name}}</view>
+                            <view class="text-black">{{item.Name}}<text wx:if="{{item['follow']}}" class=" padding-left text-yellow">(已关注)</text></view>
                             <view class="text-gray text-sm flex justify-between">
                                 {{item.UpdateDate}}
                             </view>
                         </view>
-                        <view class="cu-tag bg-{{item.State==='未开始'?'orange':(item.State === '进行中'?'green':'red')}}">{{item.State}}</view>
+                        <view class="action">
+                            <view class="cu-tag bg-{{item.State==='未开始'?'orange':(item.State === '进行中'?'green':'red')}}">{{item.State}}</view>
+                        </view>
                     </view>
-                </view>
-                <view class="text-content">
-                    {{item.Title}}
-                </view>
-                <view class="text-gray text-sm text-right padding">
-                    <text>{{item.StartDate}} ~ {{item.EndDate}}</text>
+                    <view class="cu-item solids-top">
+                        <view style="width:100%;height:100%;font-size:small;" class="padding-top">
+                            <text class='cuIcon-titles text-orange padding-left'></text>活动时间:
+                            <text class="padding-left">{{item.StartDate}}~{{item.EndDate}}</text>
+                        </view>
+<!--                        <button class="cu-btn round line-green shadow">关注活动</button>-->
+                    </view>
                 </view>
             </view>
         </view>
+<!--        <view class="cu-card dynamic" wx:for="{{ActivityList}}" wx:key bindtap="selectActivity" data-index="{{index}}">-->
+<!--            <view class="cu-item shadow padding">-->
+<!--                <view class="cu-list menu-avatar">-->
+<!--                    <view class="cu-item">-->
+<!--                        <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>-->
+<!--                        <view class="content flex-sub">-->
+<!--                            <view>{{item.Name}}</view>-->
+<!--                            <view class="text-gray text-sm flex justify-between">-->
+<!--                                {{item.UpdateDate}}-->
+<!--                            </view>-->
+<!--                        </view>-->
+<!--                        <view class="cu-tag bg-{{item.State==='未开始'?'orange':(item.State === '进行中'?'green':'red')}}">{{item.State}}</view>-->
+<!--                    </view>-->
+<!--                </view>-->
+<!--                <view class="text-content">-->
+<!--                    {{item.Title}}-->
+<!--                </view>-->
+<!--                <view class="text-gray text-sm text-right padding">-->
+<!--                    <text>{{item.StartDate}} ~ {{item.EndDate}}</text>-->
+<!--                </view>-->
+<!--            </view>-->
+<!--        </view>-->
     </view>
     <view wx:if="{{TabCur === 1}}">
         <view wx:for="{{post_list[curr_type]}}">
@@ -135,8 +165,8 @@
                                     </view>
                                 </view>
                                 <view class="action" wx:if="{{curr_type === 'all'}}">
-                                    <view class="cu-capsule margin-right">
-                                        <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
+                                    <view class="margin-right">
+                                        <view class="cu-tag line-grey">{{item.Type}}</view>
                                     </view>
                                 </view>
                             </view>
@@ -154,7 +184,7 @@
                             <!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
                             <!--                    <text class="cuIcon-messagefill margin-lr-xs"></text> 30-->
                             <text wx:if="{{item.ReplyNum > 0}}">
-                                <text class="cuIcon-messagefill margin-lr-xs"></text>{{item.ReplyNum}}
+                                <text class="cuIcon-comment margin-lr-xs" style="font-size:small;"></text>{{item.ReplyNum}}
                             </text>
                         </view>
                     </view>
@@ -166,5 +196,34 @@
                 <image src="../../../res/icons/plus.png"></image>
             </movable-view>
         </movable-area>
+    </view>
+    <view wx:if="{{TabCur === 2}}">
+        <view class="cu-bar bg-white solid-bottom margin-top">
+            <view class="action">
+                <text class="cuIcon-title text-green"></text>
+                <text class="text-bold">关注组织</text>
+            </view>
+        </view>
+        <view class="cu-list menu-avatar" bindtap="followGroup" data-index="{{index}}">
+            <view class="cu-item">
+                <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>
+                <view class="content flex-sub">
+                    <view class="text-black">{{item.Name}}<text wx:if="{{item['follow']}}" class=" padding-left text-yellow">(已关注)</text></view>
+                    <view class="text-gray text-sm flex justify-between">
+                        {{item.UpdateDate}}
+                    </view>
+                </view>
+                <view class="action">
+                    <view class="cu-tag bg-{{item.State==='未开始'?'orange':(item.State === '进行中'?'green':'red')}}">{{item.State}}</view>
+                </view>
+            </view>
+            <view class="cu-item solids-top">
+                <view style="width:100%;height:100%;font-size:small;" class="padding-top">
+                    <text class='cuIcon-titles text-orange padding-left'></text>活动时间:
+                    <text class="padding-left">{{item.StartDate}}~{{item.EndDate}}</text>
+                </view>
+                <!--                        <button class="cu-btn round line-green shadow">关注活动</button>-->
+            </view>
+        </view>
     </view>
 </view>

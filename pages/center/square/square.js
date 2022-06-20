@@ -9,16 +9,19 @@ Page({
         TabCur: 1,
         categories: square_util.categories,
         curr_type: 'all',
+        uid: null,
         stu_id: null,
         authority: null,
         post_list: {},
         post_index_list: null,
         post_flag_list: null,   // 1 --> 第一次刷新 --> 0 --> 没有更多 --> -1
-        option: 0,
+        option: 0,  // 仅查看detail页面未发生更改时返回不刷新
 
         ActivityList: [],
         ActivityPage: 0,
         ActivityInit: true,
+        //// my
+        followGroupList: [],
     },
     tabSelect: function (e) {
         let index = e.currentTarget.dataset.id
@@ -32,22 +35,44 @@ Page({
             TabCur: index
         })
     },
+    updateFollowGroup: function () {
+        let that = this
+        square_api.getFollowGroupList(this.data.uid).then(res => {
+            let group_list = []
+            for (const group of res.Group) {
+                group_list.push(group.GroupName)
+            }
+            let activities = that.data.ActivityList
+            for (const activity of activities) {
+                activity['follow'] = group_list.includes(activity.Name)
+            }
+            that.setData({
+                ActivityList: activities,
+                followGroupList: group_list
+            })
+            console.log(that.data.followGroupList)
+            console.log(that.data.ActivityList)
+        })
+    },
     onShow: function () {
         if (this.data.option === 0) {
             let StuInfo = wx.getStorageSync('StuInfo')
+            let uid = StuInfo['uid']
             let stu_id = StuInfo['stu_id']
             let authority = StuInfo['authority']
             this.setData({
+                uid: uid,
                 stu_id: stu_id,
                 authority: authority
             })
-            if (!(this.data.stu_id && this.data.authority)) {
+            if (!(this.data.uid && this.data.stu_id && this.data.authority)) {
                 wx.showToast({
                     title: '请绑定统一身份，昵称信息',
                     icon: 'none'
                 })
                 return
             }
+            // 获取帖子
             let length = square_util.type_list.length
             let post_index_list = new Array(length)
             for (let i = 0; i < post_index_list.length; i++) {
@@ -66,6 +91,7 @@ Page({
         }
     },
     selectPart: function (res) {
+        console.log(res.currentTarget.dataset.type)
         this.setData({
             curr_type: res.currentTarget.dataset.type
         })
@@ -246,19 +272,35 @@ Page({
     getActivities: function () {
         let that = this
         square_api.getActivities(that.data.ActivityPage).then(res => {
-            console.log(res)
+            if (res.Announcements.length === 0) {
+                wx.showToast({
+                    title: '没有更多啦',
+                    icon: 'none'
+                })
+                return
+            }
             let ActivityList = that.data.ActivityList
             let now_time = new Date().getTime()
             let undefined_time = '0000-00-00'
+            let group_info_task = []
             for (let item of res.Announcements) {
                 item['State'] = '进行中'
-                if (item.StartDate !== undefined_time && new Date(item.StartDate).getTime() > now_time) item['State'] = '未开始'
                 if (item.EndDate !== undefined_time && new Date(item.EndDate).getTime() < now_time) item['State'] = '已结束'
+                else if (item.StartDate !== undefined_time && new Date(item.StartDate).getTime() > now_time) item['State'] = '未开始'
+                group_info_task.push(square_api.getGroupInfo(item.Name))
                 ActivityList.push(item)
             }
-            that.setData({
-                ActivityList: ActivityList,
-                ActivityPage: that.data.ActivityPage + 1
+            Promise.all(group_info_task).then(values => {
+                for (let i = 0; i < ActivityList.length; i++) {
+                    if (values[i]['Avatar']) ActivityList[i].Url = 'https://zhulegend.com' + values[i]['Avatar']
+                }
+                console.log(ActivityList)
+                that.setData({
+                    ActivityList: ActivityList,
+                    ActivityPage: that.data.ActivityPage + 1
+                })
+                // 获取关注的组织
+                this.updateFollowGroup()
             })
         })
     },
@@ -273,6 +315,34 @@ Page({
                 + '&StartDate=' + activity.StartDate
                 + '&EndDate=' + activity.EndDate
                 + '&State=' + activity.State
+        })
+    },
+    followGroup: function (e) {
+        let item = this.data.ActivityList[e.currentTarget.dataset.index]
+        let that = this
+        let follow_status, follow_opt
+        console.log(that.data.followGroupList.includes(item.Name))
+        if (that.data.followGroupList.includes(item.Name)) {
+            follow_status = '取消关注'
+            follow_opt = 0
+        } else {
+            follow_status = '关注组织'
+            follow_opt = 1
+        }
+        wx.showActionSheet({
+            itemList: [follow_status],
+            success: res => {
+                console.log(res)
+                if (res.tapIndex === 0) {
+                    square_api.followGroup(that.data.uid, item.Name, follow_opt).then(() => {
+                        wx.showToast({
+                            title: follow_status + '成功',
+                            icon: 'none'
+                        })
+                        that.updateFollowGroup()
+                    })
+                }
+            }
         })
     }
 })

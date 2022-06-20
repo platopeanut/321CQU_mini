@@ -207,13 +207,13 @@ Page({
             }, 200)
             return
         }
-        let stu_id = StuInfo['stu_id']
-        let uid = StuInfo['uid']
-        let uid_pwd = StuInfo['uid_pwd']
-        let email = StuInfo['email']
-        let identity = StuInfo['identity']
+        let stu_id = StuInfo['stu_id'] ? StuInfo['stu_id'] : ''
+        let uid = StuInfo['uid'] ? StuInfo['uid'] : ''
+        let uid_pwd = StuInfo['uid_pwd'] ? StuInfo['uid_pwd'] : ''
+        let email = StuInfo['email'] ? StuInfo['email'] : ''
+        let identity = StuInfo['identity'] ? StuInfo['identity'] : ''
         let dormitory = info_util.packDormitoryInfo(StuInfo['room'])
-
+        if (!dormitory) dormitory = ''
 
         if (flag) {
             wx.login({

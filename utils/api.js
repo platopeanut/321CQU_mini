@@ -113,11 +113,12 @@ function getHomepageImgData() {
     }
   }
   return new Promise((resolve,reject) => {
-    request(header, resolve, reject, false, true, '2.0')
+    request(header, resolve, reject, false, true, '2.1')
   })
 }
 
 module.exports = {
+    url,
     TEST,
     request,
     getHomepageImgData,

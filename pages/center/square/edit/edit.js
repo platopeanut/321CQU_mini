@@ -69,8 +69,7 @@ Page({
             title: e.detail.value
         })
     },
-
-    sendPost: function (e) {
+    sendPost: function () {
         let that = this
         if (this.data.stu_id === '') {
             wx.showToast({
@@ -86,36 +85,43 @@ Page({
             })
             return
         }
-        if (this.data.mode === 0) {
-            console.log(this.data.content)
-            square_api.sendPost(this.data.type, this.data.title, this.data.content, this.data.stu_id).then(res => {
-                wx.showToast({
-                    title: '新建成功',
-                    icon: 'none'
-                })
-            }).finally(() => {
-                that.setData({
-                    title : '',
-                    content: '',
-                })
-            })
-        } else if (this.data.mode === 1) {
-            square_api.modifyPost(this.data.title, this.data.content, this.data.pid, this.data.stu_id).then(res => {
-                wx.showToast({
-                    title: '修改成功',
-                    icon: 'none'
-                })
-            }).finally(() => {
-                that.setData({
-                    title : '',
-                    content: '',
-                })
-            })
-        }
-        if (this.data.mode === 0 || this.data.mode === 1) {
-            util.changeParentPageOpt({
-                option: 0
-            })
-        }
+        wx.showModal({
+            content: '是否发送当前消息',
+            success: result => {
+                if (result.confirm) {
+                    if (that.data.mode === 0) {
+                        square_api.sendPost(that.data.type, that.data.title, that.data.content, that.data.stu_id).then(() => {
+                            wx.showToast({
+                                title: '新建成功',
+                                icon: 'none'
+                            })
+                        }).finally(() => {
+                            that.setData({
+                                title : '',
+                                content: '',
+                            })
+                        })
+                    }
+                    else if (that.data.mode === 1) {
+                        square_api.modifyPost(that.data.title, that.data.content, that.data.pid, that.data.stu_id).then(() => {
+                            wx.showToast({
+                                title: '修改成功',
+                                icon: 'none'
+                            })
+                        }).finally(() => {
+                            that.setData({
+                                title : '',
+                                content: '',
+                            })
+                        })
+                    }
+                    if (that.data.mode === 0 || that.data.mode === 1) {
+                        util.changeParentPageOpt({
+                            option: 0
+                        })
+                    }
+                }
+            }
+        })
     },
 })

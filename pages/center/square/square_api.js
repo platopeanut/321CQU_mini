@@ -129,13 +129,50 @@ function getActivities(page=0) {
         api.request(header, resolve, reject, true, true, '2.0')
     })
 }
-
 // 查看活动详情
 function getActivityInfo(id) {
     let header = {
         url: '/announcement/get_detail',
         data: {
             Id: id
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+// 查看组织信息
+function getGroupInfo(name) {
+    let header = {
+        url: '/announcement/group/get_info',
+        data: {
+            Name: name
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+// 关注组织
+function followGroup(uid, group_name, opt) {
+    let header = {
+        url: '/announcement/group/subscribe',
+        data: {
+            UserName: uid,
+            Type: opt,
+            GroupName: group_name
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+// 获取关注组织列表
+function getFollowGroupList(uid) {
+    let header = {
+        url: '/announcement/group/subscribe/list',
+        data: {
+            UserName: uid
         }
     }
     return new Promise((resolve,reject) => {
@@ -155,4 +192,7 @@ module.exports = {
     deleteReply,
     getActivities,
     getActivityInfo,
+    getGroupInfo,
+    followGroup,
+    getFollowGroupList,
 }
