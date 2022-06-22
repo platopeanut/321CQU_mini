@@ -118,15 +118,16 @@ function deleteReply(rid, stu_id) {
 }
 
 // 获取活动
-function getActivities(page=0) {
+function getActivities(page=0, type='normal') {
     let header = {
         url: '/announcement/get_list',
         data: {
-            Page: page
+            Page: page,
+            Type: type
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+        api.request(header, resolve, reject, true, true, '2.1')
     })
 }
 // 查看活动详情

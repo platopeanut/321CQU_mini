@@ -35,7 +35,7 @@
         <view class="cu-card case" wx:for="{{ActivityList}}" wx:key>
             <view class="cu-item shadow">
                 <view class="image" bindtap="selectActivity" data-index="{{index}}">
-                    <image src="https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg" mode="widthFix"></image>
+                    <image src="{{item.CoverUrl}}" mode="widthFix"></image>
 <!--                    <view class="cu-tag bg-blue">史诗</view>-->
                     <view class="cu-bar bg-shadeBottom">
                         <text class="text-bold" style="font-size:small;">{{item.Title}}</text>
@@ -198,31 +198,19 @@
         </movable-area>
     </view>
     <view wx:if="{{TabCur === 2}}">
-        <view class="cu-bar bg-white solid-bottom margin-top">
+        <view class="cu-bar bg-white solid margin-top">
             <view class="action">
                 <text class="cuIcon-title text-green"></text>
                 <text class="text-bold">关注组织</text>
+                <text class="text-grey padding-left">(点击即可取消关注)</text>
             </view>
         </view>
-        <view class="cu-list menu-avatar" bindtap="followGroup" data-index="{{index}}">
-            <view class="cu-item">
+        <view class="cu-list menu-avatar">
+            <view class="cu-item solids-bottom" wx:for="{{followGroupList}}" bindtap="cancelFollow" data-index="{{index}}">
                 <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>
                 <view class="content flex-sub">
-                    <view class="text-black">{{item.Name}}<text wx:if="{{item['follow']}}" class=" padding-left text-yellow">(已关注)</text></view>
-                    <view class="text-gray text-sm flex justify-between">
-                        {{item.UpdateDate}}
-                    </view>
+                    <view class="text-black">{{item.Name}}</view>
                 </view>
-                <view class="action">
-                    <view class="cu-tag bg-{{item.State==='未开始'?'orange':(item.State === '进行中'?'green':'red')}}">{{item.State}}</view>
-                </view>
-            </view>
-            <view class="cu-item solids-top">
-                <view style="width:100%;height:100%;font-size:small;" class="padding-top">
-                    <text class='cuIcon-titles text-orange padding-left'></text>活动时间:
-                    <text class="padding-left">{{item.StartDate}}~{{item.EndDate}}</text>
-                </view>
-                <!--                        <button class="cu-btn round line-green shadow">关注活动</button>-->
             </view>
         </view>
     </view>

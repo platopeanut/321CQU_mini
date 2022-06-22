@@ -1,6 +1,6 @@
-<view>
-    <view class="cu-card dynamic no-card">
-        <view class="cu-item shadow padding">
+<view class="bg-white">
+    <view class="cu-card dynamic no-card solids">
+        <view class="cu-item shadow padding-top">
             <view class="cu-list menu-avatar">
                 <view class="cu-item">
                     <view class="cu-avatar round lg" style="background-image:url({{activity.Url}});"></view>
@@ -14,10 +14,21 @@
                 </view>
             </view>
         </view>
-    </view>
-    <view class="flex bg-white">
-        <view class="flex-sub line-black padding-sm margin-xs text-center">{{activity.StartDate}}</view>
-        <view class="flex-sub line-black padding-sm margin-xs text-center">{{activity.EndDate}}</view>
+        <view class="cu-item padding-bottom">
+            <view style="width:100%;height:100%;font-size:small;" class="padding-top">
+                <text class='cuIcon-titles text-orange padding-left'></text>活动时间:
+                <text class="padding-left">{{activity.StartDate}}~{{activity.EndDate}}</text>
+            </view>
+        </view>
     </view>
     <towxml nodes="{{article}}"/>
+<!--    <view class="bg-white" style="width:100%;">-->
+<!--        <view style="align:right;">编辑于: {{activity.UpdateDate}}</view>-->
+<!--    </view>-->
+    <view class="padding-bottom bg-white">
+        <view class="padding text-right">
+            编辑于: {{activity.UpdateDate}}
+        </view>
+    </view>
 </view>
+<view style="width:100%;height:50rpx;"></view>

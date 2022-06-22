@@ -1,6 +1,6 @@
 const square_api = require('./square_api')
 const square_util = require('./square_util')
-const {ac} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
+const {els, el} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
 const app = getApp()
 
 Page({
@@ -22,6 +22,13 @@ Page({
         ActivityInit: true,
         //// my
         followGroupList: [],
+        MyInit: true,
+    },
+    findGroup: function (name) {
+        for (let i = 0; i < this.data.followGroupList.length; i++) {
+            if (this.data.followGroupList[i].Name === name) return i;
+        }
+        return -1
     },
     tabSelect: function (e) {
         let index = e.currentTarget.dataset.id
@@ -29,6 +36,12 @@ Page({
             this.getActivities()
             this.setData({
                 ActivityInit: false
+            })
+        }
+        if (index === 2 && this.data.MyInit) {
+            this.updateFollowGroup()
+            this.setData({
+                MyInit: false
             })
         }
         this.setData({
@@ -40,18 +53,44 @@ Page({
         square_api.getFollowGroupList(this.data.uid).then(res => {
             let group_list = []
             for (const group of res.Group) {
-                group_list.push(group.GroupName)
-            }
-            let activities = that.data.ActivityList
-            for (const activity of activities) {
-                activity['follow'] = group_list.includes(activity.Name)
+                group_list.push({Name: group.GroupName})
             }
             that.setData({
-                ActivityList: activities,
                 followGroupList: group_list
             })
-            console.log(that.data.followGroupList)
-            console.log(that.data.ActivityList)
+            let activities = that.data.ActivityList
+            for (const activity of activities) {
+                let index = that.findGroup(activity.Name)
+                if (index !== -1) {
+                    activity['follow'] = true
+                    group_list[index]['Url'] = activity.Url
+                } else activity['follow'] = false
+            }
+            // activity中存在关注的组织直接保存其Url，下面处理关注组织中缺失的Url
+            // group_list.push({'Name': 'Test'})
+            // let miss_follow_list = group_list.filter(value => {
+            //     console.log(value)
+            //     return !value['Url']
+            // })
+            // console.log(miss_follow_list)
+            let task = []
+            for (const group of group_list) {
+                if (group['Url']) task.push(new Promise((resolve) => {
+                    resolve(group['Url'])
+                }))
+                else task.push(square_api.getGroupInfo(group.Name))
+            }
+            Promise.all(task).then(values => {
+                for (let i = 0; i < values.length; i++) {
+                    if (values[i]['Avatar']) group_list[i]['Url'] = 'https://zhulegend.com' + values[i]['Avatar']
+                }
+                that.setData({
+                    followGroupList: group_list
+                })
+            })
+            that.setData({
+                ActivityList: activities
+            })
         })
     },
     onShow: function () {
@@ -279,6 +318,7 @@ Page({
                 })
                 return
             }
+            console.log(res.Announcements)
             let ActivityList = that.data.ActivityList
             let now_time = new Date().getTime()
             let undefined_time = '0000-00-00'
@@ -321,8 +361,8 @@ Page({
         let item = this.data.ActivityList[e.currentTarget.dataset.index]
         let that = this
         let follow_status, follow_opt
-        console.log(that.data.followGroupList.includes(item.Name))
-        if (that.data.followGroupList.includes(item.Name)) {
+        console.log(that.findGroup(item.Name))
+        if (that.findGroup(item.Name) !== -1) {
             follow_status = '取消关注'
             follow_opt = 0
         } else {
@@ -337,6 +377,24 @@ Page({
                     square_api.followGroup(that.data.uid, item.Name, follow_opt).then(() => {
                         wx.showToast({
                             title: follow_status + '成功',
+                            icon: 'none'
+                        })
+                        that.updateFollowGroup()
+                    })
+                }
+            }
+        })
+    },
+    cancelFollow: function (e) {
+        let that = this
+        let group_name = this.data.followGroupList[e.currentTarget.dataset.index].Name
+        wx.showActionSheet({
+            itemList: ['取消关注'],
+            success: result => {
+                if (result.tapIndex === 0) {
+                    square_api.followGroup(that.data.uid, group_name, 0).then(() => {
+                        wx.showToast({
+                            title: '取消成功',
                             icon: 'none'
                         })
                         that.updateFollowGroup()
