@@ -3,17 +3,16 @@ const api = require('../../../utils/api')
 // 本科生统一身份登录
 function loginUG(uid, uid_pwd) {
     let header = {
-        url: '/user/login',
+        url: '/user/bind',
         data: {
             'UserName': uid,
             'Password': uid_pwd
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
-
 // 研究生统一身份登录
 function loginPG(uid, uid_pwd) {
     let header = {
@@ -27,7 +26,6 @@ function loginPG(uid, uid_pwd) {
         api.request(header, resolve, reject)
     })
 }
-
 // 设置昵称，上传用户头像
 function setNickname(stu_id, nickname, avatarUrl) {
     let header = {
@@ -42,7 +40,6 @@ function setNickname(stu_id, nickname, avatarUrl) {
         api.request(header, resolve, reject)
     })
 }
-
 // 云存储账户信息
 function pushUserInfo(code, stu_id, uid, uid_pwd, email, dormitory, identity) {
     let header = {
