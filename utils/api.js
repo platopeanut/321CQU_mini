@@ -117,6 +117,24 @@ function getHomepageImgData() {
   })
 }
 
+/*
+    COS 对象存储
+ */
+// 获取临时密钥
+function COSGetCredential(type) {
+    let header = {
+        url: '/cos/get_credential',
+        data: {
+            Type: type
+        }
+    }
+    return new Promise((resolve,reject) => {
+        request(header, resolve, reject, false, true, '2.0')
+    })
+}
+
+
+
 module.exports = {
     url,
     TEST,
@@ -124,4 +142,5 @@ module.exports = {
     getHomepageImgData,
     adLook,
     adTimes,
+    COSGetCredential,
 }
