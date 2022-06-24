@@ -209,6 +209,7 @@ Page({
             // }
             //////////
             if (!post_list[that.data.curr_type]) post_list[that.data.curr_type] = []
+            console.log(res.PostList)
             for (let i = 0; i < res.PostList.length; i++) {
                 if (res.PostList[i]['Content'].length >= 45) {
                     res.PostList[i]['Content'] = res.PostList[i]['Content'].slice(0, 45) + '...'

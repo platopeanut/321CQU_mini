@@ -1,5 +1,5 @@
 <view>
-    <view class="cu-card" bindlongpress="longPressOperation">
+    <view class="cu-card">
         <view class="cu-item shadow">
             <view class="title" wx:if="{{item.Title}}">
                 <view class="text-cut text-bold padding" style="text-align: center;">{{item.Title}}</view>
@@ -28,21 +28,20 @@
                 </view>
             </view>
 
-            <view class="text-content" style="margin: 20rpx;" data-item="{{item}}">
+            <view class="text-content" style="margin: 20rpx;" data-item="{{item}}" bindlongpress="longPressOperation">
 <!--                <text user-select>{{item.Content}}</text>-->
                 <towxml nodes="{{item.Content}}"/>
             </view>
 
-            <view class="text-gray text-sm text-right padding">
+            <view class="text-gray text-sm text-right padding" bindlongpress="longPressOperation">
 <!--                <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
 <!--                <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
                 <text wx:if="{{comment_list.length > 0}}">
                     <text class="cuIcon-comment margin-lr-xs" style="font-size:small;"></text>{{comment_list.length}}
                 </text>
             </view>
-
             <view class="cu-list menu-avatar comment solids-top">
-                <view class="cu-item" wx:for="{{comment_list}}" bindtap="deleteComment" data-item="{{item}}">
+                <view class="cu-item" wx:for="{{comment_list}}" data-item="{{item}}" bindlongpress="deleteComment">
                     <view class="cu-avatar round" style="background-image:url({{item.UserImg}});"></view>
                     <view class="content">
                         <view class="text-grey">{{item.UserName?item.UserName:item.Author}}
@@ -58,10 +57,10 @@
                         </view>
                         <view class="margin-top-sm flex justify-between">
                             <view class="text-gray text-df">{{item.UpdateTime}}</view>
-<!--                            <view>-->
-<!--                                <text class="cuIcon-appreciatefill text-red"></text>-->
-<!--                                <text class="cuIcon-messagefill text-gray margin-left-sm"></text>-->
-<!--                            </view>-->
+                            <!--                            <view>-->
+                            <!--                                <text class="cuIcon-appreciatefill text-red"></text>-->
+                            <!--                                <text class="cuIcon-messagefill text-gray margin-left-sm"></text>-->
+                            <!--                            </view>-->
                         </view>
                     </view>
                 </view>

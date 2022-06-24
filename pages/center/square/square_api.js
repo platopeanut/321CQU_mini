@@ -1,4 +1,5 @@
 const api = require('../../../utils/api')
+const strings = require("../../../lib/towxml/parse/highlight/languages/c-like");
 
 /**
  *  信息广场
