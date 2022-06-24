@@ -1,6 +1,8 @@
 const square_api = require('./square_api')
 const square_util = require('./square_util')
-const {els, el} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
+const util = require('../../../utils/util')
+const {COSDownload} = require("../../../utils/api")
+const {it, Prime, nu, hscr} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
 const app = getApp()
 
 Page({
@@ -52,44 +54,27 @@ Page({
         let that = this
         square_api.getFollowGroupList(this.data.uid).then(res => {
             let group_list = []
+            let names = []
             for (const group of res.Group) {
                 group_list.push({Name: group.GroupName})
+                names.push(group.GroupName)
             }
-            that.setData({
-                followGroupList: group_list
-            })
-            let activities = that.data.ActivityList
-            for (const activity of activities) {
-                let index = that.findGroup(activity.Name)
-                if (index !== -1) {
-                    activity['follow'] = true
-                    group_list[index]['Url'] = activity.Url
-                } else activity['follow'] = false
-            }
-            // activity中存在关注的组织直接保存其Url，下面处理关注组织中缺失的Url
-            // group_list.push({'Name': 'Test'})
-            // let miss_follow_list = group_list.filter(value => {
-            //     console.log(value)
-            //     return !value['Url']
-            // })
-            // console.log(miss_follow_list)
-            let task = []
-            for (const group of group_list) {
-                if (group['Url']) task.push(new Promise((resolve) => {
-                    resolve(group['Url'])
-                }))
-                else task.push(square_api.getGroupInfo(group.Name))
-            }
-            Promise.all(task).then(values => {
-                for (let i = 0; i < values.length; i++) {
-                    if (values[i]['Avatar']) group_list[i]['Url'] = 'https://zhulegend.com' + values[i]['Avatar']
+            that.getGroupAvatar(names).then(values => {
+                for (let i = 0; i < group_list.length; i++) {
+                    group_list[i].Url = values[i]
+                }
+                let activities = that.data.ActivityList
+                for (const activity of activities) {
+                    let index = that.findGroup(activity.Name)
+                    if (index !== -1) {
+                        activity['follow'] = true
+                        group_list[index]['Url'] = activity.Url
+                    } else activity['follow'] = false
                 }
                 that.setData({
-                    followGroupList: group_list
+                    followGroupList: group_list,
+                    ActivityList: activities
                 })
-            })
-            that.setData({
-                ActivityList: activities
             })
         })
     },
@@ -310,7 +295,7 @@ Page({
     },
     getActivities: function () {
         let that = this
-        square_api.getActivities(that.data.ActivityPage).then(res => {
+        square_api.getActivities(that.data.uid, that.data.ActivityPage).then(res => {
             if (res.Announcements.length === 0) {
                 wx.showToast({
                     title: '没有更多啦',
@@ -322,19 +307,50 @@ Page({
             let ActivityList = that.data.ActivityList
             let now_time = new Date().getTime()
             let undefined_time = '0000-00-00'
-            let group_info_task = []
+            let activity_cover_task = []
+            let group_names = []
+            // 活动封面
+            // item['CoverUrl'] = res.tempFilePath console.log(item['CoverUrl'])
             for (let item of res.Announcements) {
+                group_names.push(item.Name)
+                activity_cover_task.push(new Promise(resolve => {
+                    if (!item['CoverUrl']) resolve(null)
+                    else COSDownload(item['CoverUrl'], res=>{
+                        wx.downloadFile({
+                            url: res.Url,
+                            success (res) {
+                                if (res.statusCode === 200) {
+                                    resolve(res.tempFilePath)
+                                }
+                            },
+                            fail: function (err) {
+                                resolve(null)
+                                wx.showToast({
+                                    title: item.Title + "活动封面获取失败",
+                                    icon: 'none'
+                                })
+                            },
+                        })
+                    })
+                }))
                 item['State'] = '进行中'
                 if (item.EndDate !== undefined_time && new Date(item.EndDate).getTime() < now_time) item['State'] = '已结束'
                 else if (item.StartDate !== undefined_time && new Date(item.StartDate).getTime() > now_time) item['State'] = '未开始'
-                group_info_task.push(square_api.getGroupInfo(item.Name))
                 ActivityList.push(item)
             }
-            Promise.all(group_info_task).then(values => {
+            this.getGroupAvatar(group_names).then(values => {
+                wx.showLoading()
                 for (let i = 0; i < ActivityList.length; i++) {
-                    if (values[i]['Avatar']) ActivityList[i].Url = 'https://zhulegend.com' + values[i]['Avatar']
+                    ActivityList[i].Url = values[i]
                 }
-                console.log(ActivityList)
+            }).then(()=>{
+                return Promise.all(activity_cover_task).then(values => {
+                    for (let i = 0; i < ActivityList.length; i++) {
+                        ActivityList[i]['CoverUrl'] = values[i]
+                    }
+                })
+            }).then(()=>{
+                wx.hideLoading()
                 that.setData({
                     ActivityList: ActivityList,
                     ActivityPage: that.data.ActivityPage + 1
@@ -401,6 +417,39 @@ Page({
                     })
                 }
             }
+        })
+    },
+    getGroupAvatar: function (names) {
+        let hasChanged = false
+        let GroupAvatarTable = wx.getStorageSync('GroupAvatarTable')
+        if (!GroupAvatarTable) GroupAvatarTable = {}
+        const fs =wx.getFileSystemManager()
+        console.log(GroupAvatarTable)
+        let task = []
+        for (const name of names) {
+            if (GroupAvatarTable[name]) task.push(new Promise(resolve => {resolve(GroupAvatarTable[name])}))
+            else task.push(new Promise(resolve=>{
+                square_api.getGroupInfo(name).then(res => {
+                    hasChanged = true
+                    wx.downloadFile({
+                        url: 'https://www.zhulegend.com' + res.Avatar,
+                        success: (result) => {
+                            fs.saveFile({
+                                tempFilePath: result.tempFilePath,
+                                success: e=>{
+                                    GroupAvatarTable[name] = e.savedFilePath
+                                    console.log(e.savedFilePath)
+                                    resolve(e.savedFilePath)
+                                }
+                            })
+                        }
+                    })
+                })
+            }))
+        }
+        return Promise.all(task).then(res => {
+            if (hasChanged) wx.setStorageSync('GroupAvatarTable', GroupAvatarTable)
+            return new Promise(resolve => {resolve(res)})
         })
     }
 })

@@ -236,6 +236,16 @@ function changeParentPageOpt(opt) {
     pages[pages.length - 2].setData(opt)
 }
 
+function str2buf(str) {
+    let size = str.length
+    let buffer = new ArrayBuffer(size || 0)
+    let arr = new Uint8Array(buffer)
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = str[i]
+    }
+    return buffer
+}
+
 
 module.exports = {
     IndexImgUrl,
@@ -256,4 +266,5 @@ module.exports = {
     saveBatchFile,
     changeParentPageOpt,
     findUrlFromMd,
+    str2buf,
 }

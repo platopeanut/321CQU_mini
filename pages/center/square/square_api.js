@@ -118,12 +118,13 @@ function deleteReply(rid, stu_id) {
 }
 
 // 获取活动
-function getActivities(page=0, type='normal') {
+function getActivities(uid, page=0, type='normal') {
     let header = {
         url: '/announcement/get_list',
         data: {
             Page: page,
-            Type: type
+            Type: type,
+            UserName: uid
         }
     }
     return new Promise((resolve,reject) => {
