@@ -63,6 +63,9 @@ Page({
                 for (let i = 0; i < group_list.length; i++) {
                     group_list[i].Url = values[i]
                 }
+                this.setData({
+                    followGroupList: group_list
+                })
                 let activities = that.data.ActivityList
                 for (const activity of activities) {
                     let index = that.findGroup(activity.Name)
@@ -72,7 +75,6 @@ Page({
                     } else activity['follow'] = false
                 }
                 that.setData({
-                    followGroupList: group_list,
                     ActivityList: activities
                 })
             })
