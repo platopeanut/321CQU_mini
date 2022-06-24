@@ -10,7 +10,6 @@ Page({
         TabCur: 1,
         categories: square_util.categories,
         curr_type: 'all',
-        uid: null,
         stu_id: null,
         authority: null,
         post_list: {},
@@ -51,7 +50,7 @@ Page({
     },
     updateFollowGroup: function () {
         let that = this
-        square_api.getFollowGroupList(this.data.uid).then(res => {
+        square_api.getFollowGroupList(this.data.stu_id).then(res => {
             let group_list = []
             let names = []
             for (const group of res.Group) {
@@ -82,15 +81,13 @@ Page({
     onShow: function () {
         if (this.data.option === 0) {
             let StuInfo = wx.getStorageSync('StuInfo')
-            let uid = StuInfo['uid']
             let stu_id = StuInfo['stu_id']
             let authority = StuInfo['authority']
             this.setData({
-                uid: uid,
                 stu_id: stu_id,
                 authority: authority
             })
-            if (!(this.data.uid && this.data.stu_id && this.data.authority)) {
+            if (!(this.data.stu_id && this.data.stu_id && this.data.authority)) {
                 wx.showToast({
                     title: '请绑定统一身份，昵称信息',
                     icon: 'none'
@@ -296,7 +293,7 @@ Page({
     },
     getActivities: function () {
         let that = this
-        square_api.getActivities(that.data.uid, that.data.ActivityPage).then(res => {
+        square_api.getActivities(that.data.stu_id, that.data.ActivityPage).then(res => {
             if (res.Announcements.length === 0) {
                 wx.showToast({
                     title: '没有更多啦',
@@ -391,7 +388,7 @@ Page({
             success: res => {
                 console.log(res)
                 if (res.tapIndex === 0) {
-                    square_api.followGroup(that.data.uid, item.Name, follow_opt).then(() => {
+                    square_api.followGroup(that.data.stu_id, item.Name, follow_opt).then(() => {
                         wx.showToast({
                             title: follow_status + '成功',
                             icon: 'none'
@@ -409,7 +406,7 @@ Page({
             itemList: ['取消关注'],
             success: result => {
                 if (result.tapIndex === 0) {
-                    square_api.followGroup(that.data.uid, group_name, 0).then(() => {
+                    square_api.followGroup(that.data.stu_id, group_name, 0).then(() => {
                         wx.showToast({
                             title: '取消成功',
                             icon: 'none'

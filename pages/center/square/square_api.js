@@ -119,13 +119,13 @@ function deleteReply(rid, stu_id) {
 }
 
 // 获取活动
-function getActivities(uid, page=0, type='normal') {
+function getActivities(stu_id, page=0, type='normal') {
     let header = {
         url: '/announcement/get_list',
         data: {
             Page: page,
             Type: type,
-            UserName: uid
+            Sid: stu_id
         }
     }
     return new Promise((resolve,reject) => {
@@ -157,11 +157,11 @@ function getGroupInfo(name) {
     })
 }
 // 关注组织
-function followGroup(uid, group_name, opt) {
+function followGroup(stu_id, group_name, opt) {
     let header = {
         url: '/announcement/group/subscribe',
         data: {
-            UserName: uid,
+            Sid: stu_id,
             Type: opt,
             GroupName: group_name
         }
@@ -171,11 +171,11 @@ function followGroup(uid, group_name, opt) {
     })
 }
 // 获取关注组织列表
-function getFollowGroupList(uid) {
+function getFollowGroupList(stu_id) {
     let header = {
         url: '/announcement/group/subscribe/list',
         data: {
-            UserName: uid
+            Sid: stu_id
         }
     }
     return new Promise((resolve,reject) => {

@@ -25,8 +25,6 @@ Page({
         })
         let that = this
         square_api.getActivityInfo(parseInt(e.Aid)).then(res => {
-            res.Markdown += '\n![xxx.png](https://www.cqu.edu.cn/Uploads/CQUmain/%E6%A0%A1%E5%9B%AD%E6%96%B0%E9%97%BB/%E6%A0%A1%E5%9B%AD%E6%96%B0%E9%97%BB.png)'
-            console.log(res.Markdown)
             let result = app.towxml(res.Markdown, 'markdown', {
                 // base:'http://jwc.cqu.edu.cn/images/',				// 相对资源的base路径
                 // theme:'dark',					                    // 主题，默认`light`

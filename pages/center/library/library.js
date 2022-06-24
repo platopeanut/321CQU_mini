@@ -1,5 +1,5 @@
 const library_api = require('./library_api')
-const {it} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
+const {it, nu} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
 
 Page({
 
@@ -37,6 +37,7 @@ Page({
     },
 
     selectMode: function (e) {
+        let that = this
         let mode = e.currentTarget.dataset.index
         if (mode === 0 && !this.data.borrow_mode_flag) {
             this.setData({
@@ -47,6 +48,31 @@ Page({
             let Library = wx.getStorageSync('Library')
             if (Library && Library['MarkBooks']) this.setData({
                 markBooks: Library['MarkBooks']
+            })
+            // 检测粘贴板内容
+            wx.getClipboardData({
+                success: res => {
+                    let item = null
+                    try {
+                        item = JSON.parse(decodeURIComponent(res.data))
+                        if (item && item['BookId']) {
+                            let markBooks = that.data.markBooks
+                            if (!markBooks.find(value => {
+                                return value.BookId === item.BookId
+                            })) {
+                                that.markBook(item)
+                            } else {
+                                wx.showToast({
+                                    title: '图书已收藏',
+                                    icon: 'none'
+                                })
+                            }
+                            wx.setClipboardData({
+                                data:" ",
+                            })
+                        }
+                    } catch (e) {}
+                }
             })
         }
         this.setData({
@@ -128,7 +154,6 @@ Page({
     selectBook: function (e) {
         let that = this
         let item = e.currentTarget.dataset.item
-        console.log(item)
         let opt = that.getMarkBookIdList().includes(item.BookId) ? '取消收藏': '收藏'
         wx.showActionSheet({
             itemList: ['详细介绍', opt, '分享'],
@@ -142,6 +167,9 @@ Page({
                     if (opt === '收藏') that.markBook(item)
                     else that.unmarkBook(item.BookId)
                 } else if (res.tapIndex === 2) {
+                    wx.setClipboardData({
+                        data: encodeURIComponent(JSON.stringify(item)),
+                    })
                     wx.showToast({
                         title: '分享待实现',
                         icon: 'none'
@@ -167,7 +195,7 @@ Page({
         Library['MarkBooks'].push(item)
         wx.setStorageSync('Library', Library)
         this.setData({
-            markBooks: Library['markBooks']
+            markBooks: Library['MarkBooks']
         })
         wx.showToast({
             title: '收藏成功',
@@ -278,7 +306,6 @@ Page({
             })
             res.forEach((value, index) => {
                 books[index].Pos = value.Pos
-                console.log(books[index].Pos)
             })
             Library['MarkBooks'] = books
             wx.setStorageSync('Library', Library)

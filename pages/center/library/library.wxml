@@ -205,6 +205,11 @@
         </view>
     </view>
     <view wx:if="{{curr_mode === 2}}">
+        <view class="padding bg-white">
+            <view class="padding solid text-center">
+                <view class="text-grey">下拉刷新收藏书籍状态</view>
+            </view>
+        </view>
         <view>
             <view class="cu-card article" wx:for="{{markBooks}}" bindtap="selectBook" data-item="{{item}}">
                 <view class="cu-item shadow">
