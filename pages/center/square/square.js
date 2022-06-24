@@ -1,12 +1,11 @@
 const square_api = require('./square_api')
 const square_util = require('./square_util')
-const util = require('../../../utils/util')
 const {COSDownload} = require("../../../utils/api")
-const {it, Prime, nu, hscr} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
 const app = getApp()
 
 Page({
     data: {
+        anonymous: app.globalData.anonymous,
         Tab: ['活动', '消息', '我的'],
         TabCur: 1,
         categories: square_util.categories,
@@ -225,7 +224,6 @@ Page({
                     // }
                 })
                 // console.log(res.PostList[i])
-                res.PostList[i]['Color'] = square_util.getColorByType(res.PostList[i]['Type'])
                 res.PostList[i]['Type'] = square_util.getNameByType(res.PostList[i]['Type'])
                 post_list[that.data.curr_type].push(res.PostList[i])
             }
@@ -325,7 +323,7 @@ Page({
                                     resolve(res.tempFilePath)
                                 }
                             },
-                            fail: function (err) {
+                            fail: function () {
                                 resolve(null)
                                 wx.showToast({
                                     title: item.Title + "活动封面获取失败",

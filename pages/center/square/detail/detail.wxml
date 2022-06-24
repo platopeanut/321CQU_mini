@@ -21,8 +21,8 @@
                         </view>
                     </view>
                     <view class="action">
-                        <view class="cu-capsule margin-right">
-                            <view class="cu-tag bg-{{item.Color}}">{{item.Type}}</view>
+                        <view class="margin-right">
+                            <view class="cu-tag line-grey">{{item.Type}}</view>
                         </view>
                     </view>
                 </view>
@@ -37,7 +37,7 @@
 <!--                <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
 <!--                <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
                 <text wx:if="{{comment_list.length > 0}}">
-                    <text class="cuIcon-messagefill margin-lr-xs"></text>{{comment_list.length}}
+                    <text class="cuIcon-comment margin-lr-xs" style="font-size:small;"></text>{{comment_list.length}}
                 </text>
             </view>
 

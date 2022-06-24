@@ -6,6 +6,7 @@ const app = getApp()
 Page({
 
     data: {
+        anonymous:  app.globalData.anonymous,
         pid: '',
         InputBottom: 0,
         item: null,
@@ -26,7 +27,6 @@ Page({
     updateData: function (pid) {
         let that = this
         square_api.getPostDetail(pid).then(res => {
-            res.PostDetail['Color'] = square_util.getColorByType(res.PostDetail['Type'])
             res.PostDetail['Type'] = square_util.getNameByType(res.PostDetail['Type'])
             res.PostDetail['Content'] = app.towxml(res.PostDetail['Content'], 'markdown', {
                 // base:'http://jwc.cqu.edu.cn/images/',				// 相对资源的base路径
@@ -87,7 +87,7 @@ Page({
             })
             return
         }
-        square_api.sendReply(this.data.pid, Sid, this.data.comment).then(res => {
+        square_api.sendReply(this.data.pid, Sid, this.data.comment).then(() => {
             wx.showToast({
                 title: '发送成功',
                 icon: 'none'
@@ -116,7 +116,7 @@ Page({
                 itemList: ['删除'],
                 success: res => {
                     if (res.tapIndex === 0) {
-                        square_api.deleteReply(curr_item.Rid, stu_id).then(res => {
+                        square_api.deleteReply(curr_item.Rid, stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'
@@ -129,7 +129,7 @@ Page({
         }
     },
 
-    longPressOperation: function (e) {
+    longPressOperation: function () {
         wx.vibrateShort()
         let that = this
         let item = this.data.item
@@ -147,7 +147,7 @@ Page({
                         })
                     } else if (res.tapIndex === 1) {
                         // 删除
-                        square_api.deletePost(item.Pid, stu_id).then(res => {
+                        square_api.deletePost(item.Pid, stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'
@@ -165,7 +165,7 @@ Page({
                 success: res => {
                     if (res.tapIndex === 0) {
                         // 删除
-                        square_api.deletePost(item.Pid, stu_id).then(res => {
+                        square_api.deletePost(item.Pid, stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'

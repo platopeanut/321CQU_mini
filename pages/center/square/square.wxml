@@ -32,6 +32,12 @@
 <!--    </view>-->
 
     <view wx:if="{{TabCur === 0}}">
+        <view class="padding bg-white">
+            <view class="padding solid text-center">
+                <view class="text-grey">点击活动封面查看详情</view>
+                <view class="text-grey">点击组织头像进行关注/取关</view>
+            </view>
+        </view>
         <view class="cu-card case" wx:for="{{ActivityList}}" wx:key>
             <view class="cu-item shadow">
                 <view class="image" bindtap="selectActivity" data-index="{{index}}">
@@ -67,6 +73,12 @@
         </view>
     </view>
     <view wx:if="{{TabCur === 1}}">
+        <view class="padding bg-white">
+            <view class="padding solid text-center">
+                <view class="text-grey">长按自己的帖子进行修改，删除</view>
+                <view class="text-grey">点击自己的评论进行删除</view>
+            </view>
+        </view>
         <view wx:for="{{post_list[curr_type]}}">
             <view wx:if="{{curr_type==='TP'}}">
                 <view class="cu-card" bindlongpress="longPressOperation" bindtap="jumpToDetail" data-item="{{item}}">
