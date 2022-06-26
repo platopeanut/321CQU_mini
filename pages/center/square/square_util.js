@@ -4,7 +4,7 @@ const categories = [
     { title: '失物招领', type: 'SW' },
     { title: '树洞', type: 'SD' },
     { title: '音乐', type: 'YL' },
-    { title: '投票', type: 'TP' },
+    // { title: '投票', type: 'TP' },
     { title: '反馈', type: 'FK' },
 ]
 

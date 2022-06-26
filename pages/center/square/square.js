@@ -23,6 +23,7 @@ Page({
         //// my
         followGroupList: [],
         MyInit: true,
+        MyGroupActivityList: []
     },
     findGroup: function (name) {
         for (let i = 0; i < this.data.followGroupList.length; i++) {
@@ -356,6 +357,12 @@ Page({
                 // 获取关注的组织
                 this.updateFollowGroup()
             })
+        })
+    },
+    getMyGroupActivities: function () {
+        let that = this
+        square_api.getActivities(that.data.stu_id, 0, 'group').then(res => {
+            console.log(res)
         })
     },
     selectActivity: function (e) {
