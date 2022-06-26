@@ -170,10 +170,6 @@ Page({
                     wx.setClipboardData({
                         data: encodeURIComponent(JSON.stringify(item)),
                     })
-                    wx.showToast({
-                        title: '分享待实现',
-                        icon: 'none'
-                    })
                 }
             }
         })

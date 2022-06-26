@@ -6,16 +6,16 @@
             <view class="text-left" style="margin-top: 5rpx;">2.小程序提供对您的自定义课程云存储功能，并严格保护用户数据隐私</view>
             <view class="text-left" style="margin-top: 5rpx;">3.云数据同步到本地时会对本地自定义数据进行覆盖，请注意备份</view>
         </view>
-<!--        <view class="cu-bar bg-white solid-bottom margin-top">-->
-<!--            <view class="action">-->
-<!--                <text class="cuIcon-title text-blue"></text>-->
-<!--                <text class="text-bold">导入考试安排信息</text>-->
-<!--                <text class="text-grey padding-left">experimental</text>-->
-<!--            </view>-->
-<!--            <view class="action">-->
-<!--                <switch class="sm" checked="{{ImportExams}}" bindchange="selectImportExams"></switch>-->
-<!--            </view>-->
-<!--        </view>-->
+        <view class="cu-bar bg-white solid-bottom margin-top">
+            <view class="action">
+                <text class="cuIcon-title text-blue"></text>
+                <text class="text-bold">导入考试安排信息</text>
+                <text class="text-grey padding-left">experimental</text>
+            </view>
+            <view class="action">
+                <switch class="sm" checked="{{ImportExams}}" bindchange="selectImportExams"></switch>
+            </view>
+        </view>
         <view class="cu-card case">
             <view class="cu-item shadow" wx:for="{{SelfSchedule}}" wx:key="index">
                 <view class="cu-list menu">
