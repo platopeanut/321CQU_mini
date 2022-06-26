@@ -9,24 +9,11 @@ Page({
         modalShow: false, 
         curr_index: "",
         subscribe_list: [],
-        subscribeRecord: true,
+        grade_id: '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
     },
 
-    hideModal_cancel: function() {
-        this.setData({
-            subscribeRecord: true,
-        })
-    },
-
-    hideModal_sure: function() {
-        wx.setStorageSync('subscribeRecord', true)
-        this.setData({
-            subscribeRecord: true,
-        })
-    },
 
     update: function() {
-        let grade_id = '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
         let subscribe_list = [
             {
                 title: 'grade',
@@ -36,22 +23,23 @@ Page({
         ]
         let that = this
         wx.getSetting({
-          withSubscriptions: true,
-          success: function(res) {
-              console.log(res.subscriptionsSetting[grade_id])
-              if (res.subscriptionsSetting[grade_id] === 'accept') {
-                subscribe_list[0].isSubscribed = true
-              }
-              that.setData({
+            withSubscriptions: true,
+            success: function(res) {
+                console.log('状态', res.subscriptionsSetting[that.data.grade_id])
+                if (res.subscriptionsSetting[that.data.grade_id] === 'accept'
+                    || res.subscriptionsSetting[that.data.grade_id] === 'acceptWithForcePush') {
+                    subscribe_list[0].isSubscribed = true
+                }
+                that.setData({
                   subscribe_list: subscribe_list
-              }) 
-          },
-          fail: function() {
-              wx.showToast({
-                title: '加载失败',
-                icon: 'error'
-              })
-          }
+                })
+            },
+            fail: function() {
+                wx.showToast({
+                    title: '加载失败',
+                    icon: 'error'
+                })
+            }
         })
     },
 
@@ -61,72 +49,67 @@ Page({
     //     wx.setStorageSync('subscribe_list', subscribe_list)
     //     this.update()
     // },
-    subscribeItem: function(res) {
-        let StuInfo = wx.getStorageSync('StuInfo')
-        let stu_id = StuInfo['stu_id']
-        let uid = StuInfo['uid']
-        let uid_pwd = StuInfo['uid_pwd']
-        if (!(stu_id && uid && uid_pwd)) {
-            wx.showToast({
-              title: '请完善统一身份信息',
-              icon: 'none'
-            })
-            return
-        }
-        let curr_item = res.target.dataset.id
-        let that = this
-        if (curr_item === 'grade') {
-            if (wx.getStorageSync('subscribeRecord') === '') {
-                this.setData({
-                    subscribeRecord: false
-                })
-                return
-            }
-            let id = '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
-            wx.requestSubscribeMessage({
-              tmplIds: [id,],
-              success: function(res) {
-                  console.log(res)
-                if (res[id] === 'accept') {
-                    wx.login({
-                        success: function(res) {
-                            // 订阅
-                            task_api.subscribe(res.code, stu_id, uid, uid_pwd).then(() => {
-                                that.update()
-                                wx.showToast({
-                                    title: '订阅成功',
-                                    icon: 'none'
-                                })
-                            }, () => {
-                                wx.showToast({
-                                    title: '订阅失败',
-                                    icon: 'none',
-                                })
-                            })
-                        }, 
-                        fail: () => {
-                            wx.showToast({
-                              title: '登陆失败',
-                              icon: 'none'
-                            })
-                        }
-                    })
-                } else {
-                    wx.showToast({
-                      title: '订阅失败',
-                      icon: 'error'
-                    })
-                }
-              },
-              fail: () => {
-                wx.showToast({
-                    title: '订阅失败',
-                    icon: 'error'
-                })
-              }
-            })
-        }
-    },
+    // subscribeItem: function(res) {
+    //     let StuInfo = wx.getStorageSync('StuInfo')
+    //     let stu_id = StuInfo['stu_id']
+    //     let uid = StuInfo['uid']
+    //     let uid_pwd = StuInfo['uid_pwd']
+    //     if (!(stu_id && uid && uid_pwd)) {
+    //         wx.showToast({
+    //           title: '请完善统一身份信息',
+    //           icon: 'none'
+    //         })
+    //         return
+    //     }
+    //     let curr_item = res.target.dataset.id
+    //     let that = this
+    //     if (curr_item === 'grade') {
+    //         let id = that.data.grade_id
+    //         wx.requestSubscribeMessage({
+    //             tmplIds: [id,],
+    //             success: function(res) {
+    //                 console.log('订阅', res)
+    //                 if (res[id] === 'accept') {
+    //                     wx.login({
+    //                         success: function(res) {
+    //                             // 订阅
+    //                             task_api.subscribe(res.code, stu_id, uid, uid_pwd).then(() => {
+    //                                 that.update()
+    //                                 wx.showToast({
+    //                                     title: '订阅成功',
+    //                                     icon: 'none'
+    //                                 })
+    //                             }, () => {
+    //                                 wx.showToast({
+    //                                     title: '订阅失败',
+    //                                     icon: 'none',
+    //                                 })
+    //                             })
+    //                         },
+    //                         fail: () => {
+    //                             wx.showToast({
+    //                               title: '登陆失败',
+    //                               icon: 'none'
+    //                             })
+    //                         }
+    //                     })
+    //                 } else {
+    //                     wx.showToast({
+    //                       title: '订阅失败',
+    //                       icon: 'error'
+    //                     })
+    //                 }
+    //             },
+    //             fail: () => {
+    //                 console.log('失败')
+    //                 wx.showToast({
+    //                     title: '订阅失败',
+    //                     icon: 'error'
+    //                 })
+    //             }
+    //         })
+    //     }
+    // },
 
     onShow: function() {
         this.update()
@@ -138,10 +121,9 @@ Page({
     },
     // 下拉刷新
     onPullDownRefresh: function() {
-        this.onShow()
         wx.stopPullDownRefresh()
+        this.onShow()
     },
-
     // 对每一项的操作
     onTouchItem(e) {
         let curr_index = e.currentTarget.dataset.index
@@ -166,12 +148,10 @@ Page({
             curr_index: ""
         })
     },
-
     // 选择功能
     selectPage: function(res) {
         this.setData({
             curr_page: res.currentTarget.dataset.id
         })
     },
-
 })

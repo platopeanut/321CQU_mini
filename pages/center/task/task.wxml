@@ -33,44 +33,24 @@
 </view>
 
 <view wx:if="{{curr_page === '订阅'}}">
+    <view class="padding bg-white">
+        <view class="padding solid text-center">
+            <text class="text-bold">订阅/取消订阅：</text>
+            1.点击右上方“三点”; 2.设置; 3.通知管理
+        </view>
+    </view>
   <view class="cu-list menu-avatar" wx:for="{{subscribe_list}}">
       <view class="cu-item" style="border-bottom: 1rpx solid #dcdcdc;border-top: 1rpx solid #dcdcdc;border-radius: 10rpx;">
         <text style="position: absolute;left: 20rpx;"><text class="cuIcon-title text-blue"></text>
         <text style="margin-left: 20rpx;">{{item.content}}</text></text>
         <view class="action" style="margin-right: 40rpx;">
-          <view wx:if="{{item.isSubscribed}}">
-            <button class="cu-btn round bg-blue shadow" style="width: max-content;">已订阅</button>
-          </view>
-          <view wx:else>
-            <button class="cu-btn round bg-green shadow" style="width: max-content;" bindtap="subscribeItem" data-id="{{item.title}}">订阅</button>
-          </view>
+            <view class="cu-tag bg-{{item.isSubscribed?'green':'blue'}}">{{item.isSubscribed?'已订阅':'未订阅'}}</view>
         </view>
       </view>
   </view>    
     
 
 </view>
-
-<view class="cu-modal {{subscribeRecord?'':'show'}}">
-  <view class="cu-dialog">
-  <view class="cu-bar bg-white justify-end">
-    <view class="content">用户信息隐私说明</view>
-    <view class="action" bindtap="hideModal">
-      <text class="cuIcon-close text-red"></text>
-    </view>
-  </view>
-  <view class="padding-xl">
-  本次订阅会在服务器端存储学号、统一身份认证账号和密码
-  </view>
-  <view class="cu-bar bg-white justify-end">
-    <view class="action">
-      <button class="cu-btn line-green text-green" bindtap="hideModal_cancel">取消</button>
-      <button class="cu-btn bg-green margin-left" bindtap="hideModal_sure">同意</button>
-    </view>
-  </view>
-  </view>
-  </view>
-
 
 <!-- 删除界面 -->
 <view class="cu-modal bottom-modal {{modalShow?'show':''}}">
