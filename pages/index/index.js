@@ -92,9 +92,10 @@ Page({
             }
             wx.setStorageSync('HomePage', HomePage)
         })
+        const fs = wx.getFileSystemManager()
         this.setData({
             swiperList: HomePage['Pictures'],
-            IndexImgPath: HomePage['IndexImgPath']
+            IndexImgPath: fs.readFileSync(HomePage['IndexImgPath'], 'base64')
         })
     },
     LoadSwiperImg: function () {

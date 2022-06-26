@@ -27,7 +27,7 @@
         </view>
     </view>
 
-    <view class="bg-img padding-bottom-xl " style="background-image:url({{IndexImgPath}});">
+    <view class="bg-img padding-bottom-xl " style="background-image:url(data:image/png;base64,{{IndexImgPath}});">
     <view class=" padding" style="opacity: 0.8">
         <view class="cu-list grid col-{{gridCol}} border">
             <view class="cu-item" wx:for="{{iconList}}" wx:key bindtap="router" data-path="{{item.path}}">
