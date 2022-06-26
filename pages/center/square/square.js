@@ -23,7 +23,15 @@ Page({
         //// my
         followGroupList: [],
         MyInit: true,
-        MyGroupActivityList: []
+        MyGroupActivityList: [],
+        MyGroupActivityPage: 0,
+        MyGroupActivityState: false,
+        focusFollowState: false
+    },
+    switchActivityDisplay: function () {
+        this.setData({
+            focusFollowState: !this.data.focusFollowState
+        })
     },
     findGroup: function (name) {
         for (let i = 0; i < this.data.followGroupList.length; i++) {
@@ -294,6 +302,53 @@ Page({
             this.updateData(post_index_list[index])
         }
     },
+    // 获取封面, 计算进行状态
+    getCoverAndState: function (list, result_list) {
+        // res.Announcements
+        let now_time = new Date().getTime()
+        let undefined_time = '0000-00-00'
+        let activity_cover_task = []
+        let group_names = []
+        // 活动封面
+        for (let item of list) {
+            group_names.push(item.Name)
+            activity_cover_task.push(new Promise(resolve => {
+                if (!item['CoverUrl']) resolve(null)
+                else COSDownload(item['CoverUrl'], res=>{
+                    wx.downloadFile({
+                        url: res.Url,
+                        success (res) {
+                            if (res.statusCode === 200) {
+                                resolve(res.tempFilePath)
+                            }
+                        },
+                        fail: function () {
+                            resolve(null)
+                            wx.showToast({
+                                title: item.Title + "活动封面获取失败",
+                                icon: 'none'
+                            })
+                        },
+                    })
+                })
+            }))
+            item['State'] = '进行中'
+            if (item.EndDate !== undefined_time && new Date(item.EndDate).getTime() < now_time) item['State'] = '已结束'
+            else if (item.StartDate !== undefined_time && new Date(item.StartDate).getTime() > now_time) item['State'] = '未开始'
+            result_list.push(item)
+        }
+        return this.getGroupAvatar(group_names).then(values => {
+            for (let i = 0; i < result_list.length; i++) {
+                result_list[i].Url = values[i]
+            }
+        }).then(()=>{
+            return Promise.all(activity_cover_task).then(values => {
+                for (let i = 0; i < result_list.length; i++) {
+                    result_list[i]['CoverUrl'] = values[i]
+                }
+            })
+        })
+    },
     getActivities: function () {
         let that = this
         square_api.getActivities(that.data.stu_id, that.data.ActivityPage).then(res => {
@@ -306,51 +361,8 @@ Page({
             }
             console.log(res.Announcements)
             let ActivityList = that.data.ActivityList
-            let now_time = new Date().getTime()
-            let undefined_time = '0000-00-00'
-            let activity_cover_task = []
-            let group_names = []
-            // 活动封面
-            // item['CoverUrl'] = res.tempFilePath console.log(item['CoverUrl'])
-            for (let item of res.Announcements) {
-                group_names.push(item.Name)
-                activity_cover_task.push(new Promise(resolve => {
-                    if (!item['CoverUrl']) resolve(null)
-                    else COSDownload(item['CoverUrl'], res=>{
-                        wx.downloadFile({
-                            url: res.Url,
-                            success (res) {
-                                if (res.statusCode === 200) {
-                                    resolve(res.tempFilePath)
-                                }
-                            },
-                            fail: function () {
-                                resolve(null)
-                                wx.showToast({
-                                    title: item.Title + "活动封面获取失败",
-                                    icon: 'none'
-                                })
-                            },
-                        })
-                    })
-                }))
-                item['State'] = '进行中'
-                if (item.EndDate !== undefined_time && new Date(item.EndDate).getTime() < now_time) item['State'] = '已结束'
-                else if (item.StartDate !== undefined_time && new Date(item.StartDate).getTime() > now_time) item['State'] = '未开始'
-                ActivityList.push(item)
-            }
-            this.getGroupAvatar(group_names).then(values => {
-                wx.showLoading()
-                for (let i = 0; i < ActivityList.length; i++) {
-                    ActivityList[i].Url = values[i]
-                }
-            }).then(()=>{
-                return Promise.all(activity_cover_task).then(values => {
-                    for (let i = 0; i < ActivityList.length; i++) {
-                        ActivityList[i]['CoverUrl'] = values[i]
-                    }
-                })
-            }).then(()=>{
+            wx.showLoading()
+            that.getCoverAndState(res.Announcements, ActivityList).then(()=>{
                 wx.hideLoading()
                 that.setData({
                     ActivityList: ActivityList,
@@ -361,14 +373,51 @@ Page({
             })
         })
     },
+    tapMyGroupActivity: function () {
+        this.setData({
+            MyGroupActivityState: !this.data.MyGroupActivityState
+        })
+        if (this.data.MyGroupActivityState && this.data.MyGroupActivityList.length === 0)
+            this.getMyGroupActivities()
+    },
     getMyGroupActivities: function () {
         let that = this
-        square_api.getActivities(that.data.stu_id, 0, 'group').then(res => {
-            console.log(res)
+        square_api.getActivities(that.data.stu_id, this.data.MyGroupActivityPage, 'group').then(res => {
+            if (res.Announcements.length === 0) {
+                wx.showToast({
+                    title: '没有更多啦',
+                    icon: 'none'
+                })
+                return
+            }
+            let MyGroupActivityList = that.data.MyGroupActivityList
+            wx.showLoading()
+            that.getCoverAndState(res.Announcements, MyGroupActivityList).then(()=>{
+                wx.hideLoading()
+                that.setData({
+                    MyGroupActivityList: MyGroupActivityList,
+                    MyGroupActivityPage: that.data.MyGroupActivityPage + 1
+                })
+                // 获取关注的组织
+                this.updateFollowGroup()
+            })
         })
     },
     selectActivity: function (e) {
         let activity = this.data.ActivityList[e.currentTarget.dataset.index]
+        wx.navigateTo({
+            url: './activity_detail/activity_detail?Aid=' + activity.Aid
+                + '&Url=' + activity.Url
+                + '&Name=' + activity.Name
+                + '&Title=' + activity.Title
+                + '&UpdateDate=' + activity.UpdateDate
+                + '&StartDate=' + activity.StartDate
+                + '&EndDate=' + activity.EndDate
+                + '&State=' + activity.State
+        })
+    },
+    selectMyGroupActivity: function (e) {
+        let activity = this.data.MyGroupActivityList[e.currentTarget.dataset.index]
         wx.navigateTo({
             url: './activity_detail/activity_detail?Aid=' + activity.Aid
                 + '&Url=' + activity.Url

@@ -37,8 +37,17 @@
                 <view class="text-grey">点击活动封面查看详情</view>
                 <view class="text-grey">点击组织头像进行关注/取关</view>
             </view>
+            <view class="cu-bar bg-white solid-bottom margin-top">
+                <view class="action">
+                    <text class="cuIcon-title text-blue"></text>
+                    <text class="text-bold">仅显示关注组织相关活动</text>
+                </view>
+                <view class="action">
+                    <switch class="sm" checked="{{focusFollowState}}" bindchange="switchActivityDisplay"></switch>
+                </view>
+            </view>
         </view>
-        <view class="cu-card case" wx:for="{{ActivityList}}" wx:key>
+        <view class="cu-card case" wx:for="{{ActivityList}}" wx:key wx:if="{{!focusFollowState || (focusFollowState && item['follow'])}}">
             <view class="cu-item shadow">
                 <view class="image" bindtap="selectActivity" data-index="{{index}}">
                     <image wx:if="{{!item.CoverUrl}}" src='../../../res/default_activity.jpg' mode="widthFix"></image>
@@ -201,28 +210,30 @@
         </view>
         <view class="cu-list menu-avatar">
             <view class="cu-item solids-bottom" wx:for="{{followGroupList}}" bindtap="cancelFollow" data-index="{{index}}">
-                <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>
+                <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
                 <view class="content flex-sub">
                     <view class="text-black">{{item.Name}}</view>
                 </view>
             </view>
         </view>
-        <view class="cu-bar bg-white solid margin-top">
-            <view class="action">
-                <text class="cuIcon-title text-green"></text>
-                <text class="text-bold">关注组织相关活动</text>
+<!--        <view class="cu-bar bg-white solid margin-top">-->
+<!--            <view class="action">-->
+<!--                <text class="cuIcon-title text-green"></text>-->
+<!--                <text class="text-bold">关注组织相关活动</text>-->
+<!--            </view>-->
+<!--        </view>-->
+<!--&lt;!&ndash;        TODO&ndash;&gt;-->
+        <view class="cu-list menu sm-border margin-top">
+            <view class="cu-item" bindtap="tapMyGroupActivity">
+                <view class="content">
+                    <text class="text-black text-bold">所在组织相关活动</text>
+                </view>
+                <view class="action cuIcon-{{MyGroupActivityState?'fold':'unfold'}}"></view>
             </view>
         </view>
-<!--        TODO-->
-        <view class="cu-bar bg-white solid margin-top">
-            <view class="action">
-                <text class="cuIcon-title text-green"></text>
-                <text class="text-bold">所在组织相关活动</text>
-            </view>
-        </view>
-        <view class="cu-card case" wx:for="{{MyGroupActivityList}}" wx:key>
+        <view class="cu-card case" wx:if="{{MyGroupActivityState}}" wx:for="{{MyGroupActivityList}}" wx:key>
             <view class="cu-item shadow">
-                <view class="image" bindtap="selectActivity" data-index="{{index}}">
+                <view class="image" bindtap="selectMyGroupActivity" data-index="{{index}}">
                     <image wx:if="{{!item.CoverUrl}}" src='../../../res/default_activity.jpg' mode="widthFix"></image>
                     <image wx:else src="{{item.CoverUrl}}" mode="widthFix"></image>
                     <!--                    <view class="cu-tag bg-blue">史诗</view>-->
@@ -230,11 +241,11 @@
                         <text class="text-bold" style="font-size:small;">{{item.Title}}</text>
                     </view>
                 </view>
-                <view class="cu-list menu-avatar" bindtap="followGroup" data-index="{{index}}">
+                <view class="cu-list menu-avatar">
                     <view class="cu-item">
                         <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
                         <view class="content flex-sub">
-                            <view class="text-black">{{item.Name}}<text wx:if="{{item['follow']}}" class=" padding-left text-yellow">(已关注)</text></view>
+                            <view class="text-black">{{item.Name}}</view>
                             <view class="text-gray text-sm flex justify-between">
                                 {{item.UpdateDate}}
                             </view>
