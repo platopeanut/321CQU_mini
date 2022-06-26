@@ -80,6 +80,7 @@ Page({
         // 加载首页课程信息
         this.LoadCurriculumInfo()
         console.log(wx.getStorageSync('HomePage'))
+        console.log(this.data.swiperList)
     },
     loadSwiperList: function () {
         let HomePage = wx.getStorageSync('HomePage')
@@ -97,6 +98,7 @@ Page({
             swiperList: HomePage['Pictures'],
             IndexImgPath: fs.readFileSync(HomePage['IndexImgPath'], 'base64')
         })
+        console.log(this.data.swiperList)
     },
     LoadSwiperImg: function () {
         let that = this
@@ -124,7 +126,6 @@ Page({
                         cnt ++
                     }
                     wx.setStorageSync('HomePage', HomePage)
-                    that.loadSwiperList()
                     // 获取首页背景图
                     util.saveFile(util.IndexImgUrl).then(res => {
                         HomePage['IndexImgPath'] = res.path
@@ -133,6 +134,7 @@ Page({
                         })
                     }).finally(()=>{
                         wx.setStorageSync('HomePage', HomePage)
+                        that.loadSwiperList()
                     })
                 }
                 else {
@@ -212,8 +214,8 @@ Page({
                 }
             })
             wx.showModal({
-                title: "321CQU v2.2",
-                content: "1. 新增图书查询，图书收藏（暂不支持云端备份）;2.优化考试安排"
+                title: "321CQU v2.4",
+                content: "1. 广场活动开启；2. 图书分享；3. 订阅接口变更；4. 课表中嵌入考试安排"
             })
             wx.setStorageSync('AppUse', true)
         }
