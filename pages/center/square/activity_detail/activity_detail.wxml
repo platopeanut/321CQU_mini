@@ -17,7 +17,8 @@
         <view class="cu-item padding-bottom">
             <view style="width:100%;height:100%;font-size:small;" class="padding-top">
                 <text class='cuIcon-titles text-orange padding-left'></text>活动时间:
-                <text class="padding-left">{{activity.StartDate}}~{{activity.EndDate}}</text>
+                <text class="padding-left" wx:if="{{activity.StartDate === '0000-00-00' && activity.EndDate === '0000-00-00'}}">长期进行中</text>
+                <text class="padding-left" wx:else>{{activity.StartDate}}~{{activity.EndDate}}</text>
             </view>
         </view>
     </view>
