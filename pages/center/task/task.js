@@ -86,6 +86,7 @@ Page({
             wx.requestSubscribeMessage({
               tmplIds: [id,],
               success: function(res) {
+                  console.log(res)
                 if (res[id] === 'accept') {
                     wx.login({
                         success: function(res) {

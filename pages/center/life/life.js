@@ -60,6 +60,7 @@ Page({
         console.log(is_hu_xi)
 
         life_api.getFees(uid, uid_pwd, is_hu_xi, room_code).then(res => {
+            console.log(res.FeesInfo)
             wx.setStorageSync('fees_info', res.FeesInfo)
             that.setData({
                 fees_info: res.FeesInfo
@@ -81,6 +82,7 @@ Page({
             })
         })
     },
+
     onLoad: function () {
         let fees_info = wx.getStorageSync('fees_info')
         let card_fee = wx.getStorageSync('card_fee')
@@ -90,12 +92,8 @@ Page({
             fees_info: fees_info,
             card_fee: card_fee
         })
-        console.log(fees_info)
         if (fees_info === '' || card_fee === '') {
-            wx.showToast({
-                title: '下拉刷新更新数据',
-                icon: 'none'
-            })
+            this.updateData()
         }
     },
 
@@ -109,7 +107,8 @@ Page({
             modalName: e.currentTarget.dataset.target
         })
     },
-    hideModal(e) {
+
+    hideModal() {
         this.setData({
             modalName: null
         })

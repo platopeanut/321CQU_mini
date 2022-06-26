@@ -60,6 +60,7 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
           'Params': header.data,
       }
   }
+  console.log(data)
   wx.request({
     url: url + header['url'],
     method: 'POST',

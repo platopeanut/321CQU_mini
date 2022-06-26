@@ -85,41 +85,38 @@ Page({
             })
             return
         }
-        wx.showModal({
-            content: '是否发送当前消息',
+        wx.showActionSheet({
+            itemList: ['发送', '匿名发送'],
             success: result => {
-                if (result.confirm) {
-                    if (that.data.mode === 0) {
-                        square_api.sendPost(that.data.type, that.data.title, that.data.content, that.data.stu_id).then(() => {
-                            wx.showToast({
-                                title: '新建成功',
-                                icon: 'none'
-                            })
-                        }).finally(() => {
-                            that.setData({
-                                title : '',
-                                content: '',
-                            })
+                let isAnonymous = result.tapIndex !== 0
+                if (that.data.mode === 0) {
+                    square_api.sendPost(that.data.type, that.data.title, that.data.content, that.data.stu_id, isAnonymous).then(() => {
+                        wx.showToast({
+                            title: '新建成功',
+                            icon: 'none'
                         })
-                    }
-                    else if (that.data.mode === 1) {
-                        square_api.modifyPost(that.data.title, that.data.content, that.data.pid, that.data.stu_id).then(() => {
-                            wx.showToast({
-                                title: '修改成功',
-                                icon: 'none'
-                            })
-                        }).finally(() => {
-                            that.setData({
-                                title : '',
-                                content: '',
-                            })
+                        that.setData({
+                            title : '',
+                            content: '',
                         })
-                    }
-                    if (that.data.mode === 0 || that.data.mode === 1) {
-                        util.changeParentPageOpt({
-                            option: 0
+                    })
+                }
+                else if (that.data.mode === 1) {
+                    square_api.modifyPost(that.data.title, that.data.content, that.data.pid, that.data.stu_id, isAnonymous).then(() => {
+                        wx.showToast({
+                            title: '修改成功',
+                            icon: 'none'
                         })
-                    }
+                        that.setData({
+                            title : '',
+                            content: '',
+                        })
+                    })
+                }
+                if (that.data.mode === 0 || that.data.mode === 1) {
+                    util.changeParentPageOpt({
+                        option: 0
+                    })
                 }
             }
         })

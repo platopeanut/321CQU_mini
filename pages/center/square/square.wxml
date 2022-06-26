@@ -50,7 +50,7 @@
                 </view>
                 <view class="cu-list menu-avatar" bindtap="followGroup" data-index="{{index}}">
                     <view class="cu-item">
-                        <view class="cu-avatar round lg" style="background-image:url({{item.Url}});"></view>
+                        <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
                         <view class="content flex-sub">
                             <view class="text-black">{{item.Name}}<text wx:if="{{item['follow']}}" class=" padding-left text-yellow">(已关注)</text></view>
                             <view class="text-gray text-sm flex justify-between">
@@ -88,10 +88,11 @@
                         </view>
                         <view class="cu-list menu-avatar">
                             <view class="cu-item">
-                                <view wx:if="{{!item.UserImg}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
+                                <view wx:if="{{!item.UserImg || item.IsAnonymous}}" class="cu-avatar round lg" style="background-image:url({{anonymous}});"></view>
                                 <view wx:else class="cu-avatar round lg" style="background-image:url({{item.UserImg}});"></view>
                                 <view class="content flex-sub">
-                                    <view>{{item.UserName?item.UserName:item.Author}}</view>
+                                    <view wx:if="{{item.IsAnonymous}}">321CQUer</view>
+                                    <view wx:else>{{item.UserName?item.UserName:item.Author}}</view>
                                     <view class="text-gray text-sm flex justify-between">
                                         {{item.UpdateDate}}
                                     </view>

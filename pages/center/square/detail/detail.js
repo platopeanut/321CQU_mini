@@ -16,7 +16,7 @@ Page({
 
     onLoad: function (e) {
         this.setData({
-            pid: e.pid
+            pid: parseInt(e.pid)
         })
         util.changeParentPageOpt({
             option: 1
@@ -80,22 +80,28 @@ Page({
             return
         }
         let Sid = wx.getStorageSync('StuInfo')['stu_id']
-        if (Sid === '' || Sid === undefined) {
+        if (!Sid) {
             wx.showToast({
                 title: '请完善统一身份信息',
                 icon: 'none'
             })
             return
         }
-        square_api.sendReply(this.data.pid, Sid, this.data.comment).then(() => {
-            wx.showToast({
-                title: '发送成功',
-                icon: 'none'
-            })
-            that.updateData(that.data.pid)
-            that.setData({
-                comment: ''
-            })
+        wx.showActionSheet({
+            itemList: ['发送', '匿名发送'],
+            success: result => {
+                let isAnonymous = result.tapIndex !== 0
+                square_api.sendReply(this.data.pid, Sid, this.data.comment, isAnonymous).then(() => {
+                    wx.showToast({
+                        title: '发送成功',
+                        icon: 'none'
+                    })
+                    that.updateData(that.data.pid)
+                    that.setData({
+                        comment: ''
+                    })
+                })
+            }
         })
     },
     deleteComment: function (e) {

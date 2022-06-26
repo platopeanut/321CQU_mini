@@ -422,7 +422,6 @@ Page({
         let GroupAvatarTable = wx.getStorageSync('GroupAvatarTable')
         if (!GroupAvatarTable) GroupAvatarTable = {}
         const fs =wx.getFileSystemManager()
-        console.log(GroupAvatarTable)
         let task = []
         for (const name of names) {
             if (GroupAvatarTable[name]) task.push(new Promise(resolve => {resolve(GroupAvatarTable[name])}))
@@ -447,6 +446,10 @@ Page({
         }
         return Promise.all(task).then(res => {
             if (hasChanged) wx.setStorageSync('GroupAvatarTable', GroupAvatarTable)
+            const fs = wx.getFileSystemManager()
+            for (let i = 0; i < res.length; i++) {
+                res[i] = fs.readFileSync(res[i], "base64")
+            }
             return new Promise(resolve => {resolve(res)})
         })
     }

@@ -30,7 +30,7 @@ function getPostDetail(pid) {
     })
 }
 // 发送帖子
-function sendPost(type, title, content, author) {
+function sendPost(type, title, content, author, isAnonymous=false) {
     if (title === undefined) title = ''
     let header = {
         url: '/forum/send_post',
@@ -38,15 +38,16 @@ function sendPost(type, title, content, author) {
             'Title': title,
             'Content': content,
             'Type': type,
-            'Author': author
+            'Author': author,
+            'IsAnonymous': isAnonymous
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
 // 更新帖子
-function modifyPost(title, content, pid, sid) {
+function modifyPost(title, content, pid, sid, isAnonymous=false) {
     let header = {
         url: '/forum/update_post',
         data: {
@@ -55,10 +56,11 @@ function modifyPost(title, content, pid, sid) {
             'IsDelete': false,
             'Pid': pid,
             'Sid': sid,
+            'IsAnonymous': isAnonymous
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
 // 删除帖子
@@ -91,17 +93,18 @@ function getReply(pid, limit=null) {
     })
 }
 // 发送评论
-function sendReply(pid, stu_id, content) {
+function sendReply(pid, stu_id, content, isAnonymous=false) {
     let header = {
         url: '/forum/send_reply',
         data: {
             'Content': content,
             'Pid': pid,
             'Author': stu_id,
+            'IsAnonymous': isAnonymous
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
 // 删除评论
