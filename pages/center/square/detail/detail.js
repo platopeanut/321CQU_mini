@@ -12,16 +12,24 @@ Page({
         item: null,
         comment_list: [],
         comment: '',
+        page: 0,
+        page_over: false,
+        comment_batch: 10,
+        comments_num: 0,
     },
 
     onLoad: function (e) {
+        console.log(e)
         this.setData({
-            pid: parseInt(e.pid)
+            pid: parseInt(e.pid),
+            comments_num: e.num
         })
         util.changeParentPageOpt({
             option: 1
         })
-        this.updateData(e.pid)
+    },
+    onShow: function () {
+        this.updateData(parseInt(this.data.pid))
     },
 
     updateData: function (pid) {
@@ -31,27 +39,55 @@ Page({
             res.PostDetail['Content'] = app.towxml(res.PostDetail['Content'], 'markdown', {
                 // base:'http://jwc.cqu.edu.cn/images/',				// 相对资源的base路径
                 // theme:'dark',					// 主题，默认`light`
-                events:{					// 为元素绑定的事件方法
-                    tap:(e)=>{
-                        console.log(e)
-                        // that.jumpToDetail(Object.assign({}, res.PostList[i]), true)
-                    }
-                }
+                // events:{					// 为元素绑定的事件方法
+                //     tap:(e)=>{
+                //         console.log(e)
+                //         // that.jumpToDetail(Object.assign({}, res.PostList[i]), true)
+                //     }
+                // }
             })
             that.setData({
                 item: res.PostDetail
             })
-            return square_api.getReply(pid)
+            console.log(res.PostDetail)
+            return square_api.getReply(pid.toString(), 0)
         }).then(res => {
             that.setData({
-                comment_list: res.Reply.reverse()
+                page: 1,
+                page_over: res.Reply.length !== that.data.comment_batch,
+                comment_list: res.Reply
             })
+            console.log(that.data.comment_list)
         })
     },
 
     onPullDownRefresh: function () {
-        this.updateData(this.data.pid)
         wx.stopPullDownRefresh()
+        this.updateData(parseInt(this.data.pid))
+    },
+    onReachBottom: function () {
+        console.log('bottom', this.data.page, this.data.page_over)
+        console.log(this.data.comment_list)
+        let that = this
+        if (this.data.page_over) {
+            wx.showToast({
+                title: '没有更多啦',
+                icon: 'none'
+            })
+            return
+        }
+        square_api.getReply(this.data.pid.toString(), this.data.page).then(res => {
+            let comment_list = that.data.comment_list
+            res.Reply.forEach(value => {
+                comment_list.push(value)
+            })
+            that.setData({
+                page: that.data.page + 1,
+                page_over: res.Reply.length !== that.data.comment_batch,
+                comment_list: comment_list
+            })
+            console.log(that.data.comment_list)
+        })
     },
 
     InputFocus(e) {
@@ -96,10 +132,10 @@ Page({
                         title: '发送成功',
                         icon: 'none'
                     })
-                    that.updateData(that.data.pid)
                     that.setData({
                         comment: ''
                     })
+                    that.updateData(parseInt(that.data.pid))
                 })
             }
         })
@@ -127,7 +163,7 @@ Page({
                                 title: '删除成功',
                                 icon: 'none'
                             })
-                            that.updateData(that.data.pid)
+                            that.updateData(parseInt(that.data.pid))
                         })
                     }
                 }
@@ -149,11 +185,11 @@ Page({
                     if (res.tapIndex === 0) {
                         // 修改
                         wx.navigateTo({
-                            url: '../edit/edit?pid=' + item.Pid,
+                            url: '../edit/edit?pid=' + that.data.pid,
                         })
                     } else if (res.tapIndex === 1) {
                         // 删除
-                        square_api.deletePost(item.Pid, stu_id).then(() => {
+                        square_api.deletePost(that.data.pid, stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'
@@ -171,7 +207,7 @@ Page({
                 success: res => {
                     if (res.tapIndex === 0) {
                         // 删除
-                        square_api.deletePost(item.Pid, stu_id).then(() => {
+                        square_api.deletePost(that.data.pid, stu_id).then(() => {
                             wx.showToast({
                                 title: '删除成功',
                                 icon: 'none'

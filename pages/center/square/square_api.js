@@ -5,16 +5,16 @@ const strings = require("../../../lib/towxml/parse/highlight/languages/c-like");
  *  信息广场
  */
 // 获取帖子列表
-function getPostList(limit, type='all', loading=true) {
+function getPostList(page, type='all', loading=true) {
     let header = {
         url: '/forum/get_post_list',
         data: {
             'Type': type,
-            'Limit': limit
+            'Page': page
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, loading)
+        api.request(header, resolve, reject, loading, true, '2.0')
     })
 }
 // 获取帖子详情
@@ -26,7 +26,7 @@ function getPostDetail(pid) {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
 // 发送帖子
@@ -80,16 +80,16 @@ function deletePost(pid, sid) {
     })
 }
 // 获取评论
-function getReply(pid, limit=null) {
+function getReply(pid, page=0) {
     let header = {
         url: '/forum/get_reply',
         data: {
             'Pid': pid,
-            'Limit': limit
+            'Page': page
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
 // 发送评论
@@ -104,7 +104,7 @@ function sendReply(pid, stu_id, content, isAnonymous=false) {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+        api.request(header, resolve, reject, false, true, '2.0')
     })
 }
 // 删除评论

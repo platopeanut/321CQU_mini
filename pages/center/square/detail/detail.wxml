@@ -15,7 +15,7 @@
                             {{item.UpdateDate}}
                         </view>
                     </view>
-                    <view wx:if="{{item.Authority!=='normal'}}">
+                    <view wx:if="{{item.Authority!=='normal' && !item.IsAnonymous}}">
                         <view class="cu-capsule margin-right">
                             <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
                             <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>
@@ -37,16 +37,19 @@
             <view class="text-gray text-sm text-right padding" bindlongpress="longPressOperation">
 <!--                <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
 <!--                <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
-                <text wx:if="{{comment_list.length > 0}}">
-                    <text class="cuIcon-comment margin-lr-xs" style="font-size:small;"></text>{{comment_list.length}}
+                <text wx:if="{{comments_num > 0}}">
+                    <text class="cuIcon-comment margin-lr-xs" style="font-size:small;"></text>{{comments_num}}
                 </text>
             </view>
             <view class="cu-list menu-avatar comment solids-top">
                 <view class="cu-item" wx:for="{{comment_list}}" data-item="{{item}}" bindlongpress="deleteComment">
-                    <view class="cu-avatar round" style="background-image:url({{item.UserImg}});"></view>
+                    <view wx:if="{{!item.UserImg || item.IsAnonymous}}" class="cu-avatar round" style="background-image:url({{anonymous}});"></view>
+                    <view wx:else class="cu-avatar round" style="background-image:url({{item.UserImg}});"></view>
                     <view class="content">
-                        <view class="text-grey">{{item.UserName?item.UserName:item.Author}}
-                            <view class="padding" wx:if="{{item.Authority!=='normal'}}">
+                        <view class="text-grey">
+                            <text wx:if="{{item.IsAnonymous}}">321CQUer</text>
+                            <text wx:else>{{item.UserName?item.UserName:item.Author}}</text>
+                            <view class="padding" wx:if="{{item.Authority!=='normal' && !item.IsAnonymous}}">
                                 <view class="cu-capsule margin-right">
                                     <view class="cu-tag bg-gradual-orange" wx:if="{{item.Authority==='super'}}">开发者</view>
                                     <view class="cu-tag bg-gradual-blue" wx:else>管理员</view>

@@ -25,7 +25,7 @@ Page({
             // type_name: type_name,
             //     title: e.title,
             //     content: e.content,
-            square_api.getPostDetail(e.pid).then(res => {
+            square_api.getPostDetail(parseInt(e.pid)).then(res => {
                 that.setData({
                     title: res.PostDetail.Title,
                     content: res.PostDetail.Content,
@@ -102,7 +102,7 @@ Page({
                     })
                 }
                 else if (that.data.mode === 1) {
-                    square_api.modifyPost(that.data.title, that.data.content, that.data.pid, that.data.stu_id, isAnonymous).then(() => {
+                    square_api.modifyPost(that.data.title, that.data.content, parseInt(that.data.pid), that.data.stu_id, isAnonymous).then(() => {
                         wx.showToast({
                             title: '修改成功',
                             icon: 'none'

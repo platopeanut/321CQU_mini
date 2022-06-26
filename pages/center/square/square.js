@@ -110,7 +110,7 @@ Page({
                 post_flag_list: post_flag_list,
                 post_list: {},
             })
-            this.updateData(0, 10, false)
+            this.updateData(0, false)
         }
     },
     selectPart: function (res) {
@@ -131,7 +131,7 @@ Page({
     jumpToDetail: function (e, direct=false) {
         let item = direct ? e : e.currentTarget.dataset.item
         wx.navigateTo({
-            url: './detail/detail?pid=' + item.Pid
+            url: './detail/detail?pid=' + item.Pid + '&num=' + item.ReplyNum
         })
     },
     longPressOperation: function (e) {
@@ -178,10 +178,12 @@ Page({
             })
         }
     },
-    updateData: function (start, batch=10, loading=true) {
+    updateData: function (page=0, loading=true) {
+        let batch = 20
         let that = this
         let post_list = this.data.post_list
-        square_api.getPostList(`${start},${batch}`, that.data.curr_type, loading).then(res => {
+        square_api.getPostList(page, that.data.curr_type, loading).then(res => {
+            console.log(res)
             //////////test
             // if (that.data.curr_type === 'TP') {
             //     res.PostList = [
@@ -235,20 +237,20 @@ Page({
             if (size < batch) {
                 post_flag_list[square_util.getIndexByType(that.data.curr_type)] = -1
             }
-            post_index_list[square_util.getIndexByType(that.data.curr_type)] += size
+            post_index_list[square_util.getIndexByType(that.data.curr_type)] += 1
 
             that.setData({
                 post_list: post_list,
                 post_flag_list: post_flag_list,
                 post_index_list: post_index_list
             })
+            console.log(post_index_list, post_flag_list)
         })
     },
     onPullDownRefresh() {
         wx.stopPullDownRefresh()
         let that = this
         if (!(this.data.stu_id && this.data.authority)) {
-            wx.stopPullDownRefresh()
             wx.showToast({
                 title: '请绑定统一身份，昵称信息',
                 icon: 'none'
