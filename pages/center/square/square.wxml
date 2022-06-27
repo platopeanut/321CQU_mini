@@ -49,7 +49,7 @@
         </view>
         <view class="cu-card case" wx:for="{{ActivityList}}" wx:key wx:if="{{!focusFollowState || (focusFollowState && item['follow'])}}">
             <view class="cu-item shadow">
-                <view class="image" bindtap="selectActivity" data-index="{{index}}">
+                <view class="image" bindtap="selectActivity" bindlongpress="previewImg" data-index="{{index}}">
                     <image wx:if="{{!item.CoverUrl}}" src='../../../res/default_activity.jpg' mode="widthFix"></image>
                     <image wx:else src="{{item.CoverUrl}}" mode="widthFix"></image>
 <!--                    <view class="cu-tag bg-blue">史诗</view>-->
@@ -233,7 +233,7 @@
         </view>
         <view class="cu-card case" wx:if="{{MyGroupActivityState}}" wx:for="{{MyGroupActivityList}}" wx:key>
             <view class="cu-item shadow">
-                <view class="image" bindtap="selectMyGroupActivity" data-index="{{index}}">
+                <view class="image" bindtap="selectMyGroupActivity" bindlongpress="previewMyGroupImg" data-index="{{index}}">
                     <image wx:if="{{!item.CoverUrl}}" src='../../../res/default_activity.jpg' mode="widthFix"></image>
                     <image wx:else src="{{item.CoverUrl}}" mode="widthFix"></image>
                     <!--                    <view class="cu-tag bg-blue">史诗</view>-->

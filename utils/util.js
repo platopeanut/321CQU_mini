@@ -244,8 +244,28 @@ function str2buf(str) {
     return buffer
 }
 
+function bindMDEvent(data) {
+    if (data['tag'] === 'img' && data['attrs']['src']) {
+        wx.previewImage({
+            urls: [data['attrs']['src']]
+        })
+    }
+    if (data['tag'] === 'navigator' && data['attrs']['href']) {
+        wx.setClipboardData({
+            data: data['attrs']['href'],
+            success: () => {
+                wx.showToast({
+                    title: '链接已复制到剪切板',
+                    icon: 'none'
+                })
+            }
+        })
+    }
+}
+
 
 module.exports = {
+    bindMDEvent,
     IndexImgUrl,
     dormitory,
     dormitory_code,

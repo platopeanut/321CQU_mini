@@ -422,6 +422,14 @@ Page({
                 + '&State=' + activity.State
         })
     },
+    previewImg: function (e) {
+        let item = this.data.ActivityList[e.currentTarget.dataset.index]
+        if (item.CoverUrl) {
+            wx.previewImage({
+                urls: [item.CoverUrl]
+            })
+        }
+    },
     selectMyGroupActivity: function (e) {
         let activity = this.data.MyGroupActivityList[e.currentTarget.dataset.index]
         wx.navigateTo({
@@ -434,6 +442,14 @@ Page({
                 + '&EndDate=' + activity.EndDate
                 + '&State=' + activity.State
         })
+    },
+    previewMyGroupImg: function (e) {
+        let item = this.data.MyGroupActivityList[e.currentTarget.dataset.index]
+        if (item.CoverUrl) {
+            wx.previewImage({
+                urls: [item.CoverUrl]
+            })
+        }
     },
     followGroup: function (e) {
         let item = this.data.ActivityList[e.currentTarget.dataset.index]
