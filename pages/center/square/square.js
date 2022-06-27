@@ -122,7 +122,6 @@ Page({
         }
     },
     selectPart: function (res) {
-        console.log(res.currentTarget.dataset.type)
         this.setData({
             curr_type: res.currentTarget.dataset.type
         })
@@ -191,7 +190,6 @@ Page({
         let that = this
         let post_list = this.data.post_list
         square_api.getPostList(page, that.data.curr_type, loading).then(res => {
-            console.log(res)
             //////////test
             // if (that.data.curr_type === 'TP') {
             //     res.PostList = [
@@ -217,7 +215,6 @@ Page({
             // }
             //////////
             if (!post_list[that.data.curr_type]) post_list[that.data.curr_type] = []
-            console.log(res.PostList)
             for (let i = 0; i < res.PostList.length; i++) {
                 if (res.PostList[i]['Content'].length >= 45) {
                     res.PostList[i]['Content'] = res.PostList[i]['Content'].slice(0, 45) + '...'
@@ -252,7 +249,6 @@ Page({
                 post_flag_list: post_flag_list,
                 post_index_list: post_index_list
             })
-            console.log(post_index_list, post_flag_list)
         })
     },
     onPullDownRefresh() {
@@ -283,6 +279,13 @@ Page({
             })
             that.getActivities()
         }
+        if (this.data.TabCur === 2) {
+            this.setData({
+                MyGroupActivityList: [],
+                MyGroupActivityPage: 0
+            })
+            this.getMyGroupActivities()
+        }
     },
     onReachBottom: function() {
         if (this.data.TabCur === 0) {
@@ -300,6 +303,10 @@ Page({
                 return
             }
             this.updateData(post_index_list[index])
+        }
+        if (this.data.TabCur === 2) {
+            // 获取更多所在组织的活动
+            this.getMyGroupActivities()
         }
     },
     // 获取封面, 计算进行状态
@@ -359,7 +366,6 @@ Page({
                 })
                 return
             }
-            console.log(res.Announcements)
             let ActivityList = that.data.ActivityList
             wx.showLoading()
             that.getCoverAndState(res.Announcements, ActivityList).then(()=>{
@@ -433,7 +439,6 @@ Page({
         let item = this.data.ActivityList[e.currentTarget.dataset.index]
         let that = this
         let follow_status, follow_opt
-        console.log(that.findGroup(item.Name))
         if (that.findGroup(item.Name) !== -1) {
             follow_status = '取消关注'
             follow_opt = 0
@@ -444,7 +449,6 @@ Page({
         wx.showActionSheet({
             itemList: [follow_status],
             success: res => {
-                console.log(res)
                 if (res.tapIndex === 0) {
                     square_api.followGroup(that.data.stu_id, item.Name, follow_opt).then(() => {
                         wx.showToast({
@@ -493,7 +497,6 @@ Page({
                                 tempFilePath: result.tempFilePath,
                                 success: e=>{
                                     GroupAvatarTable[name] = e.savedFilePath
-                                    console.log(e.savedFilePath)
                                     resolve(e.savedFilePath)
                                 }
                             })

@@ -80,7 +80,6 @@ Page({
         // 加载首页课程信息
         this.LoadCurriculumInfo()
         console.log(wx.getStorageSync('HomePage'))
-        console.log(this.data.swiperList)
     },
     loadSwiperList: function () {
         let HomePage = wx.getStorageSync('HomePage')
@@ -98,7 +97,6 @@ Page({
             swiperList: HomePage['Pictures'],
             IndexImgPath: fs.readFileSync(HomePage['IndexImgPath'], 'base64')
         })
-        console.log(this.data.swiperList)
     },
     LoadSwiperImg: function () {
         let that = this
