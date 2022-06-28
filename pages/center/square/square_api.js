@@ -132,7 +132,7 @@ function getActivities(stu_id, page=0, type='normal') {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.1')
+        api.request(header, resolve, reject, false, true, '2.1')
     })
 }
 // 查看活动详情
@@ -156,7 +156,7 @@ function getGroupInfo(name) {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+        api.request(header, resolve, reject, false, true, '2.0')
     })
 }
 // 关注组织
@@ -182,7 +182,7 @@ function getFollowGroupList(stu_id) {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+        api.request(header, resolve, reject, false, true, '2.0')
     })
 }
 

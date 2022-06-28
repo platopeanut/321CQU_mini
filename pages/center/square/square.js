@@ -5,6 +5,7 @@ const app = getApp()
 
 Page({
     data: {
+        VerifyState: false,
         anonymous: app.globalData.anonymous,
         Tab: ['活动', '消息', '我的'],
         TabCur: 1,
@@ -40,6 +41,13 @@ Page({
         return -1
     },
     tabSelect: function (e) {
+        if (!(this.data.stu_id && this.data.authority)) {
+            wx.showToast({
+                title: '请绑定统一身份，昵称信息',
+                icon: 'none'
+            })
+            return
+        }
         let index = e.currentTarget.dataset.id
         if (index === 0 && this.data.ActivityInit) {
             this.getActivities()
@@ -88,6 +96,13 @@ Page({
         })
     },
     onShow: function () {
+        let Verify = wx.getStorageSync('Verify')
+        if (Verify['IsExamining']) {
+            this.setData({
+                VerifyState: true,
+                TabCur: 0
+            })
+        }
         if (this.data.option === 0) {
             let StuInfo = wx.getStorageSync('StuInfo')
             let stu_id = StuInfo['stu_id']
@@ -358,6 +373,7 @@ Page({
     },
     getActivities: function () {
         let that = this
+        wx.showLoading()
         square_api.getActivities(that.data.stu_id, that.data.ActivityPage).then(res => {
             if (res.Announcements.length === 0) {
                 wx.showToast({
@@ -367,19 +383,27 @@ Page({
                 return
             }
             let ActivityList = that.data.ActivityList
-            wx.showLoading()
             that.getCoverAndState(res.Announcements, ActivityList).then(()=>{
-                wx.hideLoading()
                 that.setData({
                     ActivityList: ActivityList,
                     ActivityPage: that.data.ActivityPage + 1
                 })
+                console.log(that.data.ActivityList)
                 // 获取关注的组织
                 this.updateFollowGroup()
+                wx.hideLoading()
             })
         })
     },
     tapMyGroupActivity: function () {
+        let that = this
+        if (!(this.data.stu_id && this.data.authority)) {
+            wx.showToast({
+                title: '请绑定统一身份，昵称信息',
+                icon: 'none'
+            })
+            return
+        }
         this.setData({
             MyGroupActivityState: !this.data.MyGroupActivityState
         })
@@ -406,6 +430,7 @@ Page({
                 })
                 // 获取关注的组织
                 this.updateFollowGroup()
+                console.log(that.data.MyGroupActivityList)
             })
         })
     },
@@ -496,6 +521,7 @@ Page({
         })
     },
     getGroupAvatar: function (names) {
+        let that = this
         let hasChanged = false
         let GroupAvatarTable = wx.getStorageSync('GroupAvatarTable')
         if (!GroupAvatarTable) GroupAvatarTable = {}
@@ -505,19 +531,23 @@ Page({
             if (GroupAvatarTable[name]) task.push(new Promise(resolve => {resolve(GroupAvatarTable[name])}))
             else task.push(new Promise(resolve=>{
                 square_api.getGroupInfo(name).then(res => {
-                    hasChanged = true
-                    wx.downloadFile({
-                        url: 'https://www.zhulegend.com' + res.Avatar,
-                        success: (result) => {
-                            fs.saveFile({
-                                tempFilePath: result.tempFilePath,
-                                success: e=>{
-                                    GroupAvatarTable[name] = e.savedFilePath
-                                    resolve(e.savedFilePath)
-                                }
-                            })
-                        }
-                    })
+                    if (!res.Avatar) {
+                        resolve(null)
+                    } else {
+                        hasChanged = true
+                        wx.downloadFile({
+                            url: 'https://www.zhulegend.com' + res.Avatar,
+                            success: (result) => {
+                                fs.saveFile({
+                                    tempFilePath: result.tempFilePath,
+                                    success: e=>{
+                                        GroupAvatarTable[name] = e.savedFilePath
+                                        resolve(e.savedFilePath)
+                                    }
+                                })
+                            }
+                        })
+                    }
                 })
             }))
         }
@@ -525,7 +555,8 @@ Page({
             if (hasChanged) wx.setStorageSync('GroupAvatarTable', GroupAvatarTable)
             const fs = wx.getFileSystemManager()
             for (let i = 0; i < res.length; i++) {
-                res[i] = fs.readFileSync(res[i], "base64")
+                if (res[i]) res[i] = fs.readFileSync(res[i], "base64")
+                else res[i] = null
             }
             return new Promise(resolve => {resolve(res)})
         })

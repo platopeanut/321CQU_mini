@@ -3,6 +3,7 @@ const square_util = require('../square_util')
 const util = require('../../../../utils/util')
 Page({
     data: {
+        VerifyState: false,
         content: '',
         title: '',
         type: '',
@@ -13,7 +14,15 @@ Page({
     },
 
     onLoad: function (e) {
-        console.log(e)
+        if (wx.getStorageSync('Verify')['IsExamining']) {
+            this.setData({
+                VerifyState: true
+            })
+            wx.showToast({
+                title: '普通账户无权访问',
+                icon: 'none'
+            })
+        }
         let that = this
         util.changeParentPageOpt({
             option: 1

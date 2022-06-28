@@ -3,7 +3,8 @@
         <view class="cu-item shadow padding-top">
             <view class="cu-list menu-avatar">
                 <view class="cu-item">
-                    <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{activity.Url}});"></view>
+                    <view class="cu-avatar round lg" wx:if="{{activity.Url !== 'null'}}" style="background-image:url(data:image/png;base64,{{activity.Url}});"></view>
+                    <view class="cu-avatar round lg cuIcon-friendfamous" style="background-color: #87d068;" wx:else></view>
                     <view class="content flex-sub">
                         <view>{{activity.Name}}</view>
                         <view class="text-gray text-sm flex justify-between">

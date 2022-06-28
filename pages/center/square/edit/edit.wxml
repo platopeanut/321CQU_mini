@@ -1,4 +1,4 @@
-<view>
+<view wx:if="{{!VerifyState}}">
     <view class="cu-bar bg-white solid-bottom margin-top">
         <view class="action">
             <text class="cuIcon-title text-blue text-bold"></text>

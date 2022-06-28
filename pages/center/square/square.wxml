@@ -1,12 +1,12 @@
 <view>
     <scroll-view scroll-x class="bg-white nav" style="position:fixed;top:0;z-index:1">
         <view class="flex text-center">
-            <view class="cu-item flex-sub {{index===TabCur?'text-blue text-bold cur':'text-black'}}" wx:for="{{Tab}}" bindtap="tabSelect" data-id="{{index}}">
+            <view class="cu-item flex-sub {{index===TabCur?'text-blue text-bold cur':'text-black'}}" wx:for="{{Tab}}" wx:if="{{!VerifyState || (VerifyState && index!==1)}}" bindtap="tabSelect" data-id="{{index}}">
                 <text style="font-size: medium;">{{item}}</text>
             </view>
         </view>
     </scroll-view>
-    <view wx:if="{{TabCur === 1}}">
+    <view wx:if="{{TabCur === 1 && !VerifyState}}">
         <scroll-view scroll-x class="bg-white nav solids-top" style="position:fixed;top:90rpx;z-index:1">
             <view class="flex text-center">
                 <view class="cu-item flex-sub {{item.type===curr_type?'text-black text-bold cur':'text-gray'}}" wx:for="{{categories}}" bindtap="selectPart" data-type="{{item.type}}">
@@ -59,7 +59,8 @@
                 </view>
                 <view class="cu-list menu-avatar" bindtap="followGroup" data-index="{{index}}">
                     <view class="cu-item">
-                        <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
+                        <view class="cu-avatar round lg" wx:if="{{item.Url}}" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
+                        <view class="cu-avatar round lg cuIcon-friendfamous" style="background-color: #87d068;" wx:else></view>
                         <view class="content flex-sub">
                             <view class="text-black">{{item.Name}}<text wx:if="{{item['follow']}}" class=" padding-left text-yellow">(已关注)</text></view>
                             <view class="text-gray text-sm flex justify-between">
@@ -82,7 +83,7 @@
             </view>
         </view>
     </view>
-    <view wx:if="{{TabCur === 1}}">
+    <view wx:if="{{TabCur === 1 && !VerifyState}}">
         <view class="padding bg-white">
             <view class="padding solid text-center">
                 <view class="text-grey">长按自己的帖子进行修改，删除</view>
@@ -210,7 +211,8 @@
         </view>
         <view class="cu-list menu-avatar">
             <view class="cu-item solids-bottom" wx:for="{{followGroupList}}" bindtap="cancelFollow" data-index="{{index}}">
-                <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
+                <view class="cu-avatar round lg" wx:if="{{item.Url}}" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
+                <view class="cu-avatar round lg cuIcon-friendfamous" style="background-color: #87d068;" wx:else></view>
                 <view class="content flex-sub">
                     <view class="text-black">{{item.Name}}</view>
                 </view>
@@ -228,7 +230,7 @@
                 <view class="content">
                     <text class="text-black text-bold">所在组织相关活动</text>
                 </view>
-                <view class="action cuIcon-{{MyGroupActivityState?'fold':'unfold'}}"></view>
+                <view class="action cuIcon-{{MyGroupActivityState?'unfold':'right'}}"></view>
             </view>
         </view>
         <view class="cu-card case" wx:if="{{MyGroupActivityState}}" wx:for="{{MyGroupActivityList}}" wx:key>
@@ -243,7 +245,8 @@
                 </view>
                 <view class="cu-list menu-avatar">
                     <view class="cu-item">
-                        <view class="cu-avatar round lg" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
+                        <view class="cu-avatar round lg" wx:if="{{item.Url}}" style="background-image:url(data:image/png;base64,{{item.Url}});"></view>
+                        <view class="cu-avatar round lg cuIcon-friendfamous" style="background-color: #87d068;" wx:else></view>
                         <view class="content flex-sub">
                             <view class="text-black">{{item.Name}}</view>
                             <view class="text-gray text-sm flex justify-between">

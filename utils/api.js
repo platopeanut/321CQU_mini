@@ -60,7 +60,6 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
           'Params': header.data,
       }
   }
-  console.log(data)
   wx.request({
     url: url + header['url'],
     method: 'POST',
@@ -190,6 +189,18 @@ function COSDownload(key, callback) {
     })
 }
 
+function getVerifyState() {
+    let header = {
+        url: '/api',
+        data: {
+            Version: util.CurrentVersion
+        }
+    }
+    return new Promise((resolve,reject) => {
+        request(header, resolve, reject, false, false, '1.0')
+    })
+}
+
 module.exports = {
     url,
     TEST,
@@ -199,4 +210,5 @@ module.exports = {
     adTimes,
     COSGetCredential,
     COSDownload,
+    getVerifyState,
 }
