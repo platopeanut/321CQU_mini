@@ -27,14 +27,14 @@ Page({
         util.changeParentPageOpt({
             option: 1
         })
-    },
-    onShow: function () {
         this.updateData(parseInt(this.data.pid))
     },
-
     updateData: function (pid) {
         let that = this
         square_api.getPostDetail(pid).then(res => {
+            for (let i = 0; i < res.PostDetail['PictureUrls'].length; i++) {
+                res.PostDetail['PictureUrls'][i] = util.COS_URL + '/' + res.PostDetail['PictureUrls'][i]
+            }
             res.PostDetail['Type'] = square_util.getNameByType(res.PostDetail['Type'])
             res.PostDetail['Content'] = app.towxml(res.PostDetail['Content'], 'markdown', {
                 // base:'http://jwc.cqu.edu.cn/images/',				// 相对资源的base路径
@@ -58,6 +58,15 @@ Page({
                 comment_list: res.Reply
             })
             console.log(that.data.comment_list)
+        })
+    },
+
+    clickImg: function (e) {
+        let that = this
+        let index = e.currentTarget.dataset.index
+        wx.previewImage({
+            current: that.data.item['PictureUrls'][index],
+            urls: that.data.item['PictureUrls']
         })
     },
 

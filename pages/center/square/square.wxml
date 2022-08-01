@@ -18,18 +18,6 @@
     </view>
     <view style="width:100%;height:90rpx;"></view>
 
-<!--    <scroll-view scroll-x class="bg-white nav solids" scroll-with-animation scroll-left="{{categories}}">-->
-<!--        <view class="cu-item {{index==TabCur?'text-green cur':''}}" wx:for="{{10}}" wx:key bindtap="selectPart" data-type="{{item.type}}">-->
-<!--            Tab{{index}}-->
-<!--        </view>-->
-<!--    </scroll-view>-->
-<!--    <view class="cu-list grid col-{{3}} border solids">-->
-<!--        <view class="cu-item {{item.type === curr_type?'text-bold':''}}" wx:for="{{categories}}" wx:key bindtap="selectPart" data-type="{{item.type}}">-->
-<!--            <view class="cuIcon-{{item.icon}} text-{{item.color}}">-->
-<!--            </view>-->
-<!--            <text>{{item.title}}</text>-->
-<!--        </view>-->
-<!--    </view>-->
 
     <view wx:if="{{TabCur === 0}}">
         <view class="padding bg-white">
@@ -175,14 +163,12 @@
                                 </view>
                             </view>
                         </view>
-
                         <view class="text-content" style="margin: 20rpx;">
-                            <!--                        <text user-select>-->
-                            <!--                           -->
-                            <!--                        </text>-->
                             <towxml nodes="{{item.Content}}"/>
                         </view>
-
+                        <view class="grid flex-sub padding-lr col-1" wx:if="{{item.PictureUrl}}">
+                            <image src="{{item.PictureUrl}}" mode="widthFix" style="width:750rpx;height:400rpx;"></image>
+                        </view>
                         <view class="text-gray text-sm text-right padding">
                             <!--                    <text class="cuIcon-attentionfill margin-lr-xs"></text> 10-->
                             <!--                    <text class="cuIcon-appreciatefill margin-lr-xs"></text> 20-->
@@ -269,5 +255,4 @@
             </view>
         </view>
     </view>
-
 </view>

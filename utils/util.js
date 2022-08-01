@@ -30,6 +30,7 @@ function showError(res, prefix='') {
 }
 
 const IndexImgUrl = 'https://www.zhulegend.com/media/background.jpg'
+const COS_URL = 'https://321cqu-1302184418.cos.ap-chongqing.myqcloud.com'
 
 // 获取当前日期
 function getDate() {
@@ -267,6 +268,7 @@ function bindMDEvent(data) {
 
 module.exports = {
     CurrentVersion,
+    COS_URL,
     bindMDEvent,
     IndexImgUrl,
     dormitory,

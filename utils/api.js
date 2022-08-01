@@ -6,13 +6,14 @@ const COS = require("../lib/cos-wx-sdk-v5")
 
 const url = 'https://www.zhulegend.com/321CQU'
 const Password = 'CQUz5321'
-let COSType = 'download'
+// get_announcement_cover
+let COSType = 'upload_post_picture'
 let cos = new COS({
     getAuthorization: function (options, callback) {
         // 异步获取临时密钥
         let curr_time = Date.now()
-        console.log(curr_time)
-        COSGetCredential(COSType).then(res => {
+        let stu_id = wx.getStorageSync('StuInfo')["stu_id"]
+        COSGetCredential(COSType, stu_id).then(res => {
             console.log(res)
             callback({
                 TmpSecretId: res.Credentials.TmpSecretId,
@@ -22,28 +23,6 @@ let cos = new COS({
                 ExpiredTime: res.ExpiredTime
             })
         })
-        // wx.request({
-        //     url: 'https://example.com/server/sts.php',
-        //     data: {
-        //         bucket: options.Bucket,
-        //         region: options.Region,
-        //     },
-        //     dataType: 'json',
-        //     success: function (result) {
-        //         var data = result.data;
-        //         var credentials = data && data.credentials;
-        //         if (!data || !credentials) return console.error('credentials invalid');
-        //         callback({
-        //             TmpSecretId: credentials.tmpSecretId,
-        //             TmpSecretKey: credentials.tmpSecretKey,
-        //             XCosSecurityToken: credentials.sessionToken,
-        //             // 建议返回服务器时间作为签名的开始时间，避免用户浏览器本地时间偏差过大导致签名错误
-        //             StartTime: data.startTime, // 时间戳，单位秒，如：1580000000
-        //             ExpiredTime: data.expiredTime, // 时间戳，单位秒，如：1580000900
-        //         });
-        //     }
-        // })
-
     }
 })
 
@@ -161,24 +140,48 @@ function getHomepageImgData() {
     COS 对象存储
  */
 // 获取临时密钥
-function COSGetCredential(type) {
+function COSGetCredential(type, stu_id) {
     let header = {
         url: '/cos/get_credential',
         data: {
-            Type: type
+            Type: type,
+            Sid: stu_id
         }
     }
     return new Promise((resolve,reject) => {
-        request(header, resolve, reject, false, true, '2.0')
+        request(header, resolve, reject, false, true, '2.1')
     })
 }
 
-function COSUpload() {
-
+function COSUpload(filename, file_path) {
+    COSType = 'upload_post_picture'
+    let stu_id = wx.getStorageSync('StuInfo')["stu_id"]
+    return new Promise((resolve, reject) => {
+        if (!stu_id) {
+            wx.showToast({
+                title: '学号不能为空',
+                icon: 'none'
+            })
+            reject("stu_id is null")
+            return
+        }
+        cos.postObject({
+            Bucket: '321cqu-1302184418',
+            Region: 'ap-chongqing',
+            Key: `posts/${stu_id}/${filename}`,
+            FilePath: file_path,
+            // onProgress: function (info) {
+            //     console.log(JSON.stringify(info));
+            // }
+        }, function (err, data) {
+            if (err) reject(err)
+            else resolve(data['Location'])
+        });
+    })
 }
 
 function COSDownload(key, callback) {
-    COSType = 'download'
+    COSType = 'get_announcement_cover'
     cos.getObjectUrl({
         Bucket: '321cqu-1302184418',
         Region: 'ap-chongqing',
@@ -210,5 +213,6 @@ module.exports = {
     adTimes,
     COSGetCredential,
     COSDownload,
+    COSUpload,
     getVerifyState,
 }

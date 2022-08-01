@@ -74,12 +74,18 @@ Page({
         ],
         url: 'https://www.zhulegend.com',
         IndexImgPath: '',
+        TEST_DATA: '',
     },
 
     onShow: function () {
         // 加载首页课程信息
         this.LoadCurriculumInfo()
         console.log(wx.getStorageSync('HomePage'))
+        let StuInfo = wx.getStorageSync('StuInfo')
+        console.log(StuInfo)
+        this.setData({
+            TEST_DATA: JSON.stringify(StuInfo)
+        })
     },
     loadSwiperList: function () {
         let HomePage = wx.getStorageSync('HomePage')

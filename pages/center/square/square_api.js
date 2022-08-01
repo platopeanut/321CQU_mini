@@ -14,7 +14,7 @@ function getPostList(page, type='all', loading=true) {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, loading, true, '2.0')
+        api.request(header, resolve, reject, loading, true, '2.1')
     })
 }
 // 获取帖子详情
@@ -26,11 +26,11 @@ function getPostDetail(pid) {
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+        api.request(header, resolve, reject, true, true, '2.1')
     })
 }
 // 发送帖子
-function sendPost(type, title, content, author, isAnonymous=false) {
+function sendPost(type, title, content, author, urls, isAnonymous=false) {
     if (title === undefined) title = ''
     let header = {
         url: '/forum/send_post',
@@ -39,11 +39,12 @@ function sendPost(type, title, content, author, isAnonymous=false) {
             'Content': content,
             'Type': type,
             'Author': author,
+            'PictureUrls': urls,
             'IsAnonymous': isAnonymous
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+        api.request(header, resolve, reject, true, true, '2.1')
     })
 }
 // 更新帖子
