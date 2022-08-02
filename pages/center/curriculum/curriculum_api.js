@@ -2,29 +2,25 @@ const api = require('../../../utils/api')
 
 
 // 学校当前学期信息
-function getSchoolTermInfo(uid, uid_pwd) {
-    let header = {
-        url: '/school_info/get_curr_term',
-        data: {
-            'UserName': uid,
-            'Password': uid_pwd
-        }
-    }
-    return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
-    })
+function getSchoolCurrTermInfo(uid, uid_pwd) {
+    return getSchoolTermInfo(uid, uid_pwd, 0);
 }
 // 学校下学期信息
 function getSchoolNextTermInfo(uid, uid_pwd) {
+    return getSchoolTermInfo(uid, uid_pwd, 1);
+}
+// 获取学校学期信息
+function getSchoolTermInfo(uid, uid_pwd, offset) {
     let header = {
-        url: '/school_info/get_next_term',
+        url: '/school_info/get_term_info',
         data: {
             'UserName': uid,
-            'Password': uid_pwd
+            'Password': uid_pwd,
+            'TermOffset': offset
         }
     }
     return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+        api.request(header, resolve, reject, true, true, '2.0')
     })
 }
 
@@ -85,7 +81,7 @@ function pullSelfSchedule(code) {
 
 
 module.exports = {
-    getSchoolTermInfo,
+    getSchoolCurrTermInfo,
     getSchoolNextTermInfo,
     getCurriculum,
     getNextCurriculum,

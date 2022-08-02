@@ -192,7 +192,7 @@ Page({
             'Next': {'TermInfo': null, 'Table': null,}
         }
         // 1.获取当前学期学校信息
-        curriculum_api.getSchoolTermInfo(uid, uid_pwd).then(res => {
+        curriculum_api.getSchoolCurrTermInfo(uid, uid_pwd).then(res => {
             Curriculum['Curr']['TermInfo'] = {
                 StartDate: res.StartDate,
                 EndDate: res.EndDate,
