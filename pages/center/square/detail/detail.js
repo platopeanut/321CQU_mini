@@ -6,6 +6,7 @@ const app = getApp()
 Page({
 
     data: {
+        VerifyState: false,
         anonymous:  app.globalData.anonymous,
         pid: '',
         InputBottom: 0,
@@ -20,6 +21,12 @@ Page({
 
     onLoad: function (e) {
         console.log(e)
+        let Verify = wx.getStorageSync('Verify')
+        if (Verify['IsExamining']) {
+            this.setData({
+                VerifyState: true
+            })
+        }
         this.setData({
             pid: parseInt(e.pid),
             comments_num: e.num

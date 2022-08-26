@@ -1,12 +1,12 @@
 <view>
     <scroll-view scroll-x class="bg-white nav" style="position:fixed;top:0;z-index:1">
         <view class="flex text-center">
-            <view class="cu-item flex-sub {{index===TabCur?'text-blue text-bold cur':'text-black'}}" wx:for="{{Tab}}" wx:if="{{!VerifyState || (VerifyState && index!==1)}}" bindtap="tabSelect" data-id="{{index}}">
+            <view class="cu-item flex-sub {{index===TabCur?'text-blue text-bold cur':'text-black'}}" wx:for="{{Tab}}" bindtap="tabSelect" data-id="{{index}}">
                 <text style="font-size: medium;">{{item}}</text>
             </view>
         </view>
     </scroll-view>
-    <view wx:if="{{TabCur === 1 && !VerifyState}}">
+    <view wx:if="{{TabCur === 1}}">
         <scroll-view scroll-x class="bg-white nav solids-top" style="position:fixed;top:90rpx;z-index:1">
             <view class="flex text-center">
                 <view class="cu-item flex-sub {{item.type===curr_type?'text-black text-bold cur':'text-gray'}}" wx:for="{{categories}}" bindtap="selectPart" data-type="{{item.type}}">
@@ -71,8 +71,8 @@
             </view>
         </view>
     </view>
-    <view wx:if="{{TabCur === 1 && !VerifyState}}">
-        <view class="padding bg-white">
+    <view wx:if="{{TabCur === 1}}">
+        <view class="padding bg-white" wx:if="{{!VerifyState}}">
             <view class="padding solid text-center">
                 <view class="text-grey">长按自己的帖子进行修改，删除</view>
                 <view class="text-grey">长按自己的评论进行删除</view>
@@ -181,7 +181,7 @@
                 </view>
             </view>
         </view>
-        <movable-area bindtap="jumpToAddPost" wx:if="{{curr_type !== 'all'}}" class="movable-area">
+        <movable-area bindtap="jumpToAddPost" wx:if="{{curr_type !== 'all' && !VerifyState}}" class="movable-area">
             <movable-view class="movable-view" direction="all">
                 <image src="../../../res/icons/plus.png"></image>
             </movable-view>
