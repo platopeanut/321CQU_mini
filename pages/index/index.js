@@ -1,6 +1,7 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
 const util = require("../../utils/util")
+// const shi_ci = require("../../lib/jinrishici")
 
 Page({
 
@@ -8,8 +9,8 @@ Page({
         today_info: '',
         curriculum_info: '',
         gridCol: 2,
-        // swiperList: [{url:false}],
         swiperList: [],
+        // otherList: [],
         iconList: [
             {
                 title: '课表',
@@ -182,7 +183,7 @@ Page({
     previewImg: function () {
         let urls = []
         for (let item of this.data.swiperList) {
-            urls.push(item.Url)
+            if (item.url) urls.push(item.Url)
         }
         wx.previewImage({
             // current: '',
@@ -225,5 +226,19 @@ Page({
         }
         // 加载首页轮播图片
         this.LoadSwiperImg()
+        // api.sentenceADay()
+        // shi_ci.load(result => {
+        //     let poetry = {
+        //         'content': result.data['content'],
+        //         'author': result.data['origin']['author'],
+        //         'dynasty': result.data['origin']['dynasty'],
+        //         'title': result.data['origin']['title']
+        //     }
+        //     let otherList = that.data.otherList
+        //     otherList[0] = poetry
+        //     that.setData({
+        //         otherList: otherList
+        //     })
+        // })
     },
 })

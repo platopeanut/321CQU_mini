@@ -136,6 +136,16 @@ function getHomepageImgData() {
   })
 }
 
+// // 每日一句
+// function sentenceADay() {
+//     wx.request({
+//         url: 'https://open.iciba.com/dsapi',
+//         success: result => {
+//             console.log(result)
+//         }
+//     })
+// }
+
 /*
     COS 对象存储
  */
@@ -215,4 +225,5 @@ module.exports = {
     COSDownload,
     COSUpload,
     getVerifyState,
+    // sentenceADay,
 }
