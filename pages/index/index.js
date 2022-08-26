@@ -219,8 +219,8 @@ Page({
                 }
             })
             wx.showModal({
-                title: "321CQU v2.4",
-                content: "1. 广场活动开启；2. 图书分享；3. 订阅接口变更；4. 课表中嵌入考试安排"
+                title: "321CQU v2.5",
+                content: "哈喽，新学期快乐！\n1. 广场发帖支持图片上传；\n2. 优化活动加载；\n3. 优化查课模块（详情见公告）"
             })
             wx.setStorageSync('AppUse', true)
         }
