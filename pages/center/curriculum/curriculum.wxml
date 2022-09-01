@@ -49,15 +49,16 @@
 
 <!-- 底部栏 -->
 <view class="bottom" wx:if="{{showMode === 0}}">
-  <text class="cuIcon-refresh" bindtap="updateData"></text>
-  <view style="width: 550rpx;display: inline-block;">
-    <view bindtap="preWeek" style="display: inline-block;width: 100rpx;"><text class="cuIcon-back"></text></view>
-    <text class="mid">第{{week}}周</text>
-    <view bindtap="nextWeek" style="display: inline-block;width: 100rpx;">
+  <text class="cuIcon-refresh padding-left padding-right" bindtap="updateData"></text>
+  <view style="width: 500rpx;display: inline-block;">
+    <view bindtap="preWeek" style="display: inline-block;width: 120rpx;float:left;"><text class="cuIcon-back"></text></view>
+    <text class="mid" wx:if="{{display_week === week}}">第{{week}}周</text>
+    <text class="mid" wx:else>第{{display_week}}:{{week}}周</text>
+    <view bindtap="nextWeek" style="display: inline-block;width: 120rpx;float:right;">
       <text class="cuIcon-right"></text>
     </view>
   </view>
-  <text class="cuIcon-calendar" bindtap="switchModelTo1"></text>
+  <text class="cuIcon-calendar padding-left padding-right" bindtap="switchModelTo1"></text>
 </view>
 <view class="bottom" wx:elif="{{showMode === 1}}">
   <text class="cuIcon-refresh" bindtap="updateData"></text>

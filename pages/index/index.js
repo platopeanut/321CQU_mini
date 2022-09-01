@@ -154,10 +154,17 @@ Page({
         let index_info = curriculum_util.getIndexInfo()
         let today_info = index_info.today_info
         let curriculum_info = index_info.curriculum_info
-        this.setData({
-            today_info: `第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
-            curriculum_info: curriculum_info?curriculum_info:'今日无课',
-        })
+        if (today_info.display_week === today_info.week) {
+            this.setData({
+                today_info: `第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
+                curriculum_info: curriculum_info?curriculum_info:'今日无课',
+            })
+        } else {
+            this.setData({
+                today_info: `第${today_info.display_week}:${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
+                curriculum_info: curriculum_info?curriculum_info:'今日无课',
+            })
+        }
     },
 
     jumpToCurriculum: function () {

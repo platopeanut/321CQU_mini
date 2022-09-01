@@ -1,4 +1,5 @@
 const util = require("../../../utils/util")
+const eval5 = require("../../../lib/eval5")
 
 const time_table = [
     '08:30~09:15',
@@ -15,6 +16,47 @@ const time_table = [
     '20:50~21:35',
     '21:45~22:30',
 ]
+let defaultCode = "1:7,2:5,3:7,4:8,5:9,x:x+3:x>=7"
+
+
+// 周数映射: 对于大一
+function getChangedWeekIndex(currWeekIndex) {
+    let Temporary = wx.getStorageSync('Temporary');
+    if (Temporary && Temporary['CurriculumChange']) {
+        if (currWeekIndex === 1) return 7;
+        if (currWeekIndex === 2) return 5;
+        if (currWeekIndex === 3) return 7;
+        if (currWeekIndex === 4) return 8;
+        if (currWeekIndex === 5) return 9;
+        if (currWeekIndex === 6) return 6;
+        if (currWeekIndex >= 7)
+            return currWeekIndex + 3;
+        return currWeekIndex;
+    } else return currWeekIndex;
+}
+
+// 解析函数
+function parseCode(index, code=defaultCode) {
+    let Temporary = wx.getStorageSync('Temporary');
+    if (Temporary && Temporary['CurriculumChange']) {
+        if (Temporary['CurriculumIndexCode'])
+            code = Temporary['CurriculumIndexCode']
+        let items = code.split(',')
+        for (const item of items) {
+            if (item[0] === 'x') {
+                let xyz = item.split(":")
+                const func = new eval5.Function('x', `if(${xyz[2]}) return ${xyz[1]};else return x;`)
+                return parseInt(func(index))
+            } else {
+                let xy = item.split(':')
+                if (index === parseInt(xy[0])) {
+                    return parseInt(xy[1])
+                }
+            }
+        }
+        return index
+    } else return index
+}
 
 // 计算当前是第几周
 function getCurrWeek(StartDate, CurrDate=null) {
@@ -114,7 +156,9 @@ function getIndexInfo() {
     let Priority = Curriculum['Priority']
     if (!Priority) Priority = []
 
-    let week = getCurrWeek(CurrTermInfo.StartDate)
+    let display_week = getCurrWeek(CurrTermInfo.StartDate)
+    let week = getChangedWeekIndex(display_week)
+
     CurrTable = filterCourses(CurrTable)
     let curriculum = createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
     adaptPriority(curriculum, Priority)
@@ -157,16 +201,16 @@ function getIndexInfo() {
     return {
         today_info: {
             week: week,
+            display_week: display_week,
             today: new Date().getDay()
         },
         curriculum_info: curriculum_info
     }
 }
 
-function getCurrWeekList() {
+function getCurrWeekList(curDate) {
     let week_list = [['周一'],['周二'],['周三'],['周四'],['周五'],['周六'],['周日']]
     let day_list = []
-    let curDate = new Date()
     let week_index = curDate.getDay()   // 周几
     if (week_index===0) week_index = 7
     for (let i = week_index-1; i >=0; i--) {
@@ -349,4 +393,7 @@ module.exports = {
     getCurrWeekList,
     getCurrWeekIndex,
     getNeighborDayList,
+    getChangedWeekIndex,
+    parseCode,
+    defaultCode,
 }

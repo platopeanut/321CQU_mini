@@ -13,8 +13,15 @@ Page({
         edit_mode: false,
         curr_schedule: null,
         ImportExams: false,
+        curriculumChange: false,
+        curriculumIndexCode: curriculum_util.defaultCode,
     },
     onShow: function() {
+        let Temporary = wx.getStorageSync('Temporary')
+        if (Temporary) {
+            if (Temporary['CurriculumChange']) this.setData({ curriculumChange: true })
+            if (Temporary['CurriculumIndexCode']) this.setData({ curriculumIndexCode: Temporary['CurriculumIndexCode']})
+        }
         let StuInfo = wx.getStorageSync('StuInfo')
         let Curriculum = wx.getStorageSync('Curriculum')
         let SelfSchedule = Curriculum['SelfSchedule']
@@ -31,7 +38,6 @@ Page({
         })
     },
     selectImportExams: function (e) {
-        console.log(e.detail.value)
         let Curriculum = wx.getStorageSync('Curriculum')
         let exams = wx.getStorageSync('ExamSchedule')
         if (!Curriculum) {
@@ -62,6 +68,36 @@ Page({
         wx.setStorageSync('Curriculum', Curriculum)
         if (e.detail.value) this.addImportExams()
         else this.delImportExams()
+    },
+    selectCurriculumChange: function (e) {
+        let Temporary = wx.getStorageSync('Temporary')
+        if (!Temporary || !Temporary['CurriculumChange']) {
+            Temporary = {'CurriculumChange': true}
+        }
+        Temporary['CurriculumChange'] = e.detail.value
+        wx.setStorageSync('Temporary', Temporary)
+    },
+    updateCurriculumIndexCode: function (e) {
+        this.setData({
+            curriculumIndexCode: e.detail.value
+        })
+    },
+    saveCurriculumIndexCode: function () {
+        console.log(this.data.curriculumIndexCode)
+        let Temporary = wx.getStorageSync('Temporary')
+        if (!Temporary || !Temporary['CurriculumChange']) {
+            wx.showToast({
+                title: '请先开启临时调整',
+                icon: 'none'
+            })
+            return
+        }
+        Temporary['CurriculumIndexCode'] = this.data.curriculumIndexCode
+        wx.setStorageSync('Temporary', Temporary)
+        wx.showToast({
+            title: '保存成功',
+            icon: 'none'
+        })
     },
     delImportExams: function () {
         console.log('del')
