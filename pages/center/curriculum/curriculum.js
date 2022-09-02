@@ -25,6 +25,9 @@ Page({
         CurrTermInfo: null,
         CurrTerm: null,
         term_list: [],
+
+        // 手势操作
+        clientX: -1,
     },
 
     onShow: function() {
@@ -112,6 +115,21 @@ Page({
             display_week: that.data.display_week - 1,
             week: curriculum_util.parseCode(that.data.display_week - 1),
             week_list: that.getNeighborDayList(date, -1),
+        })
+    },
+
+    onTouchStart(e) {
+        this.setData({
+            clientX: e.changedTouches[0].clientX
+        })
+    },
+
+    onTouchEnd(e) {
+        let distance = e.changedTouches[0].clientX
+        if (distance - this.data.clientX >= 50) this.preWeek()
+        else if (distance - this.data.clientX <= -50) this.nextWeek()
+        this.setData({
+            clientX: -1
         })
     },
 

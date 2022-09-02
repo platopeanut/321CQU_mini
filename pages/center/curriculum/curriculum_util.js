@@ -259,6 +259,7 @@ function filterCourses(Courses) {
 function selectColor(...list) {
     const color_list = [
         '#ff9b6a',
+        '#addc81',
         '#87ceca',
         '#fecb62',
         '#f06c79',
@@ -266,20 +267,19 @@ function selectColor(...list) {
         '#67bdde',
         '#79cea5',
         '#f0b7e2',
-        '#fecb62',
-        '#f9a782',
-        '#d2a495',
+        '#ddd38c',
         '#fc9d99',
         '#facdae',
         '#c7c8a8',
-        '#84af9b',
-        '#8abeb2',
         '#c9ba83',
-        '#ddd38c',
         '#de9c52',
-        '#addc81',
+        '#f9a782',
+        '#84af9b',
+        '#d2a495',
+        '#8abeb2',
         '#6bc235',
         '#269d81',
+        '#fecb62',
     ]
     let course_code_list = []
     let idx = 0

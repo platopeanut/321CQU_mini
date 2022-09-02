@@ -14,7 +14,7 @@
 
 <view class="layers">
   <!-- 课表层-->
-  <view class="layer1">
+  <view class="layer1" bindtouchstart="onTouchStart" bindtouchend="onTouchEnd">
     <view class="left">
       <view wx:for="{{13}}" class="index">{{index+1}}</view>
     </view>
