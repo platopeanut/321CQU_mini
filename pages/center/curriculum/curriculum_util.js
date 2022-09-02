@@ -157,7 +157,7 @@ function getIndexInfo() {
     if (!Priority) Priority = []
 
     let display_week = getCurrWeek(CurrTermInfo.StartDate)
-    let week = getChangedWeekIndex(display_week)
+    let week = parseCode(display_week)
 
     CurrTable = filterCourses(CurrTable)
     let curriculum = createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
