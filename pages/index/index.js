@@ -1,13 +1,15 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
 const util = require("../../utils/util")
+const go = require("../../lib/towxml/parse/highlight/languages/go");
+const {getChangedWeekIndex} = require("../center/curriculum/curriculum_util");
+const {nu} = require("../../lib/towxml/parse/parse2/entities/maps/entities");
 // const shi_ci = require("../../lib/jinrishici")
 
 Page({
 
     data: {
-        today_info: '',
-        curriculum_info: '',
+        class_info: null,
         gridCol: 2,
         swiperList: [],
         // otherList: [],
@@ -76,6 +78,8 @@ Page({
         url: 'https://www.zhulegend.com',
         IndexImgPath: '',
         TEST_DATA: '',
+        // 手势
+        clientX: -1,
     },
 
     onShow: function () {
@@ -152,18 +156,74 @@ Page({
 
     LoadCurriculumInfo: function () {
         let index_info = curriculum_util.getIndexInfo()
-        let today_info = index_info.today_info
-        let curriculum_info = index_info.curriculum_info
-        if (today_info.display_week === today_info.week) {
-            this.setData({
-                today_info: `第${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
-                curriculum_info: curriculum_info?curriculum_info:'今日无课',
+        if (!index_info) return
+        let today_info;
+        if (index_info.display_week !== index_info.week)
+            today_info = `第${index_info.display_week}:${index_info.week}周 星期${index_info.today}`
+        else today_info = `第${index_info.week}周 星期${index_info.today}`
+        let class_info = {
+            'today_info': today_info,
+            'classes': [],
+            'index': curriculum_util.getLessonIndex({
+                hour: new Date().getHours(),
+                minute: new Date().getMinutes()
             })
-        } else {
-            this.setData({
-                today_info: `第${today_info.display_week}:${today_info.week}周 ${"星期" + "日一二三四五六".split(/(?!\b)/)[today_info.today]}`,
-                curriculum_info: curriculum_info?curriculum_info:'今日无课',
-            })
+        }
+        if (class_info['index'] === -1) class_info['index'] = index_info.classes.length;
+        let flag = true
+        for (let i = class_info['index']; i < index_info.classes.length; i++) {
+            if (index_info.classes[i]) {
+                flag = false
+                break
+            }
+        }
+        if (flag) class_info['index'] = index_info.classes.length;
+        flag = true
+        for (let i = 0; i < index_info.classes.length; i++) {
+            if (index_info.classes[i]) {
+                let time_li = curriculum_util.getTimeFromIndex(i)
+                let item;
+                if (index_info.classes[i][0]['Self']) item = `${time_li[0]}~${time_li[1]}\n${index_info.classes[i][0]['CourseName']}`
+                else item = `${time_li[0]}~${time_li[1]}\n${index_info.classes[i][0]['CourseName']}\n${index_info.classes[i][0]['RoomName']}`
+                class_info['classes'].push(item)
+
+                if (flag && i >= class_info['index']) {
+                    class_info['index'] = class_info['classes'].length - 1
+                    flag = false
+                }
+            }
+        }
+        if (class_info['index'] === index_info.classes.length) {
+            class_info['classes'].push("\n今日无课")
+            class_info['index'] = class_info['classes'].length - 1
+        }
+        this.setData({ class_info: class_info })
+        console.log(this.data.class_info)
+    },
+
+    onTouchStart: function (e) {
+        this.setData({ clientX: e.changedTouches[0].clientX })
+    },
+
+    onTouchEnd: function (e) {
+        let distance = e.changedTouches[0].clientX - this.data.clientX
+        let class_info = this.data.class_info
+        if (!class_info) {
+            this.setData({ clientX: -1 })
+            return
+        }
+
+        if (distance >= 50 && class_info['index'] > 0) {
+            wx.vibrateShort()
+            class_info['index'] --
+            this.setData({ class_info: class_info })
+            this.setData({ clientX: -1 })
+        }
+        else if (distance <= -50 && class_info['index'] < class_info['classes'].length - 1) {
+            wx.vibrateShort()
+            class_info['index'] ++
+            this.setData({ class_info: class_info })
+            this.setData({ clientX: -1 })
         }
     },
 

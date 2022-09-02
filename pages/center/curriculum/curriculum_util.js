@@ -45,7 +45,7 @@ function parseCode(index, code=defaultCode) {
         for (const item of items) {
             if (item[0] === 'x') {
                 let xyz = item.split(":")
-                const func = new eval5.Function('x', `if(${xyz[2]}) return ${xyz[1]};else return x;`)
+                const func = new eval5.Function('x', `if(${xyz.length} === 2 || ${xyz[2]}) return ${xyz[1]};else return x;`)
                 return parseInt(func(index))
             } else {
                 let xy = item.split(':')
@@ -139,15 +139,7 @@ function getLessonIndex(time) {
 // 送给首页的信息
 function getIndexInfo() {
     let Curriculum = wx.getStorageSync('Curriculum')
-    if (Curriculum === '') {
-        return {
-            today_info: {
-                week: 'unknown',
-                today: new Date().getDay()
-            },
-            curriculum_info: '请先刷新课表数据'
-        }
-    }
+    if (Curriculum === '') return null
     let CurrTerm = Curriculum['CurrTerm']
     let CurrTable = Curriculum[CurrTerm]['Table']
     let CurrTermInfo = Curriculum[CurrTerm]['TermInfo']
@@ -163,49 +155,18 @@ function getIndexInfo() {
     let curriculum = createTable(SelfSchedule, CurrTable)    // 自定义课程优先级高
     adaptPriority(curriculum, Priority)
 
-
-    let curriculum_info = ''
     let _today = new Date().getDay() - 1
     if (_today === -1) _today = 6
-    if (curriculum[week] === undefined || curriculum[week][_today] === undefined)
-        curriculum_info = '今日无课'
-    else {
-        let _list = curriculum[week][_today]
-        let _flag = false
-        for (const item of _list) {
-            if (item) _flag = true
-        }
-        if (!_flag) curriculum_info = '今日无课'
-        else {
-            let _time = new Date()
-            let index = getLessonIndex({
-                hour: _time.getHours(),
-                minute: _time.getMinutes()
-            })
-            if (index === -1) {
-                curriculum_info = '今日无课'
-            } else {
-                for (let i = index; i < _list.length; i ++) {
-                    if (_list[i]) {
-                        index = i
-                        let time_li = getTimeFromIndex(index)
-                        if (_list[index][0]['Self'])
-                            curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index][0].CourseName}`
-                        else curriculum_info = `${time_li[0]}~${time_li[1]}\n${_list[index][0].CourseName}\n${_list[index][0].RoomName}`
-                        break
-                    }
-                }
-            }
-        }
+
+    let info = {
+        'display_week': display_week,
+        'week': week,
+        'today': "一二三四五六日".split(/(?!\b)/)[_today],
+        'classes': null
     }
-    return {
-        today_info: {
-            week: week,
-            display_week: display_week,
-            today: new Date().getDay()
-        },
-        curriculum_info: curriculum_info
-    }
+    if (!curriculum[week] || !curriculum[week][_today]) info['classes'] = []
+    else info['classes'] = curriculum[week][_today]
+    return info
 }
 
 function getCurrWeekList(curDate) {
