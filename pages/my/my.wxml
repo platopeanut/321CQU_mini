@@ -1,5 +1,5 @@
 <!-- 授权登录 -->
-<view wx:if="{{UserInfo === ''}}">
+<view wx:if="{{!UserInfo}}">
   <view class='header'>
     <image mode='widthFix' src='../../res/icons/app.png'></image>
   </view>
@@ -22,26 +22,26 @@
   </view>
 
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
-    <view class="cu-item arrow">
-      <view class="content" bindtap="jumpToEditInfo">
+    <view class="cu-item arrow" bindtap="jumpToEditInfo">
+      <view class="content">
         <text class="cuIcon-form text-yellow"></text>
         <text class="text-grey">绑定信息</text>
       </view>
     </view>
-    <view class="cu-item">
-      <view class="content" bindtap="clearCache">
+    <view class="cu-item" bindtap="clearCache">
+      <view class="content">
         <text class="cuIcon-refresh text-red"></text>
         <text class="text-grey">清除缓存</text>
       </view>
     </view>
-    <view class="cu-item">
-      <view class="content" bindtap="reauthorize">
+    <view class="cu-item" bindtap="reauthorize">
+      <view class="content">
         <text class="cuIcon-selection text-blue"></text>
         <text class="text-grey">重新授权</text>
       </view>
     </view>
-    <view class="cu-item">
-      <view class="content" bindtap="updateAdTimes">
+    <view class="cu-item" bindtap="updateAdTimes">
+      <view class="content">
         <text class="cuIcon-sponsor text-cyan"></text>
         <text class="text-grey">已观看广告次数</text>
       </view>
@@ -49,38 +49,19 @@
         <text>{{AdCount}}</text>
       </view>
     </view>
-    <view class="cu-item arrow">
-      <navigator class="content" url="/pages/my/guide/guide" hover-class="none">
+    <view class="cu-item arrow" bindtap="jumpToGuide">
+      <view class="content">
         <text class="cuIcon-read text-orange"></text>
         <text class="text-grey">使用教程</text>
-      </navigator>
+      </view>
     </view>
-    <view class="cu-item arrow">
-      <navigator class="content" url="/pages/my/about/about" hover-class="none">
+    <view class="cu-item arrow" bindtap="jumpToAbout">
+      <view class="content">
         <text class="cuIcon-formfill text-green"></text>
         <text class="text-grey">关于我们</text>
-      </navigator>
+      </view>
     </view>
   </view>
-  <view class="cu-tabbar-height"></view>
-
-  <!-- 进入绑定信息页面提示 -->
-  <view class="cu-modal {{mode?'show':''}}">
-  <view class="cu-dialog">
-  <view class="cu-bar bg-white justify-end">
-    <view class="content">用户信息隐私说明</view>
-  </view>
-  <view class="padding-xl">学号、姓名、统一认证账号、密码均为本地存储，有特殊功能需要存储于服务器时会单独通知，请放心使用。详细隐私协议可见321CQU小程序隐私保护指引
-  </view>
-  <view class="cu-bar bg-white justify-end">
-    <view class="action">
-      <button class="cu-btn line-green text-green" bindtap="hideModalCancel">取消</button>
-      <button class="cu-btn bg-green margin-left" bindtap="hideModalSure">同意</button>
-    </view>
-  </view>
-  </view>
-  </view>
-
 </view>
 
 
