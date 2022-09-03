@@ -117,7 +117,7 @@ Page({
         let StuInfo = this.data.StuInfo
         let stu_name = StuInfo['stu_name']
         let stu_id = StuInfo['stu_id']
-        if (stu_id === "" || stu_name === "") {
+        if (!stu_id || !stu_name) {
             wx.showToast({
                 title: '请先登录统一身份认证',
                 icon: 'none'
