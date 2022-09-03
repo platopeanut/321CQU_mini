@@ -38,10 +38,9 @@
                 我们提供自定义映射规则来提高用户自由度，规则如下：
             </text>
             <view class="text-left" style="margin-top: 5rpx;">1.使用逗号(英文)分隔不同规则</view>
-            <view class="text-left" style="margin-top: 5rpx;">2.原本的周数是自变量，映射后的周数是因变量</view>
-            <view class="text-left" style="margin-top: 5rpx;">3.当一条规则中只有一个冒号时，冒号之前自变量，之后是因变量</view>
-            <view class="text-left" style="margin-top: 5rpx;">4.当一条规则中有两个冒号时，分隔的三部分依次是自变量，因变量，自变量条件</view>
-            <view class="text-left" style="margin-top: 5rpx;">例如2:5指将第二周映射到第五周，x:x+3:x>=7指周数在第七周及以后时，往后偏移三周</view>
+            <view class="text-left" style="margin-top: 5rpx;">2.当一条规则中只有一个冒号时，冒号之前是原本的周数，之后是映射后的周数</view>
+            <view class="text-left" style="margin-top: 5rpx;">3.当一条规则中有两个冒号时，分隔的三部分依次是起始周数（可空），终止周数（可空），周偏移量</view>
+            <view class="text-left" style="margin-top: 5rpx;">例如2:5指将第二周映射到第五周，7::3指周数在第七周及以后时，往后偏移三周</view>
         </view>
         <form>
             <view class="cu-form-group">

@@ -1,5 +1,4 @@
 const util = require("../../../utils/util")
-const eval5 = require("../../../lib/eval5")
 
 const time_table = [
     '08:30~09:15',
@@ -16,7 +15,7 @@ const time_table = [
     '20:50~21:35',
     '21:45~22:30',
 ]
-let defaultCode = "2:5,3:7,4:8,5:9,x:x+3:x>=7"
+let defaultCode = "2:5,3:7,4:8,5:9,7::3"
 
 
 // 周数映射: 对于大一
@@ -43,14 +42,14 @@ function parseCode(index, code=defaultCode) {
             code = Temporary['CurriculumIndexCode']
         let items = code.split(',')
         for (const item of items) {
-            if (item[0] === 'x') {
-                let xyz = item.split(":")
-                const func = new eval5.Function('x', `if(${xyz.length} === 2 || ${xyz[2]}) return ${xyz[1]};else return x;`)
-                return parseInt(func(index))
-            } else {
-                let xy = item.split(':')
-                if (index === parseInt(xy[0])) {
-                    return parseInt(xy[1])
+            let li = item.split(':')
+            if (li.length === 2) {
+                if (index === parseInt(li[0])) {
+                    return parseInt(li[1])
+                }
+            } else if (li.length === 3) {
+                if ((!li[0] || index >= parseInt(li[0])) && (!li[1] || index <= parseInt(li[1]))) {
+                    return index + parseInt(li[2])
                 }
             }
         }
