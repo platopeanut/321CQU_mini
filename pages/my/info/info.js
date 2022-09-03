@@ -76,7 +76,8 @@ Page({
             })
             return
         }
-        let StuInfo = {}
+        let StuInfo = wx.getStorageSync('StuInfo')
+        if (!StuInfo) StuInfo = {}
         if (identity === '本科生') {
             info_api.loginUG(uid, uid_pwd).then(res => {
                 StuInfo['uid'] = uid
@@ -84,9 +85,7 @@ Page({
                 StuInfo['stu_id'] = res.Sid
                 StuInfo['stu_name'] = res.Name
                 StuInfo['identity'] = '本科生'
-                that.setData({
-                    StuInfo: StuInfo
-                })
+                that.setData({ StuInfo: StuInfo })
                 wx.setStorageSync('StuInfo', StuInfo)
                 wx.showToast({
                     title: '绑定成功',
@@ -95,13 +94,11 @@ Page({
             })
         }
         else if (identity === '研究生') {
-            info_api.loginPG(uid, uid_pwd).then(res => {
+            info_api.loginPG(uid, uid_pwd).then(() => {
                 StuInfo['uid'] = uid
                 StuInfo['uid_pwd'] = uid_pwd
                 StuInfo['identity'] = '研究生'
-                that.setData({
-                    StuInfo: StuInfo
-                })
+                that.setData({ StuInfo: StuInfo })
                 wx.setStorageSync('StuInfo', StuInfo)
                 wx.showToast({
                     title: '绑定成功',
@@ -148,10 +145,10 @@ Page({
         if (nickname !== "") {
             this.setNickname(stu_id, nickname)
         } else {
-          wx.showToast({
-            title: '绑定成功',
-            icon: 'success'
-          })
+            wx.showToast({
+                title: '绑定成功',
+                icon: 'success'
+            })
         }
     },
     identityChoice: function (e) {
@@ -162,29 +159,28 @@ Page({
     setNickname(stu_id, nickname) {
         let that = this
         let StuInfo = wx.getStorageSync('StuInfo')
-        let avatarUrl = wx.getStorageSync('UserInfo').avatarUrl
+        let UserInfo = wx.getStorageSync('UserInfo')
         // avatarUrl不存在则需要重新授权
-        if (StuInfo === '') {
-            wx.showToast({
-                title: '请完善统一身份信息',
-                icon: 'none'
-            })
-            return
-        }
-        if (avatarUrl === '') {
+        if (!UserInfo || !UserInfo['avatarUrl']) {
             wx.showToast({
                 title: '需要重新授权',
                 icon: 'none',
             })
             return
         }
-        info_api.setNickname(stu_id, nickname, avatarUrl).then(res => {
-            StuInfo['nickname'] = nickname
-            StuInfo['authority'] = res.Authority
-            wx.setStorageSync('StuInfo', StuInfo)
-            that.setData({
-                StuInfo: StuInfo
+        if (!StuInfo) {
+            wx.showToast({
+                title: '请完善统一身份信息',
+                icon: 'none'
             })
+            return
+        }
+
+        info_api.setNickname(stu_id, nickname, UserInfo['avatarUrl']).then(res => {
+            StuInfo['nickname'] = nickname
+            StuInfo['authority'] = res['Authority']
+            wx.setStorageSync('StuInfo', StuInfo)
+            that.setData({ StuInfo: StuInfo })
             wx.showToast({
                 title: '绑定成功',
                 icon: 'none'

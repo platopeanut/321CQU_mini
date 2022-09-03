@@ -75,7 +75,7 @@
 
   <view class="cu-form-group">
   <view class="title">昵称</view>
-  <input name="nickname" placeholder="请设置你的昵称" value="{{StuInfo.nickname}}"></input>
+  <input name="nickname" placeholder="用于帖子作者的显示" value="{{StuInfo.nickname}}"></input>
   </view>
 
   <view class="cu-form-group">
