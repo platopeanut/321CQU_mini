@@ -34,7 +34,7 @@
                     <text class="text-black"> {{class_info['classes'][class_info['index']]}} </text>
                 </view>
             </view>
-            <view class="flex-sub text-center" wx:else>
+            <view class="flex-sub text-center" wx:elif="{{!class_info && !loading_lock}}">
                 <view class="solid text-xl padding">
                     <text class="text-red">请先刷新课表数据</text>
                 </view>

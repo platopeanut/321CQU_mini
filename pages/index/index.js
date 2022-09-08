@@ -1,15 +1,13 @@
 const curriculum_util = require('../center/curriculum/curriculum_util')
 const api = require('../../utils/api')
 const util = require("../../utils/util")
-const go = require("../../lib/towxml/parse/highlight/languages/go");
-const {getChangedWeekIndex} = require("../center/curriculum/curriculum_util");
-const {nu} = require("../../lib/towxml/parse/parse2/entities/maps/entities");
 // const shi_ci = require("../../lib/jinrishici")
 
 Page({
 
     data: {
         class_info: null,
+        loading_lock: true,
         gridCol: 2,
         swiperList: [],
         // otherList: [],
@@ -85,6 +83,7 @@ Page({
     onShow: function () {
         // 加载首页课程信息
         this.LoadCurriculumInfo()
+        this.setData({loading_lock: false})
         console.log(wx.getStorageSync('HomePage'))
         let StuInfo = wx.getStorageSync('StuInfo')
         console.log(StuInfo)
@@ -198,7 +197,6 @@ Page({
             class_info['index'] = class_info['classes'].length - 1
         }
         this.setData({ class_info: class_info })
-        console.log(this.data.class_info)
     },
 
     onTouchStart: function (e) {
