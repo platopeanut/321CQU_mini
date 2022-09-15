@@ -77,8 +77,6 @@ Page({
         picture_url: 'https://picture.zhulegend.com',
         IndexImgPath: '',
         TEST_DATA: '',
-        // 手势
-        clientX: -1,
     },
 
     onShow: function () {
@@ -201,33 +199,20 @@ Page({
             class_info['classes'].push("\n今日无课")
             class_info['index'] = class_info['classes'].length - 1
         }
+        // merge
+        let merge_classes = []
+        for (let i = 0; i < class_info['classes'].length; i++) {
+            if (merge_classes.length === 0 || merge_classes[merge_classes.length-1]['CourseName'] !== class_info['classes'][i]['CourseName'])
+                merge_classes.push(class_info['classes'][i])
+            else if (merge_classes[merge_classes.length-1]['CourseName'] === class_info['classes'][i]['CourseName']) {
+                merge_classes[merge_classes.length-1]['EndTime'] = class_info['classes'][i]['EndTime']
+            }
+            if (i === class_info['index']) {
+                class_info['index'] = merge_classes.length - 1
+            }
+        }
+        class_info['classes'] = merge_classes
         this.setData({ class_info: class_info })
-    },
-
-    onTouchStart: function (e) {
-        this.setData({ clientX: e.changedTouches[0].clientX })
-    },
-
-    onTouchEnd: function (e) {
-        let distance = e.changedTouches[0].clientX - this.data.clientX
-        let class_info = this.data.class_info
-        if (!class_info) {
-            this.setData({ clientX: -1 })
-            return
-        }
-
-        if (distance >= 50 && class_info['index'] > 0) {
-            wx.vibrateShort()
-            class_info['index'] --
-            this.setData({ class_info: class_info })
-            this.setData({ clientX: -1 })
-        }
-        else if (distance <= -50 && class_info['index'] < class_info['classes'].length - 1) {
-            wx.vibrateShort()
-            class_info['index'] ++
-            this.setData({ class_info: class_info })
-            this.setData({ clientX: -1 })
-        }
     },
 
     jumpToCurriculum: function () {

@@ -501,7 +501,7 @@ Page({
         if (!GroupAvatarTable) GroupAvatarTable = {}
         const fs =wx.getFileSystemManager()
         let task = []
-        for (const name of names) {
+        for (const name of names)  {
             if (GroupAvatarTable[name]) task.push(new Promise(resolve => {resolve(GroupAvatarTable[name])}))
             else task.push(new Promise(resolve=>{
                 square_api.getGroupInfo(name).then(res => {
