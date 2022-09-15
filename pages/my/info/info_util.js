@@ -8,7 +8,7 @@ function getDormitory (zone= '选择校区') {
 }
 
 function getCampusList() {
-    return ['选择校区', 'A区','B区','C区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园']
+    return ['选择校区', 'A区','B区','C区','虎溪梅园', '虎溪竹园', '虎溪松园', '虎溪兰园', '虎溪菊园']
 }
 
 function packDormitoryInfo(room) {

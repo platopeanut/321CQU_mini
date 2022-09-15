@@ -22,22 +22,52 @@
         </view>
     </view> -->
 <!--    TEST-->
-    <view bindtouchstart="onTouchStart" bindtouchend="onTouchEnd" bindtap="jumpToCurriculum" style="height: 300rpx;border: 10rpx solid #f5f8fb;" class="bg-white solids">
-        <view class="padding-xs flex align-center">
-            <view class="flex-sub" wx:if="{{class_info}}">
-                <view style="text-align: right;">
-                    <text class="cuIcon-calendar text-blue margin-right">
-                        <text class="text-grey"> {{class_info['today_info']}}</text>
-                    </text>
+<!--    <view bindtouchstart="onTouchStart" bindtouchend="onTouchEnd" bindtap="jumpToCurriculum" style="height: 300rpx;border: 10rpx solid #f5f8fb;" class="bg-white solids">-->
+<!--        <view class="padding-xs flex align-center">-->
+<!--            <view class="flex-sub" wx:if="{{class_info}}">-->
+<!--                <view style="text-align: right;">-->
+<!--                    <text class="cuIcon-calendar text-blue margin-right">-->
+<!--                        <text class="text-grey"> {{class_info['today_info']}}</text>-->
+<!--                    </text>-->
+<!--                </view>-->
+<!--                <view class="text-xl padding text-center">-->
+<!--                    <text class="text-black"> {{class_info['classes'][class_info['index']]}} </text>-->
+<!--                </view>-->
+<!--            </view>-->
+<!--            <view class="flex-sub text-center" wx:elif="{{!class_info && !loading_lock}}">-->
+<!--                <view class="solid text-xl padding">-->
+<!--                    <text class="text-red">请先刷新课表数据</text>-->
+<!--                </view>-->
+<!--            </view>-->
+<!--        </view>-->
+<!--    </view>-->
+    <view wx:if="{{class_info}}" bindtap="jumpToCurriculum">
+        <swiper class="square-dot bg-white solids" indicator-dots="true" circular="true" indicator-color="#8799a3" indicator-active-color="#0081ff" current="{{class_info['index']}}" style="width:750rpx; height: 250rpx;border: 10rpx solid #f5f8fb;">
+            <swiper-item wx:for="{{class_info['classes']}}" wx:key>
+                <view class="padding">
+                    <view style="text-align: right;">
+                        <text class="cuIcon-calendar text-blue margin-right">
+                            <text class="text-grey"> {{class_info['today_info']}}</text>
+                        </text>
+                    </view>
+                    <view class="flex" wx:if="{{item['CourseName']}}">
+                        <view class="flex-sub padding text-center">
+                            <view class="text-black text-xl text-center"> {{item['CourseName']}} </view>
+                            <view class="text-gray text-lg">{{item['StartTime']}} ~ {{item['EndTime']}}</view>
+                        </view>
+                        <view class="flex-sub text-center padding">
+                            <view class="text-black text-bold text-xl padding" style="text-align: right;">{{item['RoomName']}}</view>
+                        </view>
+                    </view>
+                    <view class="text-xl padding text-center" wx:else> {{item}} </view>
                 </view>
-                <view class="text-xl padding text-center">
-                    <text class="text-black"> {{class_info['classes'][class_info['index']]}} </text>
-                </view>
-            </view>
-            <view class="flex-sub text-center" wx:elif="{{!class_info && !loading_lock}}">
-                <view class="solid text-xl padding">
-                    <text class="text-red">请先刷新课表数据</text>
-                </view>
+            </swiper-item>
+        </swiper>
+    </view>
+    <view class="padding-xs flex align-center" wx:elif="{{!class_info && !loading_lock}}">
+        <view class="flex-sub text-center" bindtap="jumpToCurriculum">
+            <view class="solid text-xl padding bg-white">
+                <text class="text-red">请先刷新课表数据</text>
             </view>
         </view>
     </view>

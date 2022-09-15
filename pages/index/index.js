@@ -74,6 +74,7 @@ Page({
             },
         ],
         url: 'https://www.zhulegend.com',
+        picture_url: 'https://picture.zhulegend.com',
         IndexImgPath: '',
         TEST_DATA: '',
         // 手势
@@ -124,7 +125,7 @@ Page({
                     let cnt = 0;
                     for (const item of res.Pictures) {
                         HomePage['Pictures'].push({
-                            'Url': that.data.url + item.Url,
+                            'Url': that.data.picture_url + item.Url,
                             'ContentUrl': item.JumpType === 'md'? that.data.url + item.ContentUrl : item.ContentUrl,
                             'Local': false,     // pic是否本地化
                             'LocalContent': false,   // pic对应的content是否本地化
@@ -181,9 +182,13 @@ Page({
         for (let i = 0; i < index_info.classes.length; i++) {
             if (index_info.classes[i]) {
                 let time_li = curriculum_util.getTimeFromIndex(i)
-                let item;
-                if (index_info.classes[i][0]['Self']) item = `${time_li[0]}~${time_li[1]}\n${index_info.classes[i][0]['CourseName']}`
-                else item = `${time_li[0]}~${time_li[1]}\n${index_info.classes[i][0]['CourseName']}\n${index_info.classes[i][0]['RoomName']}`
+                let item = {
+                    'StartTime': time_li[0],
+                    'EndTime': time_li[1],
+                    'CourseName': index_info.classes[i][0]['CourseName']
+                };
+                if (!index_info.classes[i][0]['Self'])
+                    item['RoomName'] = index_info.classes[i][0]['RoomName']
                 class_info['classes'].push(item)
 
                 if (flag && i >= class_info['index']) {

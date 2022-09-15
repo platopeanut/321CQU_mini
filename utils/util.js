@@ -9,6 +9,7 @@ const dormitory = {
     '虎溪竹园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢'],
     '虎溪松园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢'],
     '虎溪兰园': ['选择楼栋','一幢','二幢','三幢','四幢','五幢','六幢','七幢', '八幢'],
+    '虎溪菊园': ['选择楼栋','A幢','B幢'],
 }
 // noinspection NonAsciiCharacters,JSNonASCIINames
 const dormitory_code = {
@@ -19,6 +20,7 @@ const dormitory_code = {
     '虎溪竹园': 'B',
     '虎溪松园': 'C',
     '虎溪兰园': 'D',
+    '虎溪菊园': 'EA',
 }
 
 function showError(res, prefix='') {
@@ -29,9 +31,9 @@ function showError(res, prefix='') {
     })
 }
 
-const IndexImgUrl = 'https://www.zhulegend.com/media/background.jpg'
+const IndexImgUrl = 'https://picture.zhulegend.com/media/background.jpg'
 const COS_URL = 'https://321cqu-1302184418.cos.ap-chongqing.myqcloud.com'
-
+const PIC_URL = 'https://picture.zhulegend.com'
 // 获取当前日期
 function getDate() {
     let timestamp = Date.parse(new Date());
@@ -269,6 +271,7 @@ function bindMDEvent(data) {
 module.exports = {
     CurrentVersion,
     COS_URL,
+    PIC_URL,
     bindMDEvent,
     IndexImgUrl,
     dormitory,

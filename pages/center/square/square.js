@@ -510,7 +510,7 @@ Page({
                     } else {
                         hasChanged = true
                         wx.downloadFile({
-                            url: 'https://www.zhulegend.com' + res.Avatar,
+                            url: util.PIC_URL + res.Avatar,
                             success: (result) => {
                                 fs.saveFile({
                                     tempFilePath: result.tempFilePath,
