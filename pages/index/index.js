@@ -274,8 +274,8 @@ Page({
                 }
             })
             wx.showModal({
-                title: "321CQU v2.5.1",
-                content: "更新内容：\n1. 2022级本科生课表适配（前往课表配置界面开启）\n2. 首页课表支持左右滑动\n3. 课表界面支持左右滑动\n4. 修复信息绑定部分问题"
+                title: "321CQU v2.5.2",
+                content: "更新内容：\n1. 优化首页课表\n2. 支持菊园宿舍信息查询\n3. 优化部分网络请求"
             })
             wx.setStorageSync('AppUse', true)
         }
