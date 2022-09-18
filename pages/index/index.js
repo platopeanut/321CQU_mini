@@ -238,7 +238,7 @@ Page({
     previewImg: function () {
         let urls = []
         for (let item of this.data.swiperList) {
-            if (item.url) urls.push(item.Url)
+            if (item['Url']) urls.push(item['Url'])
         }
         wx.previewImage({
             // current: '',
