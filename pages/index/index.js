@@ -296,4 +296,15 @@ Page({
         //     })
         // })
     },
+    // 转发给朋友
+    onShareAppMessage: function () {
+        return {
+            title: '321CQU',
+            path: '/pages/index/index'
+        }
+    },
+    // 分享到朋友圈
+    onShareTimeline: function () {
+        return this.onShareAppMessage()
+    }
 })
