@@ -1,5 +1,4 @@
 const library_api = require('./library_api')
-const {it, nu} = require("../../../lib/towxml/parse/parse2/entities/maps/entities");
 
 Page({
 
@@ -17,6 +16,7 @@ Page({
         page_num: 1,
         modal_state: false,     // 是否显示模态框
         curr_select_book: {},   // 当前选中书籍
+        shareBookLoading: false
     },
 
     onLoad: function () {
@@ -38,7 +38,7 @@ Page({
 
     selectMode: function (e) {
         let that = this
-        let mode = e.currentTarget.dataset.index
+        let mode = parseInt(e.currentTarget.dataset.index)
         if (mode === 0 && !this.data.borrow_mode_flag) {
             this.setData({
                 borrow_mode_flag: true
@@ -49,31 +49,8 @@ Page({
             if (Library && Library['MarkBooks']) this.setData({
                 markBooks: Library['MarkBooks']
             })
-            // 检测粘贴板内容
-            wx.getClipboardData({
-                success: res => {
-                    let item = null
-                    try {
-                        item = JSON.parse(decodeURIComponent(res.data))
-                        if (item && item['BookId']) {
-                            let markBooks = that.data.markBooks
-                            if (!markBooks.find(value => {
-                                return value.BookId === item.BookId
-                            })) {
-                                that.markBook(item)
-                            } else {
-                                wx.showToast({
-                                    title: '图书已收藏',
-                                    icon: 'none'
-                                })
-                            }
-                            wx.setClipboardData({
-                                data:" ",
-                            })
-                        }
-                    } catch (e) {}
-                }
-            })
+            // 检测剪切板中是否有图书分享码
+            that.getShareBook()
         }
         this.setData({
             curr_mode: mode
@@ -168,7 +145,7 @@ Page({
                     else that.unmarkBook(item.BookId)
                 } else if (res.tapIndex === 2) {
                     wx.setClipboardData({
-                        data: encodeURIComponent(JSON.stringify(item)),
+                        data: "#321CQU#BookShare#复制后打开小程序图书馆/我的收藏#"+item['BookId']
                     })
                 }
             }
@@ -188,7 +165,11 @@ Page({
         if (!Library || !Library['MarkBooks']) {
             Library = { 'MarkBooks': [] }
         }
-        Library['MarkBooks'].push(item)
+        if (Library['MarkBooks'].findIndex(value => {
+            return value["BookId"] === item["BookId"]
+        }) === -1) {
+            Library['MarkBooks'].push(item)
+        }
         wx.setStorageSync('Library', Library)
         this.setData({
             markBooks: Library['MarkBooks']
@@ -255,7 +236,7 @@ Page({
             itemList: ['续借'],
             success: res => {
                 if (res.tapIndex === 0) {
-                    library_api.renewBook(that.data.uid, that.data.uid_pwd, book_id).then(res => {
+                    library_api.renewBook(that.data.uid, that.data.uid_pwd, book_id).then(() => {
                         wx.showToast({
                             title: '续借成功',
                             icon: 'none'
@@ -318,6 +299,32 @@ Page({
     hideModal: function () {
         this.setData({
             modal_state: false
+        })
+    },
+
+    getShareBook: function () {
+        let that = this
+        wx.getClipboardData({
+            success: res => {
+                // 解析图书分享码
+                let code_li = res.data.split("#")
+                if (code_li.length === 5 && code_li[0] === "" && code_li[1] === "321CQU" && code_li[2] === "BookShare") {
+                    // 如果已在收藏中则直接返回
+                    if (that.data.markBooks.findIndex(value => {
+                        return value["BookId"] === code_li[4]
+                    }) !== -1) {
+                        wx.setClipboardData({ data: '' })
+                        return
+                    }
+                    that.setData({ shareBookLoading: true })
+                    library_api.queryBookInfo(that.data.uid, that.data.uid_pwd, code_li[4]).then(res => {
+                        res["BookId"] = code_li[4];
+                        that.markBook(res)
+                        that.setData({ shareBookLoading: false })
+                        wx.setClipboardData({ data: '' })
+                    })
+                }
+            }
         })
     },
 })

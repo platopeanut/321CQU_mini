@@ -209,6 +209,9 @@
             <view class="padding solid text-center">
                 <view class="text-grey">下拉刷新收藏书籍状态</view>
             </view>
+            <view class="padding solid text-center" wx:if="{{shareBookLoading}}">
+                <view class="text-red">正在查询当前的分享图书的相关信息...</view>
+            </view>
         </view>
         <view>
             <view class="cu-card article" wx:for="{{markBooks}}" bindtap="selectBook" data-item="{{item}}">

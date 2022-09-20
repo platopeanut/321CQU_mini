@@ -63,10 +63,26 @@ function queryBookState(uid, uid_pwd, book_id) {
     })
 }
 
+// 查询书籍信息
+function queryBookInfo(uid, uid_pwd, book_id) {
+    let header = {
+        url: '/library/get_book_detail',
+        data: {
+            'UserName': uid,
+            'Password': uid_pwd,
+            'BookId': book_id
+        }
+    }
+    return new Promise((resolve,reject) => {
+        api.request(header, resolve, reject, true, true, '2.0')
+    })
+}
+
 
 module.exports = {
     getBorrowInfo,
     renewBook,
     searchBook,
     queryBookState,
+    queryBookInfo,
 }
