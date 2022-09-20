@@ -39,6 +39,7 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
           'Params': header.data,
       }
   }
+  let startTime = Date.now()
   wx.request({
     url: url + header['url'],
     method: 'POST',
@@ -50,9 +51,20 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
           if (version === '1.0') resolve(res.data)
           else resolve(res.data.data)
         } else {
-            if (show_err) {
-                util.showError(res)
+            // 事件上报
+            if (res.data.Statue === 0) {
+                wx.reportEvent("wxdata_perf_monitor", {
+                    "wxdata_perf_monitor_id": header['url'],
+                    "wxdata_perf_monitor_level": 1,
+                    "wxdata_perf_error_code": 0,
+                    "wxdata_perf_error_msg": res.data["ErrorInfo"],
+                    "wxdata_perf_cost_time": Date.now() - startTime,
+                    "wxdata_perf_extra_info1": "",
+                    "wxdata_perf_extra_info2": "",
+                    "wxdata_perf_extra_info3": ""
+                })
             }
+            if (show_err) { util.showError(res) }
             reject(res.data)
         }
       } else {
