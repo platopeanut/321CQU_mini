@@ -274,8 +274,8 @@ Page({
                 }
             })
             wx.showModal({
-                title: "321CQU v2.5.2",
-                content: "更新内容：\n1. 优化首页课表\n2. 支持菊园宿舍信息查询\n3. 优化部分网络请求"
+                title: "321CQU v" + util.CurrentVersion,
+                content: util.CurrentVersionInfo
             })
             wx.setStorageSync('AppUse', true)
         }

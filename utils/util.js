@@ -1,5 +1,6 @@
 // noinspection JSNonASCIINames,NonAsciiCharacters
-const CurrentVersion = '2.5.2'
+const CurrentVersion = '2.5.3'
+const CurrentVersionInfo = "更新内容：\n1. 优化书籍分享码\n2. 优化首页广告\n3. 增加小程序分享"
 const log = require('./log')
 const dormitory = {
     'A区': ['选择楼栋','一舍学生宿舍','二舍学生宿舍','三舍学生宿舍','四舍学生宿舍','五舍学生宿舍','六舍学生宿舍','七舍学生宿舍','八舍学生宿舍','九舍学生宿舍','十舍学生宿舍','十一舍学生宿舍','十二舍学生宿舍','A栋宿舍','C栋宿舍','D栋宿舍'],
@@ -270,6 +271,7 @@ function bindMDEvent(data) {
 
 module.exports = {
     CurrentVersion,
+    CurrentVersionInfo,
     COS_URL,
     PIC_URL,
     bindMDEvent,
