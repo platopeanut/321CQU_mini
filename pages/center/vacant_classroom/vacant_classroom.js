@@ -108,7 +108,7 @@ Page({
             month: new Date().getMonth(),
             today: new Date().getDay(),
             dateCur: new Date().getDay()-1,
-            week_list: curriculum_util.getCurrWeekList(),
+            week_list: curriculum_util.getCurrWeekList(new Date()),
 
         })
         let curr_week = curriculum_util.getCurrWeekIndex()

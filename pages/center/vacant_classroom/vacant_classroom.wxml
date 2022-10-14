@@ -39,14 +39,14 @@
 </view>
 <!-- 周次 -->
 <view class = "bottom padding text-center text-black text-bold bg-white" >
-  <view style="width: 90%;display: inline-block;">
-  <view class = "wordsize">
-    <view bindtap="preWeek" style="display: inline-block;width: 150rpx;"><text class="cuIcon-back " ></text>
-    </view>
-    <text >目前学期第 {{week<10?'0'+week:week}} 周，{{(month+1)<10?''+(month+1):month+1}}月</text>
-    <view bindtap="nextWeek" style="display: inline-block;width: 150rpx;"><text class="cuIcon-right"></text>
-    </view>
-    </view>
+  <view style="display: flex;">
+      <view bindtap="preWeek" style="flex: 1;"><text class="cuIcon-back"></text>
+      </view>
+
+      <view style="flex: 3;text-align: center;">第 {{week<10?'0'+week:week}} 周，{{(month+1)<10?''+(month+1):month+1}}月</view>
+
+      <view bindtap="nextWeek" style="flex: 1;"><text class="cuIcon-right"></text>
+      </view>
   </view>
 </view>
 
