@@ -29,7 +29,8 @@
     "pages/center/vacant_classroom/vacant_classroom",
     "pages/center/life/bustimeold/bustimeold",
     "pages/center/sxt/sxt",
-    "pages/center/sxt/detail/detail"
+    "pages/center/sxt/detail/detail",
+    "pages/center/sport_score/sport_score"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -127,20 +127,21 @@ Page({
         let email = e.detail.value.email
         let nickname = e.detail.value.nickname
         let room_id = e.detail.value.room_id
+        let sport_pwd = e.detail.value.sport_pwd
         // email
         StuInfo['email'] = email
         // 宿舍
         let room = this.data.room
         room['room_id'] = room_id
         StuInfo['room'] = room
-
+        // 体测密码
+        StuInfo['sport_pwd'] = sport_pwd
         //页面加载
         wx.setStorageSync('StuInfo', StuInfo)
         that.setData({
             StuInfo: StuInfo,
             room: room,
         })
-
         // 设置昵称
         if (nickname !== "") {
             this.setNickname(stu_id, nickname)

@@ -1,0 +1,11 @@
+function parseAcademicYear(year) {
+    return year[0]+year[1]+'-'+year[2]+year[3]
+}
+
+function getTitle(item) {
+    return parseAcademicYear(item['AcademicYear'])+'年 ' + item['Grade'] + '年级 第' + item['Term'] + '学期'
+}
+
+module.exports = {
+    getTitle: getTitle
+}

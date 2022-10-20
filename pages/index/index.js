@@ -72,6 +72,12 @@ Page({
                 color: 'pink',
                 icon: 'newsfill'
             },
+            {
+                title: '体测查询',
+                path: 'sport_score',
+                color: 'brown',
+                icon: 'footprint'
+            },
         ],
         url: 'https://www.zhulegend.com',
         picture_url: 'https://picture.zhulegend.com',

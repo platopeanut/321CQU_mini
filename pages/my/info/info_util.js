@@ -40,6 +40,7 @@ function autoFillUserInfo() {
     wx.login({
         success: res => {
             info_api.pullUserInfo(res.code).then(res => {
+                console.log(res)
                 StuInfo['stu_id'] = res.Sid
                 StuInfo['uid'] = res.Auth
                 StuInfo['uid_pwd'] = res.Password
@@ -52,6 +53,7 @@ function autoFillUserInfo() {
                 wx.setStorageSync('AutoFill', true)
                 wx.setStorageSync('StuInfo', StuInfo)
             }, err => {
+                console.log(err, res.code)
                 wx.setStorageSync('AutoFill', false)
                 wx.setStorageSync('StuInfo', '')
                 if (err.ErrorCode !== 3) {

@@ -126,8 +126,8 @@ Page({
 
     onTouchEnd(e) {
         let distance = e.changedTouches[0].clientX
-        if (distance - this.data.clientX >= 50) this.preWeek()
-        else if (distance - this.data.clientX <= -50) this.nextWeek()
+        if (distance - this.data.clientX >= 100) this.preWeek()
+        else if (distance - this.data.clientX <= -100) this.nextWeek()
         this.setData({
             clientX: -1
         })

@@ -1,0 +1,57 @@
+<wxs src="./sport_score.wxs" module="sport_score"></wxs>
+<view>
+    <view class="padding bg-white">
+        <text class="text-black text-bold">说明:</text>
+        <view class="text-left text-red" style="margin-top: 5rpx;">
+            如果遇到验证码错误请重试
+        </view>
+        <view class="text-left" style="margin-top: 5rpx;">
+            点击下方链接在浏览器中打开（需要重大校园网访问）
+        </view>
+        <view class="text-left" style="margin-top: 5rpx;" bindtap="copyLink" data-index="{{0}}">1. 体测密码查询:\n<text class="link">{{relatedLinks[0]}}</text>
+        </view>
+        <view class="text-left" style="margin-top: 5rpx;" bindtap="copyLink" data-index="{{1}}">2. 体测密码更改:\n<text class="link">{{relatedLinks[1]}}</text>
+        </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom margin-top">
+        <view class="action">
+            <text class="cuIcon-title text-blue"></text>
+            <text class="text-bold">个人信息</text>
+        </view>
+    </view>
+    <view class="cu-list menu">
+        <view class="cu-item" wx:for="{{baseInfo}}">
+            <view class="content">{{index}}</view>
+            <view class="action text-gray">{{item}}</view>
+        </view>
+    </view>
+    <view class="cu-bar bg-white solid margin-top">
+        <view class="action">
+            <text class="cuIcon-title text-green"></text>
+            <text class="text-bold">体测成绩</text>
+        </view>
+    </view>
+    <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{scores}}" bindtap="switchDetailInfo" data-index="{{index}}">
+        <view class="cu-item">
+            <view class="content text-bold">{{sport_score.getTitle(item)}}</view>
+            <view class="action"><text class="text-gray">{{item['Level']}} / {{item['Score']}}</text>
+                <text class="margin-left cuIcon-{{item['state']?'fold':'unfold'}}"></text>
+            </view>
+        </view>
+        <view wx:if="{{item['state']}}" class="cu-list menu sm-border">
+            <view class="grid col-4 text-center text-bold cu-item">
+                <view>Name</view>
+                <view>Result</view>
+                <view>Score</view>
+                <view>Level</view>
+            </view>
+            <view wx:for="{{item['detail']}}" class="grid col-4 text-center cu-item">
+                <view>{{item['Name']}}</view>
+                <view class="text-gray">{{item['Result']}}</view>
+                <view class="text-gray">{{item['Score']}}</view>
+                <view class="text-gray">{{item['Level']}}</view>
+            </view>
+        </view>
+    </view>
+</view>
+<view style="height:100rpx;"></view>

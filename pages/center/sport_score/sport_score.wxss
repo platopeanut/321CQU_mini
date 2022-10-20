@@ -1,0 +1,29 @@
+.link {
+    color: dodgerblue;
+    font-style: italic;
+    text-decoration: underline;
+}
+
+.infoContainer {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.infoItem {
+    display: flex;
+    height: 200rpx;
+    padding: 20px;
+    border: 1px solid black;
+}
+
+.itemKey {
+    flex: 1;
+    font-weight: bold;
+    text-align: left;
+}
+
+.itemValue {
+    flex: 1;
+    text-align: right;
+}
