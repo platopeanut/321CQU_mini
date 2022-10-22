@@ -189,7 +189,8 @@ Page({
                 let item = {
                     'StartTime': time_li[0],
                     'EndTime': time_li[1],
-                    'CourseName': index_info.classes[i][0]['CourseName']
+                    'CourseName': index_info.classes[i][0]['CourseName'],
+                    'PeriodFormat': index_info.classes[i][0]['PeriodFormat'],
                 };
                 if (!index_info.classes[i][0]['Self'])
                     item['RoomName'] = index_info.classes[i][0]['RoomName']

@@ -18,17 +18,18 @@
     <view class="left">
       <view wx:for="{{13}}" class="index">{{index+1}}</view>
     </view>
-    <view wx:for="{{table[week]?table[week]:7}}" class="day_item" bindlongpress="longPressOperation" style="background-color: {{(index+1 === today||today===0&&index===6)?week===curr_week?'rgb(201, 227, 254);':'white':'white'}}" wx:key>
+    <view wx:for="{{table[week]?table[week]:7}}" class="day_item {{(index+1 === today||today===0&&index===6)?week===curr_week?'day_today_item':'':''}}" bindlongpress="longPressOperation" wx:key>
       <view wx:for="{{item!==index?item:0}}" wx:key>
-        <view wx:if="{{item[0]&&item[0].Self === undefined}}" bindtap="getDetailLessonInfo" data-item="{{item}}" style="height: {{130*item[0].UILength}}rpx;display: flex;flex-direction: column;background-color: {{item[0].Color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+        <view wx:if="{{item[0] && !item[0].Self}}" bindtap="getDetailLessonInfo" data-item="{{item}}" class="wrapper_lesson_item" style="height: {{130*item[0].UILength}}rpx; background-color: {{item[0].Color}};">
           <view wx:if="{{item.length>1}}" class="cuIcon-more" style="width:100%;color:rgb(251, 252, 254);"></view>
-          <view style="color:white;display:flex;height:100%;text-align: center;justify-content: center;align-items: center;">
-              {{item[0].RoomName}}\n{{item[0].CourseName.length<18?item[0].CourseName:tool.cut_str(item[0].CourseName,0,16)}}
+          <view class="lesson_item">
+            <view class="lesson_item_loc">{{item[0].RoomName}}</view>
+            <view class="lesson_item_name">{{item[0].CourseName.length<18?item[0].CourseName:tool.cut_str(item[0].CourseName,0,16)}}</view>
           </view>
         </view>
-        <view wx:elif="{{item[0].Self}}" bindtap="getDetailLessonInfo" data-item="{{item}}" style="height: {{130*item[0].UILength}}rpx;display: flex;flex-direction: column;background-color: {{item[0].Color}};border-radius: 10rpx;overflow: hidden;border: 1rpx solid white;">
+        <view wx:elif="{{item[0].Self}}" bindtap="getDetailLessonInfo" data-item="{{item}}" class="wrapper_lesson_item" style="height: {{130*item[0].UILength}}rpx; background-color: {{item[0].Color}};">
           <view wx:if="{{item.length>1}}" class="cuIcon-more" style="width:100%;color:rgb(251, 252, 254);"></view>
-          <view style="color: white;display:flex;height:100%;text-align: center;justify-content: center;align-items: center;">
+          <view class="lesson_self_item">
             {{item[0].CourseName.length<18?item[0].CourseName:tool.cut_str(item[0].CourseName,0,16)}}
           </view>
         </view>

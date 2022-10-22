@@ -1,5 +1,5 @@
 // noinspection JSNonASCIINames,NonAsciiCharacters
-const CurrentVersion = '2.5.4'
+const CurrentVersion = '2.5.3'
 const CurrentVersionInfo = "更新内容：\n1. 恢复空教室查询"
 const log = require('./log')
 const dormitory = {

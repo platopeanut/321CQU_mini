@@ -1,0 +1,8 @@
+function adjustFontSize(text, limit) {
+    if (text.length >= limit) return 'text-l'
+    else return 'text-xl'
+}
+
+module.exports = {
+    adjustFontSize: adjustFontSize
+}

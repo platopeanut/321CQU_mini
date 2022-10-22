@@ -91,6 +91,41 @@
     width: 100rpx;
     height: 1690rpx;    /*130*13*/
 }
+.day_today_item {
+    background-image: linear-gradient(white, #afdde8, white);
+}
+
+.wrapper_lesson_item {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10rpx;
+    overflow: hidden;
+    border: 1rpx solid white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0rpx 4rpx 12rpx;
+}
+.lesson_item {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.lesson_item > .lesson_item_loc {
+    border-bottom: 1px solid white;
+}
+.lesson_item > .lesson_item_name {
+
+}
+.lesson_self_item {
+    color: white;
+    display: flex;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
 
 .layers {
     height: 1790rpx; /* 130*13 + 100*/

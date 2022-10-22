@@ -1,3 +1,4 @@
+<wxs src="index.wxs" module="index"></wxs>
 <view>
     <view style="height: 400rpx;width: 750rpx;border-bottom: 0rpx solid rgb(143, 136, 136);border-radius: 100px;">
         <swiper class="screen-swiper square-dot" style="width:100%;height:100%;" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
@@ -27,18 +28,21 @@
         <swiper class="square-dot bg-white solids" indicator-dots="true" indicator-color="#8799a3" indicator-active-color="#0081ff" current="{{class_info['index']}}" style="width:750rpx; height: 250rpx;border: 10rpx solid #f5f8fb;">
             <swiper-item wx:for="{{class_info['classes']}}" wx:key>
                 <view class="padding">
-                    <view style="text-align: right;">
-                        <text class="cuIcon-calendar text-blue margin-right">
+                    <view class="flex">
+                        <view class="text-gray flex-sub">
+                            <text wx:if="{{item['PeriodFormat']}}">第 {{item['PeriodFormat']}} 节</text>
+                        </view>
+                        <view class="flex-sub cuIcon-calendar text-blue text-right">
                             <text class="text-grey"> {{class_info['today_info']}}</text>
-                        </text>
+                        </view>
                     </view>
                     <view class="flex" wx:if="{{item['RoomName']}}">
                         <view class="flex-sub padding text-center">
-                            <view class="text-black text-xl text-center"> {{item['CourseName']}} </view>
+                            <view class="text-black {{index.adjustFontSize(item['CourseName'], 14)}} text-center"> {{item['CourseName']}} </view>
                             <view class="text-gray text-lg">{{item['StartTime']}} ~ {{item['EndTime']}}</view>
                         </view>
                         <view class="flex-sub text-center padding">
-                            <view class="text-black text-bold text-xl padding" style="text-align: right;">{{item['RoomName']}}</view>
+                            <view class="text-black text-bold padding text-right {{index.adjustFontSize(item['RoomName'], 10)}}">{{item['RoomName']}}</view>
                         </view>
                     </view>
                     <view class="text-center padding-top" wx:elif="{{item['CourseName']}}">

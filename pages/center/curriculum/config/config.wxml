@@ -61,28 +61,22 @@
         </view>
         <view class="cu-card case">
             <view class="cu-item shadow" wx:for="{{SelfSchedule}}" wx:key="index">
-                <view class="cu-list menu">
-                    <view class="cu-item" bindtap="selectScheduleItem" data-index="{{index}}" data-item="{{item}}" style="background-color:white;">
-                        <view class="content">
-                            <text class="cuIcon-title text-green"></text>
-                            <text class="text-black"><text style="font-weight: bold;">{{item.CourseName}}</text></text>
-                        </view>
+                <view class="cu-list menu bg-white" bindtap="selectScheduleItem" data-index="{{index}}" data-item="{{item}}">
+                    <view class="cu-item">
+                        <view class="text-bold text-black text-center" style="width:100%;">{{item.CourseName}}</view>
+                    </view>
+                    <view class="cu-item grid col-3 text-center">
+                        <view><text class="cuIcon-title text-green margin-right"></text>第 {{item.TeachingWeekFormat}} 周</view>
+                        <view><text class="cuIcon-title text-green margin-right"></text>星期{{item.WeekDayFormat}}</view>
+                        <view><text class="cuIcon-title text-green margin-right"></text>第 {{item.PeriodFormat}} 节</view>
                     </view>
                     <view class="cu-item">
-                        <view class="content">
-                            <text class="cuIcon-title text-brown"></text><text class="text-black">第{{item.TeachingWeekFormat}}周</text><text class="cuIcon-title text-orange"></text><text>星期{{item.WeekDayFormat}}</text><text class="cuIcon-title text-cyan"></text><text>第{{item.PeriodFormat}}节</text>
-                        </view>
-                    </view>
-                    <view class="cu-item">
-                        <view class="content">
-                            <text class="text-gray">
-                                {{item.Content}}
-                            </text>
-                        </view>
+                        <view class="text-center text-gray" style="width:100%;">{{item.Content}}</view>
                     </view>
                 </view>
             </view>
         </view>
+        <view style="height:100rpx;"></view>
     </view>
     <view wx:else>
         <form catchsubmit="formSubmit" catchreset="formCancel">
