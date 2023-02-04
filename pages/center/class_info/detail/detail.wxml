@@ -5,8 +5,8 @@
                 <text class="text-black text-bold">{{class_name}}</text>
                 <view><text class="text-gray" style="font-size: medium;font-weight: normal;">{{class_id}}</text></view>
             </view>
-            <view>
-                <view class="padding-sm" wx:for="{{list}}" wx:key style="display: inline-block;">
+            <view style="display:flex;">
+                <view wx:for="{{list}}" wx:key style="flex: 1;padding-top:30rpx;">
                     <view class="text-center text-shadow text-{{item.name}}">
                         <text class="cuIcon-ellipse text-xxl"></text>
                         <text class="text-gray" style="margin-left: 10rpx;">{{item.title}}</text>
