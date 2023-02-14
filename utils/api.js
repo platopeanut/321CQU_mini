@@ -84,6 +84,111 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
   })
 }
 
+/**
+ *  Token
+ */
+function getToken(username, password) {
+    console.log("getToken")
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: "https://api.321cqu.com/v1/authorization/login",
+            method: "POST",
+            data: {
+                "apiKey": "koZfU+HGTNXRjxhSQiYpTQ==",
+                "applyType": "WX_Mini_APP",
+                "username": username,
+                "password": password
+            },
+            success(res) {
+                console.log(res)
+                if (res.data['status'] === 1) {
+                    resolve(res.data['data'])
+                }
+                else reject(res.data)
+            }
+        })
+    })
+}
+
+function refreshToken(refreshToken) {
+    console.log("refreshToken")
+    return new Promise((resolve, reject) => {
+        wx.request({
+            url: "https://api.321cqu.com/v1/authorization/refreshToken",
+            method: "POST",
+            data: {
+                "refreshToken": refreshToken
+            },
+            success(res) {
+                if (res.data['status'] === 1) resolve(res.data['data'])
+                else reject(res.data)
+            }
+        })
+    })
+}
+
+// 判断token是否过期
+// true没有过期，false过期
+function checkTokenExpireTime(expireTime, date=new Date()) {
+    return expireTime - new Date().getTime() / 1000 > 0;
+}
+
+const currTokenInfo = {
+    token: '',
+    tokenExpireTime: 0
+}
+
+function handleToken() {
+    return new Promise((resolve, reject) => {
+        // 如果token没有或者token过期
+        if (currTokenInfo.token === ''
+            || !checkTokenExpireTime(currTokenInfo.tokenExpireTime)) {
+            // 尝试用refreshToken
+            let tokenInfo = wx.getStorageSync("TokenInfo")
+            // 如果refreshToken没有或者过期则也获取新的
+            if (!tokenInfo || !tokenInfo['refreshToken'] || !tokenInfo['refreshTokenExpireTime'] ||
+                !checkTokenExpireTime(tokenInfo['refreshTokenExpireTime'])) {
+                const stuInfo = wx.getStorageSync('StuInfo');
+                getToken(stuInfo.uid, stuInfo.uid_pwd).then(res => {
+                    wx.setStorageSync("TokenInfo", {
+                        refreshToken: res.refreshToken,
+                        refreshTokenExpireTime: res.refreshTokenExpireTime
+                    })
+                    currTokenInfo.token = res.token
+                    currTokenInfo.tokenExpireTime = res.tokenExpireTime
+                    resolve(res.token)
+                }).catch(err => reject(err))
+            }
+            else {
+                refreshToken(tokenInfo.refreshToken).then(res => {
+                    currTokenInfo.token = res.token
+                    currTokenInfo.tokenExpireTime = res.tokenExpireTime
+                    resolve(res.token)
+                })
+            }
+        }
+        else {
+            resolve(currTokenInfo.token)
+        }
+    })
+}
+
+function newRequest(url, data) {
+    return handleToken().then(token => new Promise((resolve, reject) => {
+        wx.request({
+            header: {
+                "Authorization": "Bearer " + token
+            },
+            url: url,
+            method: "POST",
+            data: data,
+            success(res) {
+                if (res.data['status'] === 1) resolve(res.data['data'])
+                else reject(res.data)
+            }
+        })
+    }))
+}
 
 
 /**
@@ -238,4 +343,5 @@ module.exports = {
     COSUpload,
     getVerifyState,
     // sentenceADay,
+    newRequest
 }

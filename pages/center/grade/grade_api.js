@@ -1,19 +1,33 @@
 const api = require('../../../utils/api')
 
 // 本科生成绩查询
-function getUGGrade(stu_id, uid, uid_pwd, code) {
-    let header = {
-        url: '/student/get_score',
-        data: {
-            'Sid': stu_id,
-            'UserName': uid,
-            'Password': uid_pwd,
-            'Code': code,
-            'NeedAll': true
+function getUGGrade(stu_id) {
+    return api.newRequest(
+        "https://api.321cqu.com/v1/edu_admin_center/fetchScore",
+        {
+            "sid": stu_id,
+            "is_minor": true
         }
-    }
-    return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
+    ).then(res => {
+        // 兼容到旧的格式
+        function getTermName(session) {
+            return `${session['year']}${session['is_autumn'] ? '秋' : '春'}`
+        }
+        let data = {}
+        res.scores.forEach(it => {
+            const termName = getTermName(it.session)
+            if (!data[termName]) data[termName] = []
+            data[termName].push({
+                CourseCode: it.course.code,
+                CourseCredit: it.course.credit,
+                CourseName: it.course.name,
+                CourseNature: it.course_nature,
+                EffectiveScoreShow: it.score,
+                InstructorName: it.course.instructor,
+                StudyNature: it.study_nature
+            })
+        })
+        return data
     })
 }
 
