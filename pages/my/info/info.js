@@ -80,10 +80,11 @@ Page({
         if (!StuInfo) StuInfo = {}
         if (identity === '本科生') {
             info_api.loginUG(uid, uid_pwd).then(res => {
-                StuInfo['uid'] = uid
+                console.log(res)
+                StuInfo['uid'] = res.auth
                 StuInfo['uid_pwd'] = uid_pwd
-                StuInfo['stu_id'] = res.Sid
-                StuInfo['stu_name'] = res.Name
+                StuInfo['stu_id'] = res.sid
+                StuInfo['stu_name'] = res.name
                 StuInfo['identity'] = '本科生'
                 that.setData({ StuInfo: StuInfo })
                 wx.setStorageSync('StuInfo', StuInfo)

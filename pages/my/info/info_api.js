@@ -2,16 +2,20 @@ const api = require('../../../utils/api')
 
 // 本科生统一身份登录
 function loginUG(uid, uid_pwd) {
-    let header = {
-        url: '/user/bind',
-        data: {
-            'UserName': uid,
-            'Password': uid_pwd
-        }
-    }
-    return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject, true, true, '2.0')
+    return api.getToken(uid, uid_pwd).then(res => {
+        api.setCurrTokenInfo(res.token, res.tokenExpireTime)
+        return api.userValidate()
     })
+    // let header = {
+    //     url: '/user/bind',
+    //     data: {
+    //         'UserName': uid,
+    //         'Password': uid_pwd
+    //     }
+    // }
+    // return new Promise((resolve,reject) => {
+    //     api.request(header, resolve, reject, true, true, '2.0')
+    // })
 }
 // 研究生统一身份登录
 function loginPG(uid, uid_pwd) {

@@ -87,7 +87,7 @@ function request(header, resolve, reject, loading = true, show_err = true, versi
 /**
  *  Token
  */
-function getToken(username, password) {
+function getToken(username='', password='') {
     console.log("getToken")
     return new Promise((resolve, reject) => {
         wx.request({
@@ -127,6 +127,11 @@ function refreshToken(refreshToken) {
     })
 }
 
+// 用户验证
+function userValidate() {
+    return newRequest('https://api.321cqu.com/v1/edu_admin_center/validateAuth')
+}
+
 // 判断token是否过期
 // true没有过期，false过期
 function checkTokenExpireTime(expireTime, date=new Date()) {
@@ -136,6 +141,11 @@ function checkTokenExpireTime(expireTime, date=new Date()) {
 const currTokenInfo = {
     token: '',
     tokenExpireTime: 0
+}
+
+function setCurrTokenInfo(token, tokenExpireTime) {
+    currTokenInfo.token = token
+    currTokenInfo.tokenExpireTime = tokenExpireTime
 }
 
 function handleToken() {
@@ -173,8 +183,9 @@ function handleToken() {
     })
 }
 
-function newRequest(url, data) {
+function newRequest(url, data={}) {
     return handleToken().then(token => new Promise((resolve, reject) => {
+        wx.showLoading({title: '加载中'})
         wx.request({
             header: {
                 "Authorization": "Bearer " + token
@@ -183,8 +194,15 @@ function newRequest(url, data) {
             method: "POST",
             data: data,
             success(res) {
+                wx.hideLoading()
                 if (res.data['status'] === 1) resolve(res.data['data'])
-                else reject(res.data)
+                else {
+                    wx.showToast({
+                        title: `[${res.statusCode}]${res.data['msg']}`,
+                        icon: 'none'
+                    })
+                    // reject(res)
+                }
             }
         })
     }))
@@ -343,5 +361,8 @@ module.exports = {
     COSUpload,
     getVerifyState,
     // sentenceADay,
-    newRequest
+    newRequest,
+    userValidate,
+    getToken,
+    setCurrTokenInfo,
 }
