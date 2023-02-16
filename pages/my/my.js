@@ -10,11 +10,18 @@ Page({
     },
 
     onShow: function () {
-        this.setData({
-            StuInfo: wx.getStorageSync('StuInfo')
-        })
+        this.setData({ StuInfo: wx.getStorageSync('StuInfo') })
+        // 自动填充用户信息
+        // info_util.autoFillUserInfo()
     },
 
+    onChooseAvatar(e) {
+        const { avatarUrl } = e.detail
+        let UserInfo = wx.getStorageSync('UserInfo') || {}
+        UserInfo['avatarUrl'] = avatarUrl
+        this.setData({ UserInfo: UserInfo })
+        wx.setStorageSync('UserInfo', UserInfo)
+    },
 
     // 获取广告观看次数
     updateAdTimes: function () {
@@ -33,29 +40,6 @@ Page({
                     title: '登陆失败',
                     icon: 'none'
                 })
-            }
-        })
-    },
-
-    // 重新授权
-    reauthorize() {
-        this.setData({
-            UserInfo: ''
-        })
-    },
-
-    // 获取用户信息
-    getUserProfile() {
-        wx.getUserProfile({
-            desc: '完善用户信息资料',
-            success: (res) => {
-                this.setData({
-                    UserInfo: res.userInfo,
-                })
-                //缓存用户信息
-                wx.setStorageSync("UserInfo",res.userInfo)
-                // 自动填充用户信息
-                info_util.autoFillUserInfo()
             }
         })
     },

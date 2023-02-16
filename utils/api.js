@@ -102,6 +102,11 @@ function getToken(username='', password='') {
             success(res) {
                 console.log(res)
                 if (res.data['status'] === 1) {
+                    const info = res.data['data']
+                    wx.setStorageSync("TokenInfo", {
+                        refreshToken: info.refreshToken,
+                        refreshTokenExpireTime: info.refreshTokenExpireTime
+                    })
                     resolve(res.data['data'])
                 }
                 else reject(res.data)
@@ -149,21 +154,20 @@ function setCurrTokenInfo(token, tokenExpireTime) {
 }
 
 function handleToken() {
+    console.log(currTokenInfo)
     return new Promise((resolve, reject) => {
         // 如果token没有或者token过期
         if (currTokenInfo.token === ''
             || !checkTokenExpireTime(currTokenInfo.tokenExpireTime)) {
+        // if (true) {
             // 尝试用refreshToken
             let tokenInfo = wx.getStorageSync("TokenInfo")
             // 如果refreshToken没有或者过期则也获取新的
             if (!tokenInfo || !tokenInfo['refreshToken'] || !tokenInfo['refreshTokenExpireTime'] ||
                 !checkTokenExpireTime(tokenInfo['refreshTokenExpireTime'])) {
                 const stuInfo = wx.getStorageSync('StuInfo');
+                console.log(stuInfo)
                 getToken(stuInfo.uid, stuInfo.uid_pwd).then(res => {
-                    wx.setStorageSync("TokenInfo", {
-                        refreshToken: res.refreshToken,
-                        refreshTokenExpireTime: res.refreshTokenExpireTime
-                    })
                     currTokenInfo.token = res.token
                     currTokenInfo.tokenExpireTime = res.tokenExpireTime
                     resolve(res.token)
@@ -197,6 +201,7 @@ function newRequest(url, data={}) {
                 wx.hideLoading()
                 if (res.data['status'] === 1) resolve(res.data['data'])
                 else {
+                    console.log(res)
                     wx.showToast({
                         title: `[${res.statusCode}]${res.data['msg']}`,
                         icon: 'none'
@@ -208,6 +213,12 @@ function newRequest(url, data={}) {
     }))
 }
 
+function bindOpenID(uid, code) {
+    return newRequest("https://api.321cqu.com/v1/notification/bindOpenId", {
+        "uid": uid,
+        "code": code
+    })
+}
 
 /**
  * 测试接口
@@ -365,4 +376,6 @@ module.exports = {
     userValidate,
     getToken,
     setCurrTokenInfo,
+    bindOpenID,
+    handleToken
 }

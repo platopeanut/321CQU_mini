@@ -100,7 +100,8 @@ Page({
         }
         if (this.data.identity === '本科生') {
             // 查询绩点和排名
-            grade_api.getGpaAndRank(that.data.uid, that.data.uid_pwd).then(res => {
+            grade_api.getGpaAndRank().then(res => {
+                console.log(res)
                 wx.setStorageSync('official_grade', res.GpaRanking)
                 that.setData({
                     official_grade: res.GpaRanking

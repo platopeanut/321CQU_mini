@@ -46,16 +46,17 @@ function getPGGrade(uid, uid_pwd) {
 }
 
 // 查询gpa和排名
-function getGpaAndRank(uid, uid_pwd) {
-    let header = {
-        url: '/student/get_gpa_ranking',
-        data: {
-            'UserName': uid,
-            'Password': uid_pwd
+function getGpaAndRank() {
+    return api.newRequest("https://api.321cqu.com/v1/edu_admin_center/fetchGpaRanking").then(res => {
+        // 兼容之前的格式
+        return {
+            'GpaRanking': {
+                gpa: res.gpa,
+                majorRanking: res.major_ranking,
+                gradeRanking: res.grade_ranking,
+                classRanking: res.class_ranking
+            }
         }
-    }
-    return new Promise((resolve,reject) => {
-        api.request(header, resolve, reject)
     })
 }
 

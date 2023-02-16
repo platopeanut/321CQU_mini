@@ -43,12 +43,15 @@ App({
         if (!Verify || Verify['Version'] !== util.CurrentVersion) {
             Verify = {}
             api.getVerifyState().then(res => {
+                console.log(res)
                 // IsExamining: true, Version:
                 Verify['IsExamining'] = res.IsExamining
                 Verify['Version'] = res.Version
                 wx.setStorageSync('Verify', Verify)
             })
         }
+        // 进入小程序时第一次获取token
+        api.handleToken().then()
     },
     globalData: {
         task_map: {},

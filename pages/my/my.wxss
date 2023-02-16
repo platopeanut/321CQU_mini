@@ -38,14 +38,28 @@ image {
     color: #aaa;
   }
   
-  .userinfo-avatar {
-    overflow: hidden;
-    width: 128rpx;
-    height: 128rpx;
-    margin: 20rpx;
-    border-radius: 50%;
-  }
-  
-  .usermotto {
-    margin-top: 200px;
-  }
+.userinfo-avatar {
+  overflow: hidden;
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
+
+.avatar-wrapper {
+  padding: 0;
+  width: 56px !important;
+  border-radius: 8px;
+  margin-top: 40px;
+  margin-bottom: 5px;
+}
+
+.avatar {
+  display: block;
+  width: 56px;
+  height: 56px;
+}

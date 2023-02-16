@@ -98,9 +98,11 @@ Page({
     onShow: function () {
         let Verify = wx.getStorageSync('Verify')
         if (Verify['IsExamining']) {
+            console.log(Verify['IsExamining'])
             this.setData({
                 VerifyState: true,
-                TabCur: 0
+                TabCur: 0,
+                Tab: ['活动', '我的'],
             })
         }
         if (this.data.option === 0) {

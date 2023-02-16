@@ -2,14 +2,18 @@ const task_api = require('./task_api')
 
 Page({
     data: {
-        page_list: ['任务', '订阅'],
+        // page_list: ['任务', '订阅'],
+        page_list: ['任务'],
         curr_page: '任务',
         task_map: {},
         isEmpty: true,
         modalShow: false, 
         curr_index: "",
         subscribe_list: [],
-        grade_id: '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
+        tmplIds: [
+            'QI0OxAxPk65czf4PSv94Wku8OkO0FIB9Rq0GipY2zS4',
+            // '3NUUHtF4lmAUyL8knfaca_KRIpkblB50rFOMrNCRMAk'
+        ]
     },
 
 
@@ -154,4 +158,14 @@ Page({
             curr_page: res.currentTarget.dataset.id
         })
     },
+
+    onTapSubscribe: function (res) {
+        console.log(res)
+        wx.requestSubscribeMessage({
+            tmplIds: this.data.tmplIds,
+            success (res) {
+                console.log(res)
+            }
+        })
+    }
 })

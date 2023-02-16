@@ -1,6 +1,7 @@
 const info_api = require('./info_api')
 const info_util = require('./info_util')
 const util = require('./info_util')
+const api = require("../../../utils/api");
 
 Page({
     data: {
@@ -24,6 +25,7 @@ Page({
         })
 
         let StuInfo = wx.getStorageSync('StuInfo')
+        console.log(StuInfo)
         if (StuInfo !== '') {
             this.setData({
                 StuInfo: StuInfo
@@ -81,6 +83,14 @@ Page({
         if (identity === '本科生') {
             info_api.loginUG(uid, uid_pwd).then(res => {
                 console.log(res)
+                // 绑定openid
+                // wx.login({
+                //     success(loginRes) {
+                //         api.bindOpenID(res.uid, loginRes.code).then(res => {
+                //             console.log(res)
+                //         })
+                //     }
+                // })
                 StuInfo['uid'] = res.auth
                 StuInfo['uid_pwd'] = uid_pwd
                 StuInfo['stu_id'] = res.sid
@@ -88,6 +98,7 @@ Page({
                 StuInfo['identity'] = '本科生'
                 that.setData({ StuInfo: StuInfo })
                 wx.setStorageSync('StuInfo', StuInfo)
+                console.log('TEST', wx.getStorageSync('StuInfo'))
                 wx.showToast({
                     title: '绑定成功',
                     icon: 'none'
@@ -165,7 +176,7 @@ Page({
         // avatarUrl不存在则需要重新授权
         if (!UserInfo || !UserInfo['avatarUrl']) {
             wx.showToast({
-                title: '需要重新授权',
+                title: "请在'我的'界面点击头像进行绑定",
                 icon: 'none',
             })
             return

@@ -43,7 +43,7 @@
       <view class="cu-item" style="border-bottom: 1rpx solid #dcdcdc;border-top: 1rpx solid #dcdcdc;border-radius: 10rpx;">
         <text style="position: absolute;left: 20rpx;"><text class="cuIcon-title text-blue"></text>
         <text style="margin-left: 20rpx;">{{item.content}}</text></text>
-        <view class="action" style="margin-right: 40rpx;">
+        <view class="action" style="margin-right: 40rpx;" bindtap="onTapSubscribe">
             <view class="cu-tag bg-{{item.isSubscribed?'green':'blue'}}">{{item.isSubscribed?'已订阅':'未订阅'}}</view>
         </view>
       </view>

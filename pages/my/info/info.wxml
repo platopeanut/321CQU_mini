@@ -29,7 +29,7 @@
     </view>
     <view class="cu-form-group">
       <view class="title">账号</view>
-      <input name="uid" placeholder="请输入你的统一身份认证账号" value="{{StuInfo.uid}}">
+      <input name="uid" placeholder="请输入你的学号或统一身份认证账号" value="{{StuInfo.uid}}">
       </input>
     </view>
     <view class="cu-form-group">
