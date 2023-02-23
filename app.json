@@ -4,9 +4,6 @@
     "pages/index/ad/ad",
     "pages/my/my",
     "pages/center/volunteer/volunteer",
-    "pages/center/feedback/feedback",
-    "pages/center/feedback/detail/detail",
-    "pages/center/feedback/edit/edit",
     "pages/center/task/task",
     "pages/center/sponsor/sponsor",
     "pages/my/about/about",
@@ -23,13 +20,10 @@
     "pages/center/class_info/detail/detail",
     "pages/center/square/square",
     "pages/center/square/detail/detail",
-    "pages/center/square/edit/edit",
     "pages/center/square/activity_detail/activity_detail",
     "pages/center/library/library",
     "pages/center/vacant_classroom/vacant_classroom",
     "pages/center/life/bustimeold/bustimeold",
-    "pages/center/sxt/sxt",
-    "pages/center/sxt/detail/detail",
     "pages/center/sport_score/sport_score"
   ],
   "window": {

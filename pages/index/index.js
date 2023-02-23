@@ -31,12 +31,6 @@ Page({
                 icon: 'time'
             },
             {
-                title: '升学通',
-                path: 'sxt',
-                color: 'green',
-                icon: 'medal'
-            },
-            {
                 title: '查课',
                 path: 'class_info',
                 color: 'purple',
@@ -49,7 +43,7 @@ Page({
                 icon: 'baby'
             },
             {
-                title: '任务管理',
+                title: '订阅',
                 path: 'task',
                 color: 'blue',
                 icon: 'deliver'

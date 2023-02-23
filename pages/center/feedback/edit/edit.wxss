@@ -1,9 +1,0 @@
-textarea {
-    font-size: large;
-}
-
-.send button {
-    position: absolute;
-    bottom: 0;
-}
-

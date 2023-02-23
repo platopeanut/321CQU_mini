@@ -84,13 +84,12 @@ Page({
             info_api.loginUG(uid, uid_pwd).then(res => {
                 console.log(res)
                 // 绑定openid
-                // wx.login({
-                //     success(loginRes) {
-                //         api.bindOpenID(res.uid, loginRes.code).then(res => {
-                //             console.log(res)
-                //         })
-                //     }
-                // })
+                wx.login({
+                    success(loginRes) {
+                        api.bindOpenID(res.uid, loginRes.code).then()
+                    }
+                })
+                StuInfo['id'] = res.uid
                 StuInfo['uid'] = res.auth
                 StuInfo['uid_pwd'] = uid_pwd
                 StuInfo['stu_id'] = res.sid

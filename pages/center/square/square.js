@@ -5,7 +5,7 @@ const app = getApp()
 
 Page({
     data: {
-        VerifyState: false,
+        // VerifyState: false,
         anonymous: app.globalData.anonymous,
         Tab: ['活动', '消息', '我的'],
         TabCur: 1,
@@ -96,15 +96,15 @@ Page({
         })
     },
     onShow: function () {
-        let Verify = wx.getStorageSync('Verify')
-        if (Verify['IsExamining']) {
-            console.log(Verify['IsExamining'])
-            this.setData({
-                VerifyState: true,
-                TabCur: 0,
-                Tab: ['活动', '我的'],
-            })
-        }
+        // let Verify = wx.getStorageSync('Verify')
+        // if (Verify['IsExamining']) {
+        //     console.log(Verify['IsExamining'])
+        //     this.setData({
+        //         VerifyState: true,
+        //         TabCur: 0,
+        //         Tab: ['活动'],
+        //     })
+        // }
         if (this.data.option === 0) {
             let StuInfo = wx.getStorageSync('StuInfo')
             let stu_id = StuInfo['stu_id']

@@ -1,67 +1,20 @@
 <view>
-<scroll-view scroll-x class="bg-white nav">
-  <view class="flex text-center">
-    <view class="cu-item flex-sub {{item === curr_page?'text-blue cur':'text-black'}}" wx:for="{{page_list}}" wx:key="index" bindtap="selectPage" data-id="{{item}}">
-      {{item}}
+    <view class="padding bg-white margin">
+        <view class="padding solid text-left">
+            <view class="text-black text-bold">订阅说明</view>
+            <view class="text-grey">点击右上方三个点：设置/通知管理（开启接收通知）/成绩通知，设置为<text class="text-red">接受（注意不是接受并提醒）</text></view>
+            <view class="text-grey">1. 页面展示为<text class="text-blue">未订阅</text>时，点击即可<text class="text-bold">开启</text>订阅</view>
+            <view class="text-grey">2. 页面展示为<text class="text-green">已订阅</text>时，点击即可<text class="text-bold">关闭</text>订阅</view>
+        </view>
     </view>
-  </view>
-</scroll-view>
-</view>
-
-<view wx:if="{{curr_page === '任务'}}">
-
-  <view wx:if="{{isEmpty}}">
-      <view class="cu-load"  style="margin-top: 20rpx;"><text class="text-grey">当前没有任务噢</text></view>
-  </view>
-<view wx:else>
-    <view class="cu-list menu card-menu margin-top" wx:for="{{task_map}}" wx:key="key">
-        <view class="cu-item" bindtap="onTouchItem" data-index="{{index}}">
+    <view class="cu-list menu sm-border card-menu margin-top" wx:for="{{subscribeList}}" wx:key>
+        <view class="cu-item" bindtap="onTapItem" data-item="{{item}}">
             <view class="content">
-                <text class="cuIcon-{{item.icon}} text-{{item.icon_color}}"></text>
-                <text class="text-black">{{item.title}} </text>
-                <text class="text-grey"> {{item.content}}</text>
+                <text class="text-black text-bold">{{item.name}}</text>
             </view>
             <view class="action">
-                <view wx:if="{{item.status === 0}}" class="cu-tag round bg-orange light">执行中</view>
-                <view wx:elif="{{item.status === 1}}" class="cu-tag round bg-olive light">成功</view>
-                <view wx:elif="{{item.status === -1}}" class="cu-tag round bg-blue light">失败</view>
+                <view class="cu-tag bg-{{item.isSubscribed?'green':'blue'}}">{{item.isSubscribed?'已订阅':'未订阅'}}</view>
             </view>
         </view>
     </view>
 </view>
-
-</view>
-
-<view wx:if="{{curr_page === '订阅'}}">
-    <view class="padding bg-white">
-        <view class="padding solid text-center">
-            <text class="text-bold">订阅/取消订阅：</text>
-            1.点击右上方“三点”; 2.设置; 3.通知管理
-        </view>
-    </view>
-  <view class="cu-list menu-avatar" wx:for="{{subscribe_list}}">
-      <view class="cu-item" style="border-bottom: 1rpx solid #dcdcdc;border-top: 1rpx solid #dcdcdc;border-radius: 10rpx;">
-        <text style="position: absolute;left: 20rpx;"><text class="cuIcon-title text-blue"></text>
-        <text style="margin-left: 20rpx;">{{item.content}}</text></text>
-        <view class="action" style="margin-right: 40rpx;" bindtap="onTapSubscribe">
-            <view class="cu-tag bg-{{item.isSubscribed?'green':'blue'}}">{{item.isSubscribed?'已订阅':'未订阅'}}</view>
-        </view>
-      </view>
-  </view>    
-    
-
-</view>
-
-<!-- 删除界面 -->
-<view class="cu-modal bottom-modal {{modalShow?'show':''}}">
-  <view class="cu-dialog">
-    <view class="cu-bar bg-white">
-      <view class="action text-green" bindtap="deleteSure">确定</view>
-      <view class="action text-blue" bindtap="deleteCancel">取消</view>
-    </view>
-    <view class="padding-xl">
-      是否删除此项
-    </view>
-  </view>
-</view>
-
