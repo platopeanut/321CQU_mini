@@ -29,7 +29,9 @@ Page({
     selectClassItem: function (e) {
         let curr_item = e.currentTarget.dataset.item
         wx.navigateTo({
-            url: './detail/detail?Cid=' + curr_item.Cid + '&Cname=' + curr_item.Cname
+            url: './detail/detail?Cid=' + curr_item.Cid
+                + '&Cname=' + curr_item.Cname
+                + '&isNew=' + (curr_item.isNew ? true : false)
         })
     },
 
@@ -64,8 +66,7 @@ Page({
         })
     },
 
-    query: function () {
-        let that = this
+    validate: function () {
         let StuInfo = wx.getStorageSync('StuInfo')
         let stu_id = StuInfo['stu_id']
         let uid = StuInfo['uid']
@@ -75,18 +76,22 @@ Page({
                 title: '请绑定学号，统一身份账号及密码',
                 icon: 'none'
             })
-            return
+            return false
         }
         if (this.data.user_input === '') {
             wx.showToast({
                 title: '输入不能为空',
                 icon: 'none'
             })
-            return
+            return false
         }
-        this.setData({
-            first_open_state: false
-        })
+        return true
+    },
+
+    query: function () {
+        if (!this.validate()) return;
+        let that = this;
+        this.setData({ first_open_state: false });
         if (this.data.curr_way === '搜课程') {
             class_info_api.queryClassInfoByClassName(this.data.user_input).then(res => {
                 if (res.Courses.length !== 0) {
@@ -109,7 +114,8 @@ Page({
                     })
                 }
             })
-        } else if (this.data.curr_way === '搜老师') {
+        }
+        else if (this.data.curr_way === '搜老师') {
             class_info_api.queryClassInfoByTeacherName(this.data.user_input).then(res => {
                 if (res.Courses.length !== 0) {
                     let teacher_dict = {}
@@ -132,7 +138,8 @@ Page({
                         teacher_dict: teacher_dict,
                         no_result_state: false,
                     })
-                } else {
+                }
+                else {
                     that.setData({
                         lesson_list: [],
                         teacher_dict: {},
@@ -140,17 +147,84 @@ Page({
                     })
                 }
             })
-        } else {
+        }
+        else {
             wx.showToast({
                 title: '查询方式错误',
                 icon: 'none'
             })
         }
-        // this.setData({
-        //     no_result_state: true
-        // })
-        // wx.navigateTo({
-        //     url: './detail/detail'
-        // })
     },
+
+    queryNew: function () {
+        if (!this.validate()) return;
+        let that = this;
+        this.setData({ first_open_state: false });
+        if (this.data.curr_way === '搜课程') {
+            class_info_api.queryClassInfo(this.data.user_input, null).then(courses => {
+                if (courses.length > 0) {
+                    let lesson_list = []
+                    for (const item of courses) {
+                        lesson_list.push({
+                            Cid: item.code,
+                            Cname: item.name,
+                            isNew: true
+                        })
+                    }
+                    that.setData({
+                        no_result_state: false,
+                        lesson_list: lesson_list,
+                    })
+                }
+                else {
+                    that.setData({
+                        lesson_list: [],
+                        teacher_dict: {},
+                        no_result_state: true,
+                    })
+                }
+            })
+        }
+        else if (this.data.curr_way === '搜老师') {
+            class_info_api.queryClassInfo(null, this.data.user_input).then(courses => {
+                if (courses.length > 0) {
+                    let teacher_dict = {}
+                    for (const item of courses) {
+                        if (teacher_dict[item['instructor']]) {
+                            teacher_dict[item['instructor']]['class_list'].push({
+                                Cid: item.code,
+                                Cname: item.name,
+                                isNew: true
+                            })
+                        } else {
+                            teacher_dict[item['instructor']] = {}
+                            teacher_dict[item['instructor']]['state'] = false
+                            teacher_dict[item['instructor']]['class_list'] = [{
+                                Cid: item.code,
+                                Cname: item.name,
+                                isNew: true
+                            }]
+                        }
+                    }
+                    that.setData({
+                        teacher_dict: teacher_dict,
+                        no_result_state: false,
+                    })
+                }
+                else {
+                    that.setData({
+                        lesson_list: [],
+                        teacher_dict: {},
+                        no_result_state: true,
+                    })
+                }
+            })
+        }
+        else {
+            wx.showToast({
+                title: '查询方式错误',
+                icon: 'none'
+            })
+        }
+    }
 })

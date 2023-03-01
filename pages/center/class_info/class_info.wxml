@@ -15,8 +15,9 @@
         </view>
     </view>
 
-    <view class="padding flex flex-direction bg-white">
-        <button class="cu-btn bg-blue lg" bindtap="query">查询</button>
+    <view class="padding bg-white" style="display: flex">
+        <button class="cu-btn bg-green lg" bindtap="queryNew" style="flex: 1;margin-right: 15rpx">查询新数据库</button>
+        <button class="cu-btn bg-blue lg" bindtap="query" style="flex: 1;margin-left: 15rpx">查询老数据库</button>
     </view>
 
     <view class="padding bg-white" wx:if="{{first_open_state}}">

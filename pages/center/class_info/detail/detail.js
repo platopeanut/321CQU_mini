@@ -33,6 +33,7 @@ Page({
         class_name: '',
         class_id: '',
         teacher_dict: {},
+        isNew: false,
     },
 
     selectItem: function (e) {
@@ -100,9 +101,8 @@ Page({
         }
     },
 
-
     query: function () {
-        let that = this
+        const that = this
         class_info_api.queryClassDetail(this.data.class_id).then(res => {
             let CourseScore = res.CourseScore
             let IsHierarchy = res.IsHierarchy
@@ -178,8 +178,42 @@ Page({
     onLoad(e) {
         this.setData({
             class_name: e.Cname,
-            class_id: e.Cid
-        })
-        this.query()
+            class_id: e.Cid,
+            isNew: e.isNew === "true"
+        });
+        if (!this.data.isNew) this.query();
+        else this.queryNew();
+    },
+
+    queryNew: function () {
+        const that = this;
+        class_info_api.queryNewClassDetail(this.data.class_id).then(res => {
+            const li = res['score_details'];
+            const teacher_dict = {};
+            for (const item of li) {
+                teacher_dict[item['teacher_name']] = {
+                    state: false,
+                    info: item['details'].map(it => {
+                        return {
+                            year: it.term.year + (it.term.is_autumn ? '秋' : '春'),
+                            max: it.max,
+                            min: it.min,
+                            average: it.average,
+                            num: it.num,
+                            distributed: [
+                                it["level1_num"],
+                                it["level2_num"],
+                                it["level3_num"],
+                                it["level4_num"],
+                                it["level5_num"]
+                            ].reverse().map(x => (x / it.num * 100).toFixed(0))
+                        }
+                    })
+                }
+            }
+            that.setData({ teacher_dict: teacher_dict });
+            console.log(li);
+            console.log(teacher_dict);
+        });
     }
 })

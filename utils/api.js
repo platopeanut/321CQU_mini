@@ -187,7 +187,7 @@ function handleToken() {
     })
 }
 
-function newRequest(url, data={}) {
+function newRequest(url, data={}, method="POST") {
     return handleToken().then(token => new Promise((resolve, reject) => {
         wx.showLoading({title: '加载中'})
         wx.request({
@@ -195,7 +195,7 @@ function newRequest(url, data={}) {
                 "Authorization": "Bearer " + token
             },
             url: url,
-            method: "POST",
+            method: method,
             data: data,
             success(res) {
                 wx.hideLoading()

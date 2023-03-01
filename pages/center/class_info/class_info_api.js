@@ -39,9 +39,23 @@ function queryClassDetail(Cid) {
     })
 }
 
+async function queryClassInfo(courseName = null, teacherName = null) {
+    const data = {};
+    if (courseName) data['course_name'] = courseName;
+    if (teacherName) data['teacher_name'] = teacherName;
+    const res = await api.newRequest("https://api.321cqu.com/v1/course_score_query/course", data, "GET");
+    return res['courses'];
+}
+
+async function queryNewClassDetail(cid) {
+    return await api.newRequest("https://api.321cqu.com/v1/course_score_query/course/" + cid, {}, "GET");
+}
+
 
 module.exports = {
     queryClassInfoByTeacherName,
     queryClassInfoByClassName,
     queryClassDetail,
+    queryClassInfo,
+    queryNewClassDetail,
 }
