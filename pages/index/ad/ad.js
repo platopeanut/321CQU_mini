@@ -9,10 +9,10 @@ Page({
     },
 
     onLoad: function (e) {
-        let HomePage = wx.getStorageSync('HomePage')
-        let item = HomePage['Pictures'].find(value => {return value.Id.toString() === e.Id.toString()})
-        if (!item.LocalContent) this.localizedContent(e.Id)
-        else this.loadContent(item.ContentUrl)
+        // let HomePage = wx.getStorageSync('HomePage')
+        // let item = HomePage['Pictures'].find(value => {return value.Id.toString() === e.Id.toString()})
+        // if (!item.LocalContent) this.localizedContent(e.Id)
+        this.localizedContent(e.url.toString());
     },
 
     // 渲染
@@ -36,15 +36,18 @@ Page({
     },
 
     // 本地化存储并渲染
-    localizedContent: function (id) {
+    localizedContent: function (url) {
         let that = this
-        let HomePage = wx.getStorageSync('HomePage')
-        let item = HomePage['Pictures'].find(value => {return value.Id.toString() === id.toString()})
-        util.saveFile(item.ContentUrl).then(res => {
-            item.ContentUrl = res.path
-            item.LocalContent = true
-            wx.setStorageSync('HomePage', HomePage)
-            that.loadContent(res.path)
-        })
+        // let HomePage = wx.getStorageSync('HomePage')
+        // let item = HomePage['Pictures'].find(value => {return value.Id.toString() === id.toString()})
+        // util.saveFile(item.ContentUrl).then(res => {
+        //     item.ContentUrl = res.path
+        //     item.LocalContent = true
+        //     wx.setStorageSync('HomePage', HomePage)
+        //     that.loadContent(res.path)
+        // })
+        util.saveFile(url).then(res => {
+            that.loadContent(res.path);
+        });
     }
 })

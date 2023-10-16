@@ -135,8 +135,10 @@ Page({
             })
             return
         }
-        let email = e.detail.value.email
-        let nickname = e.detail.value.nickname
+        // let email = e.detail.value.email
+        // let nickname = e.detail.value.nickname
+        let email = ""
+        let nickname = ""
         let room_id = e.detail.value.room_id
         let sport_pwd = e.detail.value.sport_pwd
         // email

@@ -1,20 +1,32 @@
 <view style="background-color: white;">
-
-    <view class="cu-bar bg-white solid-bottom margin-top">
-        <view class="action">
-            <text class="cuIcon-title text-blue"></text>
-            <text class="text-bold">自动填充信息</text>
+    <!--
+      <view class="cu-bar bg-white solid-bottom margin-top">
+          <view class="action">
+              <text class="cuIcon-title text-blue"></text>
+              <text class="text-bold">自动填充信息</text>
+          </view>
+          <view class="action">
+              <switch class="sm" checked="{{AutoFill}}" bindchange="bindAutoFill"></switch>
+          </view>
+      </view>
+      <view class="padding bg-white">
+          <view class="text-left text-gray" style="margin-top: 5rpx;">
+              1.开启后，每次点击<text class="text-bold">重新授权</text>时当检查到用户绑定信息缺失（小程序更新，手机缓存清理等造成）时自动填充缺失信息
+          </view>
+          <view class="text-left text-gray" style="margin-top: 5rpx;">
+              2.取消后，服务器会自动删除对应用户信息
+          </view>
+      </view>
+    -->
+    <view class="padding bg-white solid-bottom">
+        <view class="text-left text-black text-bold" style="margin-top: 5rpx;">
+          声明：
         </view>
-        <view class="action">
-            <switch class="sm" checked="{{AutoFill}}" bindchange="bindAutoFill"></switch>
+        <view class="text-left text-gray text-bold" style="margin-top: 5rpx;">
+          1. 程序没有收集用户信息；
         </view>
-    </view>
-    <view class="padding bg-white">
         <view class="text-left text-gray" style="margin-top: 5rpx;">
-            1.开启后，每次点击<text class="text-bold">重新授权</text>时当检查到用户绑定信息缺失（小程序更新，手机缓存清理等造成）时自动填充缺失信息
-        </view>
-        <view class="text-left text-gray" style="margin-top: 5rpx;">
-            2.取消后，服务器会自动删除对应用户信息
+          2. 用户的信息仅存储在本地以避免用户重复填写信息；
         </view>
     </view>
 
@@ -68,14 +80,14 @@
         </view>
     </view>
 
-    <view class="cu-form-group">
+    <!-- <view class="cu-form-group">
         <view class="title">邮箱</view>
         <input name="email" placeholder="请输入你的邮箱" value="{{StuInfo.email}}"></input>
     </view>
     <view class="cu-form-group">
         <view class="title">昵称</view>
         <input name="nickname" placeholder="用于帖子作者的显示" value="{{StuInfo.nickname}}"></input>
-    </view>
+    </view> -->
     <view class="cu-form-group">
         <view class="title">体测密码</view>
         <input name="sport_pwd" placeholder="用于体测查询" value="{{StuInfo.sport_pwd}}"></input>

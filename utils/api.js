@@ -272,14 +272,15 @@ function adTimes(code) {
  */
 // 首页图片
 function getHomepageImgData() {
-  let header = {
-    url: '/homepage',
-    data: {
-    }
-  }
-  return new Promise((resolve,reject) => {
-    request(header, resolve, reject, false, true, '2.1')
-  })
+//   let header = {
+//     url: '/homepage',
+//     data: {
+//     }
+//   }
+//   return new Promise((resolve,reject) => {
+//     request(header, resolve, reject, false, true, '2.1')
+//   })
+    return newRequest('https://api.321cqu.com/v1/important_info/homepages', {}, "GET");
 }
 
 // // 每日一句

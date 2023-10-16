@@ -176,7 +176,7 @@ function saveFile(url, id=null) {
 function saveBatchFile(pictures) {
     let tasks = []
     for (let i = 0; i < pictures.length; i++) {
-        tasks.push(saveFile(pictures[i].Url, i))
+        tasks.push(saveFile(pictures[i]['url'], i))
     }
     return Promise.all(tasks)
 }

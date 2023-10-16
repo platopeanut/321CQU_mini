@@ -92,64 +92,57 @@ Page({
     },
     loadSwiperList: function () {
         let HomePage = wx.getStorageSync('HomePage')
-        util.saveBatchFile(HomePage['Pictures'].filter(value => {
-            return !value.Local
+        util.saveBatchFile(HomePage['items'].filter(value => {
+            return !value['local']
         })).then(values => {
             for (let value of values) {
-                HomePage['Pictures'][value.id].Url = value.path
-                HomePage['Pictures'][value.id].Local = true
+                HomePage['items'][value.id]['url'] = value.path
+                HomePage['items'][value.id]['local'] = true
             }
             wx.setStorageSync('HomePage', HomePage)
         })
         const fs = wx.getFileSystemManager()
         this.setData({
-            swiperList: HomePage['Pictures'],
+            swiperList: HomePage['items'],
             IndexImgPath: fs.readFileSync(HomePage['IndexImgPath'], 'base64')
         })
     },
-    LoadSwiperImg: function () {
-        let that = this
-        let HomePage = wx.getStorageSync('HomePage')
-        // 1.当没有缓存（清除缓存或更新后）2.有缓存且时间到了
-        if (!HomePage || (new Date().toDateString() !== HomePage['LastCheck'] && new Date().getHours() > 6)) {
-            console.log('local check pass')
-            if (!HomePage) HomePage = {}
-            HomePage['LastCheck'] = new Date().toDateString()
-            api.getHomepageImgData().then(res=>{
-                if (!HomePage || HomePage['LastUpdate'] !== res.LastUpdate) {
-                    console.log('remote check pass')
-                    HomePage['LastUpdate'] = res.LastUpdate
-                    HomePage['Pictures'] = []
-                    let cnt = 0;
-                    for (const item of res.Pictures) {
-                        HomePage['Pictures'].push({
-                            'Url': that.data.picture_url + item.Url,
-                            'ContentUrl': item.JumpType === 'md'? that.data.url + item.ContentUrl : item.ContentUrl,
-                            'Local': false,     // pic是否本地化
-                            'LocalContent': false,   // pic对应的content是否本地化
-                            'JumpType': item.JumpType,
-                            'Id': cnt
-                        })
-                        cnt ++
-                    }
-                    wx.setStorageSync('HomePage', HomePage)
-                    // 获取首页背景图
-                    util.saveFile(util.IndexImgUrl).then(res => {
-                        HomePage['IndexImgPath'] = res.path
-                        that.setData({
-                            IndexImgPath: res.path
-                        })
-                    }).finally(()=>{
-                        wx.setStorageSync('HomePage', HomePage)
-                        that.loadSwiperList()
-                    })
-                }
-                else {
-                    wx.setStorageSync('HomePage', HomePage)
-                    that.loadSwiperList()
-                }
-            })
-        } else this.loadSwiperList()
+    LoadSwiperImg: async function () {
+
+        function getItemID(it) {
+            return it['img_pos'] + it['img_url'];
+        }
+
+        let that = this;
+        const newItems = (await api.getHomepageImgData())['homepages'];
+        const newIDs = new Set(newItems.map(it => getItemID(it)));
+
+        let HomePage = wx.getStorageSync('HomePage');
+        if (!HomePage) HomePage = { items: [] };
+
+        // 过滤掉过时的item
+        HomePage['items'] = HomePage['items'].filter(it => newIDs.has(getItemID(it)));
+        // 补充新增的item
+        const currIDs = new Set(HomePage['items'].map(it => getItemID(it)));
+        for (const item of newItems) {
+            if (currIDs.has(getItemID(item)))
+                continue;
+            item['url'] = item['img_url'];
+            if (item['img_pos'] == 'LOCAL') {
+                item['url'] = 'https://media.321cqu.com' + item['url'];
+            }
+            item['local'] = false;
+            HomePage['items'].push(item);
+        };
+        // 获取首页背景图
+        if (!HomePage['IndexImgPath']) {
+            const res = await util.saveFile(util.IndexImgUrl);
+            HomePage['IndexImgPath'] = res.path;
+        }
+        that.setData({ IndexImgPath: HomePage['IndexImgPath'] });
+        wx.setStorageSync('HomePage', HomePage);
+        console.log(HomePage);
+        that.loadSwiperList();
     },
 
     LoadCurriculumInfo: function () {
@@ -223,17 +216,25 @@ Page({
     },
 
     jumpToPicDetail: function (e) {
-        let item = e.currentTarget.dataset.item
-        if (item.JumpType === 'md') {
+        let item = e.currentTarget.dataset.item;
+        const params = JSON.parse(item['jump_param']);
+        if (item['jump_type'] === 'MD') {
+            console.log(this.data.url + params.url);
             wx.navigateTo({
-                url: './ad/ad?Id=' + item.Id
-            })
-        } else if (item.JumpType === 'mk') {
-            let mk_name = item.ContentUrl.slice(0, -3)
-            wx.navigateTo({
-                url: `../center/${mk_name}/${mk_name}`
+                url: './ad/ad?url=' + (params.pos === 'local' ? 'https://media.321cqu.com' + params.url : params.url)
             })
         }
+        else if (item['jump_type'] === 'WECHAT_MINI_PROGRAM') {
+            wx.navigateToMiniProgram({
+                appId: params.appid
+            });
+        }
+        // else if (item.JumpType === 'mk') {
+        //     let mk_name = item.ContentUrl.slice(0, -3)
+        //     wx.navigateTo({
+        //         url: `../center/${mk_name}/${mk_name}`
+        //     })
+        // }
     },
 
     previewImg: function () {
