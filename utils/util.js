@@ -1,6 +1,7 @@
 // noinspection JSNonASCIINames,NonAsciiCharacters
-const CurrentVersion = '2.7.2'
-const CurrentVersionInfo = "更新内容：\n1. 恢复体测查询\n2. 接入新课程数据库"
+const CurrentVersion = '2.7.3.5'
+// const CurrentVersionInfo = "更新内容："
+const CurrentVersionInfo = ""
 const log = require('./log')
 const dormitory = {
     'A区': ['选择楼栋','一舍学生宿舍','二舍学生宿舍','三舍学生宿舍','四舍学生宿舍','五舍学生宿舍','六舍学生宿舍','七舍学生宿舍','八舍学生宿舍','九舍学生宿舍','十舍学生宿舍','十一舍学生宿舍','十二舍学生宿舍','A栋宿舍','C栋宿舍','D栋宿舍'],

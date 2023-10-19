@@ -22,11 +22,14 @@
         <view class="text-left text-black text-bold" style="margin-top: 5rpx;">
           声明：
         </view>
-        <view class="text-left text-gray text-bold" style="margin-top: 5rpx;">
-          1. 程序没有收集用户信息；
+        <view class="text-left text-gray" style="margin-top: 5rpx;">
+          1. 此处所填写的信息仅用于数据查询服务，该信息不会以任何形式被存储在我们的服务器中
         </view>
         <view class="text-left text-gray" style="margin-top: 5rpx;">
-          2. 用户的信息仅存储在本地以避免用户重复填写信息；
+          2. 你可以在任意时间通过“我的—清除缓存”来删除此处缓存的信息
+        </view>
+        <view class="text-left text-gray" style="margin-top: 5rpx;">
+          3. 绑定信息即代表同意用户隐私协议
         </view>
     </view>
 
@@ -65,9 +68,27 @@
         <radio value="研究生"/>
       </radio-group>
     </view>
+    <view class="flex padding" style="justify-content:space-between;align-items:center;">
+      <view bindtap="handleOpenPrivacyContract" style="color:#1296db;text-decoration: underline;">查看隐私协议</view>
+      <view class="flex align-center">
+        是否同意隐私协议：
+        <!-- <button wx:if="{{!canLogin}}" class="bg-blue cu-btn round" style="width:max-content;" open-type="agreePrivacyAuthorization" bindagreeprivacyauthorization="handleAgreePrivacyAuthorization">
+          未同意
+        </button>
+        <button wx:else class="bg-green cu-btn round" style="width:max-content;" open-type="agreePrivacyAuthorization" bindagreeprivacyauthorization="handleAgreePrivacyAuthorization">
+          已同意
+        </button> -->
+        <button wx:if="{{!canLogin}}" class="bg-blue cu-btn round" style="width:max-content;" bindtap="handleAgreePrivacyAuthorization">
+          未同意
+        </button>
+        <button wx:else class="bg-green cu-btn round" style="width:max-content;" bindtap="handleAgreePrivacyAuthorization">
+          已同意
+        </button>
+      </view>
+    </view>
 
     <view class="padding flex flex-direction">
-      <button class="cu-btn bg-green lg" formType="submit">绑定</button>
+      <button class="cu-btn bg-green lg" formType="submit">登录</button>
     </view>
 </form>
   <!-- 信息填写 -->
@@ -103,7 +124,7 @@
     </view>
 
     <view class="padding flex flex-direction">
-        <button class="cu-btn bg-green lg" formType="submit">绑定</button>
+        <button class="cu-btn bg-green lg" formType="submit">保存</button>
     </view>
 
 </form>

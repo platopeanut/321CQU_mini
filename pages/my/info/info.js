@@ -15,6 +15,7 @@ Page({
         dormitory: [],
         dormitory_index: [],
         AutoFill: null,
+        canLogin: false,
     },
 
     onShow: function() {
@@ -66,7 +67,28 @@ Page({
             })
         }
     },
+    handleAgreePrivacyAuthorization() {
+        // 用户同意隐私协议事件回调
+        // 用户点击了同意，之后所有已声明过的隐私接口和组件都可以调用了
+        // wx.getUserProfile()
+        // wx.chooseMedia()
+        // wx.getClipboardData()
+        // wx.startRecord()
+        this.setData({ canLogin: !this.data.canLogin });
+    },
+
+    handleOpenPrivacyContract() {
+        // 打开隐私协议页面
+        wx.openPrivacyContract();
+    },
     saveUid(e) {
+        if (!this.data.canLogin) {
+            wx.showToast({
+                title: "请先同意隐私说明",
+                icon: "none"
+            });
+            return;
+        }
         let that = this
         let uid = e.detail.value.uid
         let uid_pwd = e.detail.value.uid_pwd
@@ -84,11 +106,11 @@ Page({
             info_api.loginUG(uid, uid_pwd).then(res => {
                 console.log(res)
                 // 绑定openid
-                wx.login({
-                    success(loginRes) {
-                        api.bindOpenID(res.uid, loginRes.code).then()
-                    }
-                })
+                // wx.login({
+                //     success(loginRes) {
+                //         api.bindOpenID(res.uid, loginRes.code).then()
+                //     }
+                // })
                 StuInfo['id'] = res.uid
                 StuInfo['uid'] = res.auth
                 StuInfo['uid_pwd'] = uid_pwd

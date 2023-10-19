@@ -41,9 +41,9 @@ Page({
         return -1
     },
     tabSelect: function (e) {
-        if (!(this.data.stu_id && this.data.authority)) {
+        if (!(this.data.stu_id)) {
             wx.showToast({
-                title: '请绑定统一身份，昵称信息',
+                title: '请绑定统一身份信息',
                 icon: 'none'
             })
             return
@@ -113,9 +113,9 @@ Page({
                 stu_id: stu_id,
                 authority: authority
             })
-            if (!(this.data.stu_id && this.data.stu_id && this.data.authority)) {
+            if (!this.data.stu_id) {
                 wx.showToast({
-                    title: '请绑定统一身份，昵称信息',
+                    title: '请绑定统一身份信息',
                     icon: 'none'
                 })
                 return
@@ -274,9 +274,9 @@ Page({
     onPullDownRefresh() {
         wx.stopPullDownRefresh()
         let that = this
-        if (!(this.data.stu_id && this.data.authority)) {
+        if (!this.data.stu_id) {
             wx.showToast({
-                title: '请绑定统一身份，昵称信息',
+                title: '请绑定统一身份信息',
                 icon: 'none'
             })
             return
@@ -373,9 +373,9 @@ Page({
     },
     tapMyGroupActivity: function () {
         let that = this
-        if (!(this.data.stu_id && this.data.authority)) {
+        if (!this.data.stu_id) {
             wx.showToast({
-                title: '请绑定统一身份，昵称信息',
+                title: '请绑定统一身份信息',
                 icon: 'none'
             })
             return
