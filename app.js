@@ -38,18 +38,18 @@ App({
                 }
             })
         }
-        // ?(暂时不需要)加载用户本地缓存信息
-        let Verify = wx.getStorageSync('Verify')
-        if (!Verify || Verify['Version'] !== util.CurrentVersion) {
-            Verify = {}
-            api.getVerifyState().then(res => {
-                console.log(res)
-                // IsExamining: true, Version:
-                Verify['IsExamining'] = res.IsExamining
-                Verify['Version'] = res.Version
-                wx.setStorageSync('Verify', Verify)
-            })
-        }
+        // // ?(暂时不需要)加载用户本地缓存信息
+        // let Verify = wx.getStorageSync('Verify')
+        // if (!Verify || Verify['Version'] !== util.CurrentVersion) {
+        //     Verify = {}
+        //     api.getVerifyState().then(res => {
+        //         console.log(res)
+        //         // IsExamining: true, Version:
+        //         Verify['IsExamining'] = res.IsExamining
+        //         Verify['Version'] = res.Version
+        //         wx.setStorageSync('Verify', Verify)
+        //     })
+        // }
         // 进入小程序时第一次获取token
         api.handleToken().then()
     },

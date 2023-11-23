@@ -91,13 +91,12 @@ Page({
         })
     },
     loadSwiperList: function () {
-        let HomePage = wx.getStorageSync('HomePage')
-        util.saveBatchFile(HomePage['items'].filter(value => {
-            return !value['local']
-        })).then(values => {
+        let HomePage = wx.getStorageSync('HomePage');
+        const items = HomePage['items'].filter(value => !value['local']);
+        util.saveBatchFile(items).then(values => {
             for (let value of values) {
-                HomePage['items'][value.id]['url'] = value.path
-                HomePage['items'][value.id]['local'] = true
+                items[value.id]['url'] = value.path;
+                items[value.id]['local'] = true;
             }
             wx.setStorageSync('HomePage', HomePage)
         })
